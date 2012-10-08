@@ -1,10 +1,10 @@
 <?php
 
-namespace EasyMvc\Model;
+namespace Accelerator\Model;
 
-use EasyMvc\Model\DbEntity;
-use EasyMvc\Model\SqlHelper;
-use EasyMvc\EasyMvcException;
+use Accelerator\Model\DbEntity;
+use Accelerator\Model\SqlHelper;
+use Accelerator\AcceleratorException;
 
 /**
  * Get and Remove entities from database based on templated DbEntity objects.
@@ -16,7 +16,7 @@ abstract class EntityManager {
     /**
      * Returns a set of $filter type objects using the $filter template.
      * 
-     * @param \EasyMvc\Model\DbEntity $filter
+     * @param \Accelerator\Model\DbEntity $filter
      * @param bool $ignoreNullFields Ignores SQL-NULL fields for selecting entities (Default=true).
      * @return array;
      */
@@ -57,7 +57,7 @@ abstract class EntityManager {
     /**
      * Returns a set of $filter type objects using the $filter template.
      * 
-     * @param \EasyMvc\Model\DbEntity $filter
+     * @param \Accelerator\Model\DbEntity $filter
      * @param bool $ignoreNullFields Ignores SQL-NULL fields for deleting entities (Default=true).
      */
     public static function delete(DbEntity $filter, $ignoreNullFields = true) {

@@ -3,7 +3,7 @@
 namespace Accelerator;
 
 /**
- * Description of AcceleratorException
+ * Handles any \Exception into Accelerator framework.
  *
  * @author gg00xiv
  */

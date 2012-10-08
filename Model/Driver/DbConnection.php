@@ -3,7 +3,8 @@
 namespace Accelerator\Model\Driver;
 
 /**
- * Description of DbConnection
+ * A generic connection class from which all specified connection class
+ * must inherit.
  *
  * @author gg00xiv
  */

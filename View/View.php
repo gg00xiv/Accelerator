@@ -2,11 +2,12 @@
 
 namespace Accelerator\View;
 
-use Accelerator\EasyMvcException;
+use Accelerator\AcceleratorException;
 use Accelerator\Application;
 
 /**
- * Description of View
+ * A View represents the PHP code behind a user interface (here a web page).
+ * A View can have a parent and a child (see application configuration file).
  *
  * @author gg00xiv
  */
@@ -26,20 +27,32 @@ class View {
             $this->parentViewName = $parentViewName;
     }
 
+    /**
+     * Used in templates (*.phtml) files to get the most defined title in child
+     * views.
+     * 
+     * @return string Child view title. 
+     */
     public function getTitle() {
         if ($this->childView)
             return $this->childView->getTitle();
         return $this->title;
     }
 
+    /**
+     * Define the View title.
+     * 
+     * @param string $title The view title.
+     */
     public function setTitle($title) {
         $this->title = $title;
     }
 
-    public function getPath() {
-        return $this->path;
-    }
-
+    /**
+     * Used by Application to render the controller linked View.
+     * 
+     * @throws AcceleratorException If a specified parent View was not found.
+     */
     public function render() {
         if ($this->parentViewName) {
             $parentView = Application::instance()->getView($this->parentViewName);
@@ -52,13 +65,16 @@ class View {
             $this->renderSelf();
     }
 
-    private function renderSelf() {
-        include $this->path;
-    }
-
+    /**
+     * Used in templates (*.phtml files) to render child content in place.
+     */
     public function renderChild() {
         if ($this->childView)
             $this->childView->renderSelf();
+    }
+
+    private function renderSelf() {
+        include $this->path;
     }
 
 }

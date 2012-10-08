@@ -14,11 +14,22 @@ abstract class Autoloader {
 
     private static $namespaces;
 
+    /**
+     * Register a set of namespace for class autoloading. Each class in those namespaces
+     * will be autoloaded when called.
+     * 
+     * @param array $namespaces Autoloaded class namespaces.
+     */
     public static function register(array $namespaces) {
         static::$namespaces = $namespaces;
         spl_autoload_register(array('\Accelerator\Autoloader', 'autoload'));
     }
 
+    /**
+     * Autoload a class given its full namespaced name.
+     * 
+     * @param string $classpath Full class name.
+     */
     public static function autoload($classpath) {
         foreach (static::$namespaces as $namespace => $path) {
             $namespace = trim($namespace, static::NS_SEPARATOR);

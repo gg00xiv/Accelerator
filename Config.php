@@ -3,7 +3,7 @@
 namespace Accelerator;
 
 /**
- * Description of Config
+ * Use of \ArrayObject with a recursive feature.
  *
  * @author gg00xiv
  */

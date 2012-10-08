@@ -2,7 +2,7 @@
 
 namespace Accelerator\Model;
 
-use Accelerator\EasyMvcException;
+use Accelerator\AcceleratorException;
 use Accelerator\Model\SqlHelper;
 use Accelerator\Application;
 use \ReflectionClass;
@@ -124,6 +124,112 @@ class DbEntity {
         $this->checkIntegrity();
     }
 
+    /**
+     * Returns the field value based on its name. This method is used
+     * internally to access field values whereas accessor types are not
+     * statically known
+     * 
+     * @param string $fieldName
+     * @return mixed
+     */
+    public function getFieldValue($fieldName) {
+        if (!array_key_exists($fieldName, $this->get_map))
+            throw new AcceleratorException('Invalid field name : ' . $fieldName);
+        $accessor = $this->get_map[$fieldName];
+        $fieldValue = method_exists($this, $accessor) ? $this->$accessor() : $this->$accessor;
+        if ($fieldValue)
+            $fieldValue = mb_convert_encoding($fieldValue, $this->encoding, mb_detect_encoding($fieldValue));
+        return $fieldValue;
+    }
+
+    /**
+     * Set the field value based on its name. This method is used
+     * internally to access field values whereas accessor types are not
+     * statically known
+     * 
+     * @param string $fieldName
+     * @param mixed $fieldValue
+     */
+    public function setFieldValue($fieldName, $fieldValue) {
+        if (!array_key_exists($fieldName, $this->set_map))
+            return;
+        $accessor = $this->set_map[$fieldName];
+        $fieldValue = mb_convert_encoding($fieldValue, $this->encoding, mb_detect_encoding($fieldValue));
+        if (method_exists($this, $accessor))
+            $this->$accessor($fieldValue);
+        else
+            $this->$accessor = $fieldValue;
+    }
+
+    /**
+     * Returns the underlying database table name associated to this DbEntity object.
+     * 
+     * @return string
+     */
+    public function getTable() {
+        return $this->table;
+    }
+
+    /**
+     * Returns the underlying connection associated to this DbEntity object.
+     * 
+     * @return \Accelerator\Model\Driver\DbConnection
+     */
+    public function getConnection() {
+        return $this->connection;
+    }
+
+    /**
+     * Returns the list of fields with their value
+     * 
+     * @return array
+     */
+    public function getColumnValues() {
+        $columns = array();
+        foreach (array_keys($this->get_map) as $column) {
+            $columns[$column] = $this->getFieldValue($column);
+        }
+        return $columns;
+    }
+
+    /**
+     * Save entity to database, internal use of insert or update depending on entity status
+     */
+    public function save() {
+        if ($this->hasPrimaryKey()) {
+            foreach ($this->primaryKeyColumns as $pk) {
+                $pk_value = $this->getfieldValue($pk);
+                if (!$pk_value) { // 0, null, empty string
+                    $this->insert();
+                    return;
+                }
+            }
+        }
+        $this->update();
+    }
+
+    /**
+     * Delete entity from database.
+     */
+    public function delete() {
+        $sql = SqlHelper::delete($this->table, $this->getPrimaryKeyValues());
+
+        $this->connection->executeNonQuery($sql);
+    }
+
+    /**
+     * Get a JSON representation of the DbEntity instance.
+     * 
+     * @return string JSON string. 
+     */
+    public function __toString() {
+        $ret = array();
+        foreach ($this->getColumnValues() as $column => $value) {
+            $ret[] = $column . ':' . (SqlHelper::isSqlNull($value) ? 'NULL' : "'$value'");
+        }
+        return '{' . join(', ', $ret) . '}';
+    }
+
     private function checkIntegrity() {
         if (!$this->table)
             throw new AcceleratorException('No/Invalid table name specified.');
@@ -229,107 +335,6 @@ class DbEntity {
         $sql = SqlHelper::update($this->table, $this->getSetFieldValues(), $this->getPrimaryKeyValues());
 
         $this->connection->executeNonQuery($sql);
-    }
-
-    /**
-     * Returns the field value based on its name. This method is used
-     * internally to access field values whereas accessor types are not
-     * statically known
-     * 
-     * @param string $fieldName
-     * @return mixed
-     */
-    public function getFieldValue($fieldName) {
-        if (!array_key_exists($fieldName, $this->get_map))
-            throw new AcceleratorException('Invalid field name : ' . $fieldName);
-        $accessor = $this->get_map[$fieldName];
-        $fieldValue = method_exists($this, $accessor) ? $this->$accessor() : $this->$accessor;
-        if ($fieldValue)
-            $fieldValue = mb_convert_encoding($fieldValue, $this->encoding, mb_detect_encoding($fieldValue));
-        return $fieldValue;
-    }
-
-    /**
-     * Set the field value based on its name. This method is used
-     * internally to access field values whereas accessor types are not
-     * statically known
-     * 
-     * @param string $fieldName
-     * @param mixed $fieldValue
-     */
-    public function setFieldValue($fieldName, $fieldValue) {
-        if (!array_key_exists($fieldName, $this->set_map))
-            return;
-        $accessor = $this->set_map[$fieldName];
-        $fieldValue = mb_convert_encoding($fieldValue, $this->encoding, mb_detect_encoding($fieldValue));
-        if (method_exists($this, $accessor))
-            $this->$accessor($fieldValue);
-        else
-            $this->$accessor = $fieldValue;
-    }
-
-    /**
-     * Returns the underlying database table name associated to this DbEntity object.
-     * 
-     * @return string
-     */
-    public function getTable() {
-        return $this->table;
-    }
-
-    /**
-     * Returns the underlying connection associated to this DbEntity object.
-     * 
-     * @return \Accelerator\Model\Driver\DbConnection
-     */
-    public function getConnection() {
-        return $this->connection;
-    }
-
-    /**
-     * Returns the list of fields with their value
-     * 
-     * @return array
-     */
-    public function getColumnValues() {
-        $columns = array();
-        foreach (array_keys($this->get_map) as $column) {
-            $columns[$column] = $this->getFieldValue($column);
-        }
-        return $columns;
-    }
-
-    /**
-     * Save entity to database, internal use of insert or update depending on entity status
-     */
-    public function save() {
-        if ($this->hasPrimaryKey()) {
-            foreach ($this->primaryKeyColumns as $pk) {
-                $pk_value = $this->getfieldValue($pk);
-                if (!$pk_value) { // 0, null, empty string
-                    $this->insert();
-                    return;
-                }
-            }
-        }
-        $this->update();
-    }
-
-    /**
-     * Delete entity from database.
-     */
-    public function delete() {
-        $sql = SqlHelper::delete($this->table, $this->getPrimaryKeyValues());
-
-        $this->connection->executeNonQuery($sql);
-    }
-
-    public function __toString() {
-        $ret = array();
-        foreach ($this->getColumnValues() as $column => $value) {
-            $ret[] = $column . ':' . (SqlHelper::isSqlNull($value) ? 'NULL' : "'$value'");
-        }
-        return '{' . join(', ', $ret) . '}';
     }
 
 }

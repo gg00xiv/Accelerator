@@ -5,7 +5,7 @@ namespace Accelerator\Controller;
 use Accelerator\AcceleratorException;
 
 /**
- * Description of Controller
+ * The base class for all Controller specified classes.
  *
  * @author gg00xiv
  */
@@ -30,12 +30,20 @@ abstract class Controller {
         return $this->view;
     }
 
+    /**
+     * Run the controller code.
+     * 
+     * @param array $parameters URL parameters.
+     */
     public function execute(array $parameters = null) {
         $this->parameters = new \ArrayObject($parameters ? : array(), \ArrayObject::ARRAY_AS_PROPS);
         $this->view->parameters = $this->parameters;
         $this->onExecute();
     }
 
+    /**
+     * Specified Controller code is executed from here.
+     */
     protected abstract function onExecute();
 }
 

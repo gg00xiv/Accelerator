@@ -3,7 +3,7 @@
 namespace Accelerator\Model;
 
 /**
- * Description of SqlHelper
+ * This class is a helper to create SQL statements.
  *
  * @author gg00xiv
  */

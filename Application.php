@@ -5,6 +5,7 @@ namespace Accelerator;
 use Accelerator\Model\GenericDatabase;
 use Accelerator\Config;
 use Accelerator\View\View;
+use Accelerator\AcceleratorException;
 
 /**
  * Description of Application
@@ -50,13 +51,27 @@ class Application {
         return $this->entityConfigs[$className];
     }
 
+    /**
+     * Get the database connection configured in Applicatin.
+     * 
+     * @return \Accelerator\Model\Driver\DbConnection DbConnection instance.
+     */
     public function getDbConnection() {
         return $this->dbConnection;
     }
 
+    /**
+     * Load Application config.
+     * 
+     * @param array $config
+     * @return \Accelerator\Application 
+     */
     public function init($config) {
         if ($this->config)
             return;
+        if (!is_array($config))
+            throw new AcceleratorException('$config parameter must be an array.');
+
         $this->config = new Config($config);
 
         $gdb = new GenericDatabase($this->config->model->connection);
@@ -67,6 +82,47 @@ class Application {
         $this->loadViews();
         $this->loadControllers();
         $this->loadRoutes();
+
+        return $this;
+    }
+
+    /**
+     * Get controller from route path.
+     * 
+     * @param \EasyMvc\Controller\Controller $routePath
+     */
+    private function executeControllerFromRoutePath($routePath) {
+        foreach ($this->routeToController as $route => $controller) {
+            $routePattern = '|^' . preg_replace('|\[:(.+?)\]|i', '(?P<$1>[a-z0-9\-_]+?)', $route) . '$|i';
+            if (preg_match($routePattern, $routePath, $matches)) {
+                $parameters = array();
+                foreach ($matches as $parameterName => $parameterValue) {
+                    if (!is_string($parameterName))
+                        continue;
+                    $parameters[$parameterName] = $parameterValue;
+                }
+                $controller->execute($parameters);
+                $controller->getView()->render();
+                return $controller;
+            }
+        }
+        throw new EasyMvcException('Invalid route path, no controller defined : ' . $routePath);
+    }
+
+    /**
+     * Dispatch current request to the right controller.
+     * 
+     * @return \EasyMvc\Application The Application instance.
+     * @throws AcceleratorException If the request path is invalid.
+     */
+    public function dispatch() {
+
+        $full_route_uri = $_SERVER['SCRIPT_URI'];
+        if (substr($full_route_uri, 0, strlen($this->config->global->base_url)) != $this->config->global->base_url)
+            throw new EasyMvcException('Invalid script base url.');
+
+        $routePath = '/' . trim(substr($full_route_uri, strlen($this->config->global->base_url)), '/');
+        $this->executeControllerFromRoutePath($routePath);
 
         return $this;
     }
@@ -116,47 +172,6 @@ class Application {
             $routePath = '/' . trim($route, '/');
             $this->routeToController[$routePath] = $this->controllers[$controller];
         }
-    }
-
-    /**
-     * Get controller from route path.
-     * 
-     * @param \EasyMvc\Controller\Controller $routePath
-     */
-    private function executeControllerFromRoutePath($routePath) {
-        foreach ($this->routeToController as $route => $controller) {
-            $routePattern = '|^' . preg_replace('|\[:(.+?)\]|i', '(?P<$1>[a-z0-9\-_]+?)', $route) . '$|i';
-            if (preg_match($routePattern, $routePath, $matches)) {
-                $parameters = array();
-                foreach ($matches as $parameterName => $parameterValue) {
-                    if (!is_string($parameterName))
-                        continue;
-                    $parameters[$parameterName] = $parameterValue;
-                }
-                $controller->execute($parameters);
-                $controller->getView()->render();
-                return $controller;
-            }
-        }
-        throw new EasyMvcException('Invalid route path, no controller defined : ' . $routePath);
-    }
-
-    /**
-     * Dispatch current request to the right controller.
-     * 
-     * @return \EasyMvc\Application The Application instance.
-     * @throws AcceleratorException If the request path is invalid.
-     */
-    public function dispatch() {
-
-        $full_route_uri = $_SERVER['SCRIPT_URI'];
-        if (substr($full_route_uri, 0, strlen($this->config->global->base_url)) != $this->config->global->base_url)
-            throw new EasyMvcException('Invalid script base url.');
-
-        $routePath = '/' . trim(substr($full_route_uri, strlen($this->config->global->base_url)), '/');
-        $this->executeControllerFromRoutePath($routePath);
-
-        return $this;
     }
 
 }

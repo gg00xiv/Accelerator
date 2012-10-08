@@ -6,7 +6,7 @@ use Accelerator\Model\Driver\DbConnection;
 use Accelerator\AcceleratorException;
 
 /**
- * Description of MySqlConnection
+ * MySql connection class.
  *
  * @author gg00xiv
  */

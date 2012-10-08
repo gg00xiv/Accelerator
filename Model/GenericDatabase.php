@@ -2,8 +2,9 @@
 
 namespace Accelerator\Model;
 
+use Accelerator\Config;
 /**
- * Description of GenericDatabase
+ * Create a generic database connection given a Config object.
  *
  * @author gg00xiv
  */
@@ -11,9 +12,9 @@ class GenericDatabase {
 
     protected $connection;
 
-    public function __construct($config) {
+    public function __construct(Config $config) {
 
-        $adapterClassName = '\\EasyMvc\\Model\\Driver\\' . $config->driver . '\\' . $config->driver . 'Connection';
+        $adapterClassName = '\\Accelerator\\Model\\Driver\\' . $config->driver . '\\' . $config->driver . 'Connection';
 
         $this->connection = new $adapterClassName($config);
         
