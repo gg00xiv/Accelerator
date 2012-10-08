@@ -26,12 +26,30 @@ class Application {
     /**
      * Application singleton.
      * 
-     * @return \EasyMvc\Application
+     * @return \Accelerator\Application
      */
     public static function instance() {
         if (self::$_instance === null)
             self::$_instance = new Application();
         return self::$_instance;
+    }
+    
+    /**
+     * Get the website name defined in configuration file.
+     * 
+     * @return string Website name.
+     */
+    public function getWebsiteName(){
+        return $this->config->global->website_name;
+    }
+    
+    /**
+     * Get the website base URL defined in configuration file.
+     * 
+     * @return string Website base URL.
+     */
+    public function getBaseUrl(){
+        return $this->config->global->base_url;
     }
 
     /**

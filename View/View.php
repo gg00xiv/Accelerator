@@ -4,6 +4,7 @@ namespace Accelerator\View;
 
 use Accelerator\AcceleratorException;
 use Accelerator\Application;
+use Accelerator\RequestHelper;
 
 /**
  * A View represents the PHP code behind a user interface (here a web page).
@@ -17,6 +18,8 @@ class View {
     private $childView;
     private $parentViewName;
     private $title;
+    private $description;
+    public $helper;
 
     public function __construct($path, $parentViewName = null) {
         if (!is_string($path) || empty($path))
@@ -25,13 +28,15 @@ class View {
         $this->path = $path;
         if (is_string($parentViewName))
             $this->parentViewName = $parentViewName;
+
+        $this->helper = RequestHelper::instance();
     }
 
     /**
      * Used in templates (*.phtml) files to get the most defined title in child
      * views.
      * 
-     * @return string Child view title. 
+     * @return string Child View title. 
      */
     public function getTitle() {
         if ($this->childView)
@@ -42,10 +47,31 @@ class View {
     /**
      * Define the View title.
      * 
-     * @param string $title The view title.
+     * @param string $title The View title.
      */
     public function setTitle($title) {
         $this->title = $title;
+    }
+
+    /**
+     * Used in templates (*.phtml) files to get the most defined description in child
+     * views.
+     * 
+     * @return string Child View description.
+     */
+    public function getDescription() {
+        if ($this->childView)
+            return $this->childView->getDescription();
+        return $this->description;
+    }
+
+    /**
+     * Defined the View description.
+     * 
+     * @param string $description The View description.
+     */
+    public function setDescription($description) {
+        $this->description = $description;
     }
 
     /**
