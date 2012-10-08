@@ -1,6 +1,6 @@
 <?php
 
-namespace EasyMvc;
+namespace Accelerator;
 
 /**
  * Description of Config

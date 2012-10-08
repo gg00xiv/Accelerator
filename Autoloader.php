@@ -1,11 +1,11 @@
 <?php
 
-namespace EasyMvc;
+namespace Accelerator;
 
 /**
  * Description of Autoloader
  *
- * @author gghez
+ * @author gg00xiv
  */
 abstract class Autoloader {
 
@@ -16,7 +16,7 @@ abstract class Autoloader {
 
     public static function register(array $namespaces) {
         static::$namespaces = $namespaces;
-        spl_autoload_register(array('\EasyMvc\Autoloader', 'autoload'));
+        spl_autoload_register(array('\Accelerator\Autoloader', 'autoload'));
     }
 
     public static function autoload($classpath) {

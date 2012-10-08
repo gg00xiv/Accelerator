@@ -1,9 +1,9 @@
 <?php
 
-namespace EasyMvc\View;
+namespace Accelerator\View;
 
-use EasyMvc\EasyMvcException;
-use EasyMvc\Application;
+use Accelerator\EasyMvcException;
+use Accelerator\Application;
 
 /**
  * Description of View
@@ -19,7 +19,7 @@ class View {
 
     public function __construct($path, $parentViewName = null) {
         if (!is_string($path) || empty($path))
-            throw new EasyMvcException('Invalid parameters.');
+            throw new AcceleratorException('Invalid parameters.');
 
         $this->path = $path;
         if (is_string($parentViewName))
@@ -44,7 +44,7 @@ class View {
         if ($this->parentViewName) {
             $parentView = Application::instance()->getView($this->parentViewName);
             if (!$parentView)
-                throw new EasyMvcException('Parent view not found : ' . $this->parentViewName);
+                throw new AcceleratorException('Parent view not found : ' . $this->parentViewName);
             $parentView->childView = $this;
             $parentView->render();
         }

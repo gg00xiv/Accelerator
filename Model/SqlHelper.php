@@ -1,6 +1,6 @@
 <?php
 
-namespace EasyMvc\Model;
+namespace Accelerator\Model;
 
 /**
  * Description of SqlHelper

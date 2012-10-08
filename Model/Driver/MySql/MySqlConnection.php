@@ -1,9 +1,9 @@
 <?php
 
-namespace EasyMvc\Model\Driver\MySql;
+namespace Accelerator\Model\Driver\MySql;
 
-use EasyMvc\Model\Driver\DbConnection;
-use EasyMvc\EasyMvcException;
+use Accelerator\Model\Driver\DbConnection;
+use Accelerator\AcceleratorException;
 
 /**
  * Description of MySqlConnection
@@ -21,13 +21,13 @@ class MySqlConnection extends DbConnection {
     /**
      * Connect to MySql server and select database.
      * 
-     * @throws EasyMvcException 
+     * @throws AcceleratorException 
      */
     public function open() {
         if (($this->dbLink = mysql_connect($this->host, $this->username, $this->password)) !== false)
             mysql_select_db($this->dbname, $this->dbLink);
         else
-            throw new EasyMvcException('Cannot connect database.');
+            throw new AcceleratorException('Cannot connect database.');
     }
 
     /**
@@ -45,7 +45,7 @@ class MySqlConnection extends DbConnection {
      */
     public function executeQuery($sql) {
         if (in_array(strtolower(substr($sql, 0, 7)), array('insert ', 'update ', 'delete ')))
-            throw new EasyMvcException('executeNonQuery method cannot execute SELECT SQL statement.');
+            throw new AcceleratorException('executeNonQuery method cannot execute SELECT SQL statement.');
 
         $req = mysql_query($sql, $this->dbLink);
         $rowset = array();
@@ -60,11 +60,11 @@ class MySqlConnection extends DbConnection {
      * @param type $sql SQL statement.
      * @param type $mustReturnAutoId
      * @return mixed Nothing or auto generated id for INSERT SQL statement.
-     * @throws EasyMvcException If called with SELECT SQL statement.
+     * @throws AcceleratorException If called with SELECT SQL statement.
      */
     public function executeNonQuery($sql, $mustReturnAutoId = false) {
         if (strtolower(substr($sql, 0, 7)) == 'select ')
-            throw new EasyMvcException('executeNonQuery method cannot execute SELECT SQL statement.');
+            throw new AcceleratorException('executeNonQuery method cannot execute SELECT SQL statement.');
 
         mysql_query($sql, $this->dbLink);
         if ($mustReturnAutoId)

@@ -1,15 +1,15 @@
 <?php
 
-namespace EasyMvc;
+namespace Accelerator;
 
-use EasyMvc\Model\GenericDatabase;
-use EasyMvc\Config;
-use EasyMvc\View\View;
+use Accelerator\Model\GenericDatabase;
+use Accelerator\Config;
+use Accelerator\View\View;
 
 /**
  * Description of Application
  *
- * @author gghez
+ * @author gg00xiv
  */
 class Application {
 
@@ -145,7 +145,7 @@ class Application {
      * Dispatch current request to the right controller.
      * 
      * @return \EasyMvc\Application The Application instance.
-     * @throws EasyMvcException If the request path is invalid.
+     * @throws AcceleratorException If the request path is invalid.
      */
     public function dispatch() {
 

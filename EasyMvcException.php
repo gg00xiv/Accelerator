@@ -1,13 +1,13 @@
 <?php
 
-namespace EasyMvc;
+namespace Accelerator;
 
 /**
- * Description of EasyMvcException
+ * Description of AcceleratorException
  *
  * @author gg00xiv
  */
-class EasyMvcException extends \Exception {
+class AcceleratorException extends \Exception {
     public function __construct($message) {
         parent::__construct($message);
     }

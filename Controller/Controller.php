@@ -1,8 +1,8 @@
 <?php
 
-namespace EasyMvc\Controller;
+namespace Accelerator\Controller;
 
-use EasyMvc\EasyMvcException;
+use Accelerator\AcceleratorException;
 
 /**
  * Description of Controller
@@ -16,7 +16,7 @@ abstract class Controller {
 
     public function __construct($view) {
         if (!$view)
-            throw new EasyMvcException('Invalid parameters.');
+            throw new AcceleratorException('Invalid parameters.');
 
         $this->view = $view;
     }
@@ -24,7 +24,7 @@ abstract class Controller {
     /**
      * Get the view associated to this controller instance.
      * 
-     * @return \EasyMvc\View The View associated to this controller
+     * @return \Accelerator\View The View associated to this controller
      */
     public function getView() {
         return $this->view;

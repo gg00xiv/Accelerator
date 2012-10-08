@@ -1,6 +1,6 @@
 <?php
 
-namespace EasyMvc\Model;
+namespace Accelerator\Model;
 
 /**
  * Description of GenericDatabase
@@ -22,7 +22,7 @@ class GenericDatabase {
     /**
      * Get an instance of DbConnection implementation.
      * 
-     * @return EasyMvc\Model\Driver\DbConnection
+     * @return \Accelerator\Model\Driver\DbConnection
      */
     public function getConnection() {
         return $this->connection;

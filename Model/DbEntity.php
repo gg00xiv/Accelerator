@@ -1,10 +1,10 @@
 <?php
 
-namespace EasyMvc\Model;
+namespace Accelerator\Model;
 
-use EasyMvc\EasyMvcException;
-use EasyMvc\Model\SqlHelper;
-use EasyMvc\Application;
+use Accelerator\EasyMvcException;
+use Accelerator\Model\SqlHelper;
+use Accelerator\Application;
 use \ReflectionClass;
 use \ReflectionProperty;
 use \ReflectionMethod;
@@ -104,7 +104,7 @@ class DbEntity {
         // set connection and validate it
         $this->connection = Application::instance()->getDbConnection();
         if (!$this->connection)
-            throw new EasyMvcException('No/Invalid connection specified.');
+            throw new AcceleratorException('No/Invalid connection specified.');
 
         switch ($this->loadMode) {
             case self::LOAD_MODE_CONFIG:
@@ -126,16 +126,16 @@ class DbEntity {
 
     private function checkIntegrity() {
         if (!$this->table)
-            throw new EasyMvcException('No/Invalid table name specified.');
+            throw new AcceleratorException('No/Invalid table name specified.');
 
         if ($this->hasPrimaryKey()) {
             // check if only one primary key is defined if auto_increment_pk parameter is set to true
             if ($this->autoIncrementPk && count($this->primaryKeyColumns) != 1)
-                throw new EasyMvcException('You must declare one and only one primary key column when auto_increment_pk parameter is set to true.');
+                throw new AcceleratorException('You must declare one and only one primary key column when auto_increment_pk parameter is set to true.');
             // verify if primary keys are available in entity
             foreach ($this->primaryKeyColumns as $pk)
                 if (!array_key_exists($pk, $this->get_map) || !array_key_exists($pk, $this->set_map))
-                    throw new EasyMvcException('The ' . $pk . ' primary key get and/or set accessors were not found in current entity.');
+                    throw new AcceleratorException('The ' . $pk . ' primary key get and/or set accessors were not found in current entity.');
         }
     }
 
@@ -241,7 +241,7 @@ class DbEntity {
      */
     public function getFieldValue($fieldName) {
         if (!array_key_exists($fieldName, $this->get_map))
-            throw new EasyMvcException('Invalid field name : ' . $fieldName);
+            throw new AcceleratorException('Invalid field name : ' . $fieldName);
         $accessor = $this->get_map[$fieldName];
         $fieldValue = method_exists($this, $accessor) ? $this->$accessor() : $this->$accessor;
         if ($fieldValue)
@@ -280,7 +280,7 @@ class DbEntity {
     /**
      * Returns the underlying connection associated to this DbEntity object.
      * 
-     * @return \EasyMvc\Model\Driver\DbConnection
+     * @return \Accelerator\Model\Driver\DbConnection
      */
     public function getConnection() {
         return $this->connection;

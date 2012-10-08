@@ -1,6 +1,6 @@
 <?php
 
-namespace EasyMvc\Model\Driver;
+namespace Accelerator\Model\Driver;
 
 /**
  * Description of DbConnection

@@ -49,7 +49,7 @@ abstract class EntityManager {
     public static function selectSingle(DbEntity $filter, $ignoreNullFields = true) {
         $entities = self::select($filter, $ignoreNullFields);
         if (count($entities) > 1)
-            throw new EasyMvcException('More than one entity returned.');
+            throw new AcceleratorException('More than one entity returned.');
 
         return count($entities) == 1 ? $entities[0] : null;
     }
