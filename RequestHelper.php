@@ -24,12 +24,14 @@ class RequestHelper {
 
     public function isMobile() {
         if (!$this->userAgent) {
-            $this->userAgent = $this->getUserAgent($_SERVER["HTTP_USER_AGENT"]);
+            $this->userAgent = $this->getUserAgent();
         }
         return $this->userAgent["type"] == "Mobile";
     }
 
-    private function getUserAgent($ua_string) {
+    public function getUserAgent($ua_string = null) {
+        if (!$ua_string)
+            $ua_string = $_SERVER["HTTP_USER_AGENT"];
         // BOTS
         if (stristr($ua_string, "google"))
             $ua = array("type" => "Bot", "name" => "Google Bot");

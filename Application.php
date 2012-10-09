@@ -33,22 +33,22 @@ class Application {
             self::$_instance = new Application();
         return self::$_instance;
     }
-    
+
     /**
      * Get the website name defined in configuration file.
      * 
      * @return string Website name.
      */
-    public function getWebsiteName(){
+    public function getWebsiteName() {
         return $this->config->global->website_name;
     }
-    
+
     /**
      * Get the website base URL defined in configuration file.
      * 
      * @return string Website base URL.
      */
-    public function getBaseUrl(){
+    public function getBaseUrl() {
         return $this->config->global->base_url;
     }
 
@@ -111,7 +111,7 @@ class Application {
      */
     private function executeControllerFromRoutePath($routePath) {
         foreach ($this->routeToController as $route => $controller) {
-            $routePattern = '|^' . preg_replace('|\[:(.+?)\]|i', '(?P<$1>[a-z0-9\-_]+?)', $route) . '$|i';
+            $routePattern = '|^' . preg_replace('|\[:(\w+)\]|i', '(?P<$1>[a-z0-9\-_]+?)', $route) . '$|i';
             if (preg_match($routePattern, $routePath, $matches)) {
                 $parameters = array();
                 foreach ($matches as $parameterName => $parameterValue) {

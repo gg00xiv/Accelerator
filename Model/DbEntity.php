@@ -66,7 +66,7 @@ class DbEntity {
     /**
      * The underlying DbConnection.
      * 
-     * @var \EasyMvc\Model\Driver\DbConnection
+     * @var \Accelerator\Model\Driver\DbConnection
      */
     protected $connection;
 
@@ -95,12 +95,10 @@ class DbEntity {
     /**
      * Create a generic DbEntity based on a table name.
      * 
-     * @param string $table
-     * @param mixed $primaryKeyfields
-     * @param array $config
-     * @throws DbEntityException
+     * @param array $initVars Initialize instance vars.
+     * @throws \Accelerator\AcceleratorException
      */
-    public function __construct() {
+    public function __construct(array $initVars = array()) {
         // set connection and validate it
         $this->connection = Application::instance()->getDbConnection();
         if (!$this->connection)
@@ -122,6 +120,10 @@ class DbEntity {
         }
 
         $this->checkIntegrity();
+
+        foreach ($initVars as $var => $value) {
+            $this->$var = $value;
+        }
     }
 
     /**

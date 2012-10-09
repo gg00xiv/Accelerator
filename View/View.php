@@ -19,7 +19,7 @@ class View {
     private $parentViewName;
     private $title;
     private $description;
-    public $helper;
+    private $helper;
 
     public function __construct($path, $parentViewName = null) {
         if (!is_string($path) || empty($path))
