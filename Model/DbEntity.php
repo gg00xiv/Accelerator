@@ -139,8 +139,8 @@ class DbEntity {
             throw new AcceleratorException('Invalid field name : ' . $fieldName);
         $accessor = $this->get_map[$fieldName];
         $fieldValue = method_exists($this, $accessor) ? $this->$accessor() : $this->$accessor;
-        if ($fieldValue)
-            $fieldValue = mb_convert_encoding($fieldValue, $this->encoding, mb_detect_encoding($fieldValue));
+        /* if ($fieldValue)
+          $fieldValue = mb_convert_encoding($fieldValue, $this->encoding, mb_detect_encoding($fieldValue)); */
         return $fieldValue;
     }
 
@@ -156,7 +156,7 @@ class DbEntity {
         if (!array_key_exists($fieldName, $this->set_map))
             return;
         $accessor = $this->set_map[$fieldName];
-        $fieldValue = mb_convert_encoding($fieldValue, $this->encoding, mb_detect_encoding($fieldValue));
+        //$fieldValue = mb_convert_encoding($fieldValue, $this->encoding, mb_detect_encoding($fieldValue));
         if (method_exists($this, $accessor))
             $this->$accessor($fieldValue);
         else
@@ -227,7 +227,7 @@ class DbEntity {
     public function __toString() {
         $ret = array();
         foreach ($this->getColumnValues() as $column => $value) {
-            $ret[] = $column . ':' . (SqlHelper::isSqlNull($value) ? 'NULL' : "'$value'");
+            $ret[] = $column . ':' . SqlHelper::getSqlValue($value);
         }
         return '{' . join(', ', $ret) . '}';
     }

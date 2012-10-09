@@ -7,29 +7,18 @@ namespace Accelerator;
  *
  * @author gg00xiv
  */
-class RequestHelper {
+abstract class RequestHelper {
 
-    private $userAgent;
-    private static $instance = null;
+    private static $userAgent;
 
-    private function __construct() {
-        
-    }
-
-    public static function instance() {
-        if (self::$instance === null)
-            self::$instance = new RequestHelper ();
-        return self::$instance;
-    }
-
-    public function isMobile() {
-        if (!$this->userAgent) {
-            $this->userAgent = $this->getUserAgent();
+    public static function isMobile() {
+        if (!self::$userAgent) {
+            self::$userAgent = self::getUserAgent();
         }
-        return $this->userAgent["type"] == "Mobile";
+        return self::$userAgent["type"] == "Mobile";
     }
 
-    public function getUserAgent($ua_string = null) {
+    public static function getUserAgent($ua_string = null) {
         if (!$ua_string)
             $ua_string = $_SERVER["HTTP_USER_AGENT"];
         // BOTS

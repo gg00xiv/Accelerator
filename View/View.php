@@ -4,7 +4,6 @@ namespace Accelerator\View;
 
 use Accelerator\AcceleratorException;
 use Accelerator\Application;
-use Accelerator\RequestHelper;
 
 /**
  * A View represents the PHP code behind a user interface (here a web page).
@@ -19,17 +18,41 @@ class View {
     private $parentViewName;
     private $title;
     private $description;
-    private $helper;
+    private $parentView;
 
+    /**
+     * Create a View from file path and parent view name.
+     * Parent view is lazy loaded to avoid errors when loading configuration file.
+     * 
+     * @param string $path View full path on disk.
+     * @param string $parentViewName The parent view name defined in configuration file.
+     * @throws \Accelerator\AcceleratorException
+     */
     public function __construct($path, $parentViewName = null) {
         if (!is_string($path) || empty($path))
             throw new AcceleratorException('Invalid parameters.');
 
-        $this->path = $path;
-        if (is_string($parentViewName))
-            $this->parentViewName = $parentViewName;
+        if ($parentViewName && !is_string($parentViewName))
+            throw new AcceleratorException('Invalid parent view name : ' . $parentViewName);
 
-        $this->helper = RequestHelper::instance();
+        $this->path = $path;
+        $this->parentViewName = $parentViewName;
+    }
+
+    /**
+     * Get the parent view of this View instance.
+     * 
+     * @return \Accelerator\View\View A View instance or nothing.
+     * @throws \Accelerator\AcceleratorException
+     */
+    public function getParentView() {
+        if (!$this->parentView && $this->parentViewName) {
+            $this->parentView = Application::instance()->getView($this->parentViewName);
+            if (!$this->parentView)
+                throw new AcceleratorException('Parent view not found : ' . $this->parentViewName);
+            $this->parentView->childView = $this;
+        }
+        return $this->parentView;
     }
 
     /**
@@ -80,19 +103,14 @@ class View {
      * @throws AcceleratorException If a specified parent View was not found.
      */
     public function render() {
-        if ($this->parentViewName) {
-            $parentView = Application::instance()->getView($this->parentViewName);
-            if (!$parentView)
-                throw new AcceleratorException('Parent view not found : ' . $this->parentViewName);
-            $parentView->childView = $this;
+        if ($parentView = $this->getParentView())
             $parentView->render();
-        }
         else
             $this->renderSelf();
     }
 
     /**
-     * Used in templates (*.phtml files) to render child content in place.
+     * Used in templates (*.phtml files) to display child content.
      */
     public function renderChild() {
         if ($this->childView)

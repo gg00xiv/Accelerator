@@ -14,13 +14,15 @@ use Accelerator\AcceleratorException;
 abstract class EntityManager {
 
     /**
-     * Returns a set of $filter type objects using the $filter template.
+     * Returns a set of $filter type entities based on $filter DbEntity template.
      * 
-     * @param \Accelerator\Model\DbEntity $filter
+     * @param \Accelerator\Model\DbEntity $filter DbEntity template instance for filtering.
+     * @param mixed $orderBy The SQL statement ORDER BY list.
+     * @param mixed $limit The SQL statement LIMIT condition.
      * @param bool $ignoreNullFields Ignores SQL-NULL fields for selecting entities (Default=true).
      * @return array;
      */
-    public static function select(DbEntity $filter, $ignoreNullFields = true) {
+    public static function select(DbEntity $filter, $orderBy = null, $limit = null, $ignoreNullFields = true) {
         $selectFields = array();
         $where = array();
         foreach ($filter->getColumnValues() as $column => $value) {
@@ -28,8 +30,7 @@ abstract class EntityManager {
             if (!$ignoreNullFields || !SqlHelper::isSqlNull($value))
                 $where[$column] = $value;
         }
-        $sql = SqlHelper::select($filter->getTable(), $selectFields, $where);
-
+        $sql = SqlHelper::select($filter->getTable(), $selectFields, $where, $orderBy, $limit);
         $rowset = $filter->getConnection()->executeQuery($sql);
 
         $entities = array();
@@ -45,13 +46,41 @@ abstract class EntityManager {
 
         return $entities;
     }
-
+    
+   /**
+    * Returns one and only one entity based on $filter DbEntity template.
+    * 
+    * @param \Accelerator\Model\DbEntity $filter DbEntity template instance for filtering.
+    * @param type $ignoreNullFields Ignores SQL-NULL fields for selecting entities (Default=true).
+    * @return \Accelerator\Model\DbEntity DbEntity instance.
+    * @throws \Accelerator\AcceleratorException If more than one entity returned.
+    */
     public static function selectSingle(DbEntity $filter, $ignoreNullFields = true) {
-        $entities = self::select($filter, $ignoreNullFields);
-        if (count($entities) > 1)
-            throw new AcceleratorException('More than one entity returned.');
+        $entities = self::select($filter, null, null, $ignoreNullFields);
+        $countEntities = count($entities);
+        if ($countEntities > 1)
+            throw new AcceleratorException('More than one entity returned : ' . $countEntities . ' [' . $filter . ']');
 
-        return count($entities) == 1 ? $entities[0] : null;
+        return $countEntities == 1 ? $entities[0] : null;
+    }
+    
+    /**
+     * Returns the number of rows based on $filter DbEntity template. 
+     * 
+     * @param \Accelerator\Model\DbEntity $filter DbEntity template instance for filtering.
+     * @param type $ignoreNullFields Ignores SQL-NULL fields for selecting entities (Default=true).
+     * @return number Number of rows.
+     */
+    public static function count(DbEntity $filter, $ignoreNullFields = true){
+        $where = array();
+        foreach ($filter->getColumnValues() as $column => $value) {
+            if (!$ignoreNullFields || !SqlHelper::isSqlNull($value))
+                $where[$column] = $value;
+        }
+        $sql = SqlHelper::count($filter->getTable(), $where);
+        $rowset = $filter->getConnection()->executeQuery($sql);
+
+        return $rowset[0][0];
     }
 
     /**

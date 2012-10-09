@@ -17,7 +17,7 @@ class SqlHelper {
      * @return bool True: the $value parameter is considered as NULL
      */
     public static function isSqlNull($value) {
-        return !$value && $value !== '' && $value !== 0;
+        return !$value && $value !== '' && $value !== 0 && $value !== '0';
     }
 
     /**
@@ -62,9 +62,11 @@ class SqlHelper {
      * @param string $table The database table name.
      * @param mixed $fields
      * @param mixed $where The SQL statement WHERE condition.
+     * @param mixed $orderBy The SQL statement ORDER BY list.
+     * @param mixed $limit The SQL statement LIMIT condition.
      * @return string A SQL statement.
      */
-    public static function select($table, $fields = null, $where = null) {
+    public static function select($table, $fields = null, $where = null, $orderBy = null, $limit = null) {
         $sql = "SELECT ";
         if (is_string($fields))
             $sql.=$fields;
@@ -76,6 +78,43 @@ class SqlHelper {
             $sql.='*';
 
         $sql .= " FROM `" . $table . "` ";
+        $sql .= self::getWhereClause($where);
+        if ($orderBy) {
+            if (is_string($orderBy))
+                $sql.=' ORDER BY ' . $orderBy;
+            else if (is_array($orderBy) && count($orderBy) >= 1) {
+                $sql.=' ORDER BY ';
+                $orderByList = array();
+                foreach ($orderBy as $fieldName => $direction)
+                    $orderByList[] = '`' . $fieldName . '` ' . $direction;
+                $sql.=join(',', $orderByList);
+            }
+        }
+
+        if ($limit) {
+            if (is_string($limit) || is_numeric($limit))
+                $sql.=' LIMIT ' . $limit;
+            else if (is_array($limit)) {
+                if (count($limit) == 1)
+                    $sql.=' LIMIT ' . $limit[0];
+                else if (count($limit) == 2)
+                    $sql.=' LIMIT ' . $limit[0] . ',' . $limit[1];
+            }
+        }
+
+        return $sql;
+    }
+
+    /**
+     * Returns the number of rows in database table where $where condition.
+     * 
+     * @param string $table The database table name.
+     * @param mixed The SQL statement WHERE condition.
+     * @return string A SQL statement.
+     */
+    public static function count($table, $where = null) {
+        $sql = "SELECT COUNT(*) FROM ";
+        $sql .= "`" . $table . "` ";
         $sql .= self::getWhereClause($where);
 
         return $sql;

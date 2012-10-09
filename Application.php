@@ -56,7 +56,7 @@ class Application {
      * Get a registered view by its name.
      * 
      * @param string $viewName The name a the registered view.
-     * @return \EasyMvc\View
+     * @return \Accelerator\View
      */
     public function getView($viewName) {
         return $this->views[$viewName];
@@ -107,37 +107,40 @@ class Application {
     /**
      * Get controller from route path.
      * 
-     * @param \EasyMvc\Controller\Controller $routePath
+     * @param \Accelerator\Controller\Controller $routePath
      */
     private function executeControllerFromRoutePath($routePath) {
-        foreach ($this->routeToController as $route => $controller) {
-            $routePattern = '|^' . preg_replace('|\[:(\w+)\]|i', '(?P<$1>[a-z0-9\-_]+?)', $route) . '$|i';
+        foreach ($this->routeToController as $route => $routeHandler) {
+            $routePattern = '|^' . preg_replace('|\[:(\w+)\]|i', '(?P<$1>[a-z0-9\-_]*?)', $route) . '$|i';
             if (preg_match($routePattern, $routePath, $matches)) {
-                $parameters = array();
+                $parameters = new \ArrayObject(array(), \ArrayObject::ARRAY_AS_PROPS);
                 foreach ($matches as $parameterName => $parameterValue) {
                     if (!is_string($parameterName))
                         continue;
                     $parameters[$parameterName] = $parameterValue;
                 }
-                $controller->execute($parameters);
-                $controller->getView()->render();
+
+                $controller = $routeHandler[0];
+                $view = $routeHandler[1];
+                $controller->execute($view, $parameters);
+                $view->render();
                 return $controller;
             }
         }
-        throw new EasyMvcException('Invalid route path, no controller defined : ' . $routePath);
+        throw new AcceleratorException('Invalid route path, no controller defined for route : ' . $routePath);
     }
 
     /**
      * Dispatch current request to the right controller.
      * 
-     * @return \EasyMvc\Application The Application instance.
+     * @return \Accelerator\Application The Application instance.
      * @throws AcceleratorException If the request path is invalid.
      */
     public function dispatch() {
 
-        $full_route_uri = $_SERVER['SCRIPT_URI'];
+        $full_route_uri = 'http://' . $_SERVER['SERVER_NAME'] . '/' . ltrim($_SERVER['REQUEST_URI'], '/');
         if (substr($full_route_uri, 0, strlen($this->config->global->base_url)) != $this->config->global->base_url)
-            throw new EasyMvcException('Invalid script base url.');
+            throw new AcceleratorException('Invalid script base url : ' . $full_route_uri);
 
         $routePath = '/' . trim(substr($full_route_uri, strlen($this->config->global->base_url)), '/');
         $this->executeControllerFromRoutePath($routePath);
@@ -146,12 +149,9 @@ class Application {
     }
 
     private function loadEntityMaps() {
-        $path = $this->config->model->entity_path;
-        $files = glob($path . '/*.php');
         $this->entityConfig = array();
-        foreach ($files as $file) {
-            $config = new Config(include $file);
-            $this->entityConfigs[$config->class] = $config;
+        foreach ($this->config->model->entities as $entityClass => $entityConfig) {
+            $this->entityConfigs[$entityClass] = $entityConfig;
         }
     }
 
@@ -179,8 +179,7 @@ class Application {
         foreach ($this->config->controllers->map as $controllerClass => $viewName) {
             $controllerClassPath = $controllerNamespace . '\\' . trim($controllerClass, '\\');
             $view = $this->views[$viewName];
-            $controller = new $controllerClassPath($view);
-            $this->controllers[$controllerClass] = $controller;
+            $this->controllers[$controllerClass] = array(new $controllerClassPath(), $view);
         }
     }
 
