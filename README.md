@@ -7,7 +7,7 @@
 
 <ul>
 <li>MVC based framework</li>
-<li<Database entity framework included</li>
+<li>Database entity framework included</li>
 <li>Easy to learn</li>
 <li>Easy to configure !</li>
 <li>No 'magic' like in Zend Framework 1.xx</li>
