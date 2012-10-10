@@ -5,11 +5,13 @@
 
 <h2>Main features</h2>
 
-- MVC based framework
-- Database entity framework included
-- Easy to learn
-- Easy to configure !
-- No 'magic' like in Zend Framework 1.xx
+<ul>
+<li>MVC based framework</li>
+<li<Database entity framework included</li>
+<li>Easy to learn</li>
+<li>Easy to configure !</li>
+<li>No 'magic' like in Zend Framework 1.xx</li>
+</ul>
 
 <h2>Summary</h2>
 <ul>
