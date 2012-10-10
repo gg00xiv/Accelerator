@@ -12,6 +12,7 @@ abstract class HtmlElement {
     private $name;
     protected $attributes;
     protected $elements;
+    protected $innerHtml;
 
     public function __construct($name, array $attributes = array()) {
         $this->name = $name;
@@ -32,19 +33,27 @@ abstract class HtmlElement {
         $this->elements[] = $element;
     }
 
-    public function render() {
-        print('<' . $this->name);
+    public function setInnerHtml($html) {
+        $this->innerHtml = $html;
+    }
+
+    public function getInnerHtml() {
+        $attrList = array();
         foreach ($this->attributes as $attrName => $attrValue) {
-            print(' ' . $attrName . '="' . $attrValue . '"');
+            $attrList[] = ' ' . $attrName . '="' . $attrValue . '"';
         }
-        if ($this->elements) {
-            print('>');
+        $startTag = '<' . $this->name . join('', $attrList);
+        $endTag = '</' . $this->name . '>';
+        if ($this->innerHtml || $this->innerHtml === '') {
+            return $startTag . '>' . $this->innerHtml . $endTag;
+        } else if ($this->elements && count($this->elements) >= 1) {
+            $renderList = array();
             foreach ($this->elements as $element) {
-                $element->render();
+                $renderList[] = $element->getInnerHtml();
             }
-            print('</' . $this->name . '>');
+            return $startTag . '>' . join('', $renderList) . $endTag;
         } else {
-            print(' />');
+            return $startTag . ' />';
         }
     }
 

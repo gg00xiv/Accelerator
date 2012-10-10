@@ -58,9 +58,7 @@ class Form extends HtmlElement {
     }
 
     public function __toString() {
-        ob_start();
-        parent::render();
-        return ob_get_clean();
+        return parent::getInnerHtml();
     }
 
 }
