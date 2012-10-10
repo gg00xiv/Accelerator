@@ -21,7 +21,7 @@ class Application {
     private $views;
     private $layouts;
     private $controllers;
-    private $routeToController;
+    private $routeHandlers;
 
     /**
      * Application singleton.
@@ -110,7 +110,7 @@ class Application {
      * @param \Accelerator\Controller\Controller $routePath
      */
     private function executeControllerFromRoutePath($routePath) {
-        foreach ($this->routeToController as $route => $routeHandler) {
+        foreach ($this->routeHandlers as $route => $routeHandler) {
             $routePattern = '|^' . preg_replace('|\[:(\w+)\]|i', '(?P<$1>[a-z0-9\-_]*?)', $route) . '$|i';
             if (preg_match($routePattern, $routePath, $matches)) {
                 $parameters = new \ArrayObject(array(), \ArrayObject::ARRAY_AS_PROPS);
@@ -176,18 +176,28 @@ class Application {
     private function loadControllers() {
         $this->controllers = array();
         $controllerNamespace = rtrim($this->config->global->namespace, '\\') . '\\' . trim($this->config->controllers->namespace, '\\');
-        foreach ($this->config->controllers->map as $controllerClass => $viewName) {
+        if (!$this->config->controllers || !$this->config->controllers->list || !is_array($this->config->controllers->list) || count($this->config->controllers->list) == 0)
+            throw new AcceleratorException('No controller defined in config.');
+
+        foreach ($this->config->controllers->list as $controllerClass) {
             $controllerClassPath = $controllerNamespace . '\\' . trim($controllerClass, '\\');
-            $view = $this->views[$viewName];
-            $this->controllers[$controllerClass] = array(new $controllerClassPath(), $view);
+            $pathParts = explode('\\', $controllerClassPath);
+            $controllerClass = $pathParts[count($pathParts) - 1];
+            $this->controllers[$controllerClass] = new $controllerClassPath();
         }
     }
 
     private function loadRoutes() {
-        $this->routeToController = array();
-        foreach ($this->config->routes as $route => $controller) {
+        $this->routeHandlers = array();
+        foreach ($this->config->routes as $route => $routeHandler) {
             $routePath = '/' . trim($route, '/');
-            $this->routeToController[$routePath] = $this->controllers[$controller];
+            
+            if ((!is_array($routeHandler) && !$routeHandler instanceof \ArrayObject) || count($routeHandler) != 2)
+                throw new AcceleratorException('Invalid route handler for route : ' . $route);
+            
+            $controller = $this->controllers[isset($routeHandler->controller) ? $routeHandler->controller : $routeHandler[0]];
+            $view = $this->views[isset($routeHandler->view) ? $routeHandler->view : $routeHandler[1]];
+            $this->routeHandlers[$routePath] = array($controller, $view);
         }
     }
 
