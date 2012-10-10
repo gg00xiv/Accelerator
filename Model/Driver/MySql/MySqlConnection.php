@@ -48,6 +48,8 @@ class MySqlConnection extends DbConnection {
             throw new AcceleratorException('executeNonQuery method cannot execute SELECT SQL statement.');
 
         $req = mysql_query($sql, $this->dbLink);
+        if (!$req)
+            throw new AcceleratorException('Invalid request : '.mysql_error());
         $rowset = array();
         while ($row = mysql_fetch_array($req))
             $rowset[] = $row;
@@ -66,7 +68,9 @@ class MySqlConnection extends DbConnection {
         if (strtolower(substr($sql, 0, 7)) == 'select ')
             throw new AcceleratorException('executeNonQuery method cannot execute SELECT SQL statement.');
 
-        mysql_query($sql, $this->dbLink);
+        $req = mysql_query($sql, $this->dbLink);
+        if (!$req)
+            throw new AcceleratorException('Invalid request : '.mysql_error());
         if ($mustReturnAutoId)
             return mysql_insert_id($this->dbLink);
     }

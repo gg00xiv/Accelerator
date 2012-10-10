@@ -1,6 +1,6 @@
 <?php
 
-namespace Accelerator\View;
+namespace Accelerator\View\Helper;
 
 /**
  * Description of GoogleHelper
@@ -8,6 +8,7 @@ namespace Accelerator\View;
  * @author gg00xiv
  */
 abstract class GoogleHelper {
+
     public static function getAdsenseCode($slot, $width, $height, $clientId) {
         ob_start();
         ?>
@@ -25,13 +26,13 @@ abstract class GoogleHelper {
         <?php
         return ob_get_clean();
     }
-    
-     public static function getAnalyticsCode($accountId){
+
+    public static function getAnalyticsCode($accountId) {
         ?>
-<script type="text/javascript">
+        <script type="text/javascript">
 
             var _gaq = _gaq || [];
-            _gaq.push(['_setAccount', '<?=$accountId ?>']);
+            _gaq.push(['_setAccount', '<?= $accountId ?>']);
             _gaq.push(['_trackPageview']);
 
             (function() {
@@ -45,8 +46,8 @@ abstract class GoogleHelper {
             SyntaxHighlighter.all();
 
         </script>
-<?php
+        <?php
     }
-}
 
+}
 ?>

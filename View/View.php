@@ -56,15 +56,24 @@ class View {
     }
 
     /**
+     * Get the current Application context.
+     * 
+     * @return \Accelerator\Application Application instance.
+     */
+    public function getApplication() {
+        return Application::instance();
+    }
+
+    /**
      * Used in templates (*.phtml) files to get the most defined title in child
      * views.
      * 
      * @return string Child View title. 
      */
     public function getTitle() {
-        if ($this->childView)
-            return $this->childView->getTitle();
-        return $this->title;
+        return $this->childView ?
+                $this->childView->getTitle() :
+                $this->title;
     }
 
     /**

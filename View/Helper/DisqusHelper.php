@@ -1,5 +1,7 @@
 <?php
 
+namespace Accelerator\View\Helper;
+
 /**
  * Description of DisqusHelper
  *
