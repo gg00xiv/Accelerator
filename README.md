@@ -11,7 +11,13 @@
 - Easy to configure !
 - No 'magic' like in Zend Framework 1.xx
 
-<h2>Get started</h2>
+<h2>Summary</h2>
+<ul>
+  <li><a href="#get-started">Get started</a></li>
+  <li><a href="#config">Config</a></li>
+</ul>
+
+<h2><a name="get-started"></a>Get started</h2>
 
 <p>Your project architecture should looks like follow :</p>
 <ul>
@@ -82,7 +88,7 @@ require_once 'relative_path_to/Accelerator/Autoloader.php';
 ?>
 </pre>
 
-<h2>Config</h2>
+<h2><a name="config"></a>Config</h2>
 
 <p>The configuration file is the main feature of PAF : It have to be as simple as we would like.</p>
 
