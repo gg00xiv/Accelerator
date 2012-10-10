@@ -111,15 +111,10 @@ class Application {
      */
     private function executeControllerFromRoutePath($routePath) {
         foreach ($this->routeHandlers as $route => $routeHandler) {
-            $routePattern = '|^' . preg_replace('|\[:(\w+)\]|i', '(?P<$1>[a-z0-9\-_]*?)', $route) . '$|i';
+            $routePattern = '|^' . preg_replace(array('/\?/', '/\[:(\w+)\]/i'), array('\?', '(?<$1>[a-z0-9_\-]*)'), $route) . '$|i';
+            
             if (preg_match($routePattern, $routePath, $matches)) {
-                $parameters = new \ArrayObject(array(), \ArrayObject::ARRAY_AS_PROPS);
-                foreach ($matches as $parameterName => $parameterValue) {
-                    if (!is_string($parameterName))
-                        continue;
-                    $parameters[$parameterName] = $parameterValue;
-                }
-
+                $parameters = new \ArrayObject($matches, \ArrayObject::ARRAY_AS_PROPS);
                 $controller = $routeHandler[0];
                 $view = $routeHandler[1];
                 $controller->execute($view, $parameters);

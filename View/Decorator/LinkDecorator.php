@@ -2,12 +2,14 @@
 
 namespace Accelerator\View\Decorator;
 
+use Accelerator\Decorator;
+
 /**
  * Description of LinkDecorator
  *
  * @author gg00xiv
  */
-abstract class LinkDecorator {
+abstract class LinkDecorator extends Decorator {
 
     protected abstract function getTitle();
 
@@ -22,6 +24,10 @@ abstract class LinkDecorator {
                         is_string($classes) ? ' class="' . $classes . '"' : '') .
                 ' href="' . rtrim(\Accelerator\Application::instance()->getBaseUrl(), '/') . '/' .
                 ltrim($this->getPath(), '/') . '">' . $this->getText() . '</a>';
+    }
+
+    public function __toString() {
+        return $this->getLink();
     }
 
 }

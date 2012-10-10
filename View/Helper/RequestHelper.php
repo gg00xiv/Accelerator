@@ -1,6 +1,6 @@
 <?php
 
-namespace Accelerator;
+namespace Accelerator\View\Helper;
 
 /**
  * Description of RequestHelper
