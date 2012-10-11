@@ -96,8 +96,73 @@ require_once 'relative_path_to/Accelerator/Autoloader.php';
 
 <pre>
 <?php
+// notice : __DIR__ refers to this file directory
 
-
-
+return array(
+    'global' => array(
+        'namespace' => 'MegaSnippets',
+        'base_url' => 'http://megasnippets.com/',
+        'website_name' => 'MegaSnippets',
+        'page_size' => 40,
+        'page_parameter' => 'page',
+    ),
+    'model' => array(
+        'connection' => array(
+            'driver' => 'MySql',
+            'host' => '<hostname>',
+            'dbname' => '<databasename>',
+            'username' => '<user>',
+            'password' => '<pass>',
+        ),
+        'entities' => include __DIR__ . '/entities.config.php',
+    ),
+    'views' => array(
+        'path' => __DIR__ . '/../views/',
+        'map' => array(
+            'Code' => array('file' => 'main/code.phtml', 'parent' => 'MainLayout'),
+            'Language' => array('file' => 'main/language.phtml', 'parent' => 'SearchLayout', 'page_size' => 40),
+            'Category' => array('file' => 'main/category.phtml', 'parent' => 'SearchLayout', 'page_size' => 40),
+            'Search' => array('file' => 'main/search.phtml', 'parent' => 'SearchLayout', 'page_size' => 40),
+            'SearchLayout' => array('file' => 'main/layouts/search.phtml', 'parent' => 'MainLayout'),
+            'MainLayout' => 'main/layouts/main.phtml',
+            'Home' => array('file' => 'main/index.phtml', 'parent' => 'MainLayout'),
+            'Contact' => array('file' => 'main/contact.phtml', 'parent' => 'MainLayout'),
+            'About' => array('file' => 'main/about.phtml', 'parent' => 'MainLayout'),
+            'Admin' => array('file' => 'admin/index.phtml', 'parent' => 'AdminMainLayout'),
+            'Login' => array('file' => 'main/login.phtml', 'parent' => 'MainLayout'),
+            'AdminCode' => array('file' => 'admin/code.phtml', 'parent' => 'AdminMainLayout'),
+            'AdminMainLayout' => 'admin/layouts/main.phtml',
+        ),
+    ),
+    'controllers' => array(
+        'namespace' => 'Controllers',
+        'list' => array(
+            'IndexController',
+            'AboutController',
+            'ContactController',
+            'CodeController',
+            'SearchController',
+            'AboutController',
+            'AdminIndexController',
+            'AdminCodeController',
+            'LoginController',
+        ),
+    ),
+    'routes' => array(
+        '/' => array('IndexController', 'Home'),
+        '/source-codes/[:lang]/[:code]' => array('controller' => 'CodeController', 'view' => 'Code'),
+        '/languages/[:lang]' => array('SearchController', 'Language'),
+        '/languages/[:lang]/page-[:page]' => array('SearchController', 'Language'),
+        '/languages/[:lang]/categories/[:cat]' => array('SearchController', 'Category'),
+        '/languages/[:lang]/categories/[:cat]/page-[:page]' => array('SearchController', 'Category'),
+        '/search.php?l=[:lang]&c=[:cat]&q=[:query]' => array('SearchController', 'Search'),
+        '/search.php?l=[:lang]&c=[:cat]&q=[:query]&p=[:page]' => array('SearchController', 'Search'),
+        '/about' => array('AboutController', 'About'),
+        '/contact' => array('ContactController', 'Contact'),
+        '/login' => array('LoginController', 'Login'),
+        '/admin' => array('AdminIndexController', 'Admin'),
+        '/admin/code/[:codeid]' => array('AdminCodeController', 'AdminCode'),
+    ),
+);
 ?>
 </pre>
