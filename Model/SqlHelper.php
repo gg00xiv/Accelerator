@@ -38,7 +38,7 @@ class SqlHelper {
      * @param mixed $where The WHERE condition as array or simple string.
      * @return string A SQL WHERE condition. 
      */
-    private static function getWhereClause($where) {
+    private static function getWhereSql($where) {
         $sql = '';
         if ($where) {
             if (is_string($where))
@@ -56,29 +56,8 @@ class SqlHelper {
         return $sql;
     }
 
-    /**
-     * Generates a SELECT SQL statement based on parameters.
-     * 
-     * @param string $table The database table name.
-     * @param mixed $fields
-     * @param mixed $where The SQL statement WHERE condition.
-     * @param mixed $orderBy The SQL statement ORDER BY list.
-     * @param mixed $limit The SQL statement LIMIT condition.
-     * @return string A SQL statement.
-     */
-    public static function select($table, $fields = null, $where = null, $orderBy = null, $limit = null) {
-        $sql = "SELECT ";
-        if (is_string($fields))
-            $sql.=$fields;
-        else if (is_array($fields))
-            $sql.= join(',', array_map(function($fieldName) {
-                                return "`$fieldName`";
-                            }, $fields));
-        else
-            $sql.='*';
-
-        $sql .= " FROM `" . $table . "` ";
-        $sql .= self::getWhereClause($where);
+    private static function getOrderBySql($orderBy) {
+        $sql = '';
         if ($orderBy) {
             if (is_string($orderBy))
                 $sql.=' ORDER BY ' . $orderBy;
@@ -90,7 +69,27 @@ class SqlHelper {
                 $sql.=join(',', $orderByList);
             }
         }
+        return $sql;
+    }
 
+    private static function getGroupBySql($groupBy) {
+        $sql = '';
+        if ($groupBy) {
+            if (is_string($groupBy))
+                $sql.=' GROUP BY ' . $groupBy;
+            else if (is_array($groupBy) && count($groupBy) >= 1) {
+                $sql.=' GROUP BY ';
+                $groupByList = array();
+                foreach ($groupBy as $fieldName)
+                    $groupByList[] = '`' . $fieldName . '`';
+                $sql.=join(',', $groupByList);
+            }
+        }
+        return $sql;
+    }
+
+    private static function getLimitSql($limit) {
+        $sql = '';
         if ($limit) {
             if (is_string($limit) || is_numeric($limit))
                 $sql.=' LIMIT ' . $limit;
@@ -101,6 +100,45 @@ class SqlHelper {
                     $sql.=' LIMIT ' . $limit[0] . ',' . $limit[1];
             }
         }
+        return $sql;
+    }
+
+    /**
+     * Generates a SELECT SQL statement based on parameters.
+     * 
+     * @param string $table The database table name.
+     * @param mixed $fields
+     * @param mixed $where The SQL statement WHERE condition.
+     * @param mixed $groupBy The SQL statement GROUP BY list.
+     * @param mixed $orderBy The SQL statement ORDER BY list.
+     * @param mixed $limit The SQL statement LIMIT condition.
+     * @return string A SQL statement.
+     */
+    public static function select($table, $fields = null, $where = null, $groupBy = null, $orderBy = null, $limit = null) {
+        $sql = "SELECT ";
+        if (is_string($fields))
+            $sql.=$fields;
+        else if (is_array($fields))
+            $sql.= join(',', array_map(function($fieldName) {
+                                return "`$fieldName`";
+                            }, $fields));
+        else
+            $sql.='*';
+
+        $sql .= " FROM ";
+        if (!is_array($table))
+            $sql.='`' . $table . '`';
+        else {
+            $fromList = array();
+            foreach ($table as $t)
+                $fromList[] = '`' . $t . '`';
+            $sql.=join(', ', $fromList);
+        }
+
+        $sql .= self::getWhereSql($where);
+        $sql .= self::getGroupBySql($groupBy);
+        $sql .= self::getOrderBySql($orderBy);
+        $sql .= self::getLimitSql($limit);
 
         return $sql;
     }
@@ -115,7 +153,7 @@ class SqlHelper {
     public static function count($table, $where = null) {
         $sql = "SELECT COUNT(*) FROM ";
         $sql .= "`" . $table . "` ";
-        $sql .= self::getWhereClause($where);
+        $sql .= self::getWhereSql($where);
 
         return $sql;
     }
@@ -135,7 +173,7 @@ class SqlHelper {
         foreach ($set as $field => $value)
             $setList[] = "`$field`=" . self::getSqlValue($value);
         $sql = 'UPDATE `' . $table . '` SET ' . join(',', $setList);
-        $sql.=self::getWhereClause($where);
+        $sql.=self::getWhereSql($where);
         return $sql;
     }
 
@@ -192,7 +230,7 @@ class SqlHelper {
         if (!$where)
             return 'TRUNCATE TABLE ' . $table;
 
-        return 'DELETE FROM `' . $table . '` ' . self::getWhereClause($where);
+        return 'DELETE FROM `' . $table . '` ' . self::getWhereSql($where);
     }
 
 }

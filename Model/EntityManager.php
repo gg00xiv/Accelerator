@@ -30,24 +30,18 @@ abstract class EntityManager {
             if (!$ignoreNullFields || !SqlHelper::isSqlNull($value))
                 $where[$column] = $value;
         }
-        return self::_select($filter, $selectFields, $where, $orderBy, $limit);
+        $sql = SqlHelper::select($filter->getTable(), $selectFields, $where, null, $orderBy, $limit);
+        return self::selectWhereSql($filter, $sql);
     }
 
     /**
      * Returns a set of $filter type entities based on $filter DbEntity template.
      * 
      * @param \Accelerator\Model\DbEntity $template The DbEntity to use as template for entities retrieved.
-     * @param type $where The SQL WHERE conditin.
-     * @param mixed $orderBy The SQL statement ORDER BY list.
-     * @param mixed $limit The SQL statement LIMIT condition.
+     * @param string $sql SQL full SELECT request.
+     * @return array Array of \Accelerator\Model\DbEntity of $template type. 
      */
-    public static function selectWhereSql(DbEntity $template, $where = null, $orderBy = null, $limit = null) {
-        $selectFields = array_keys($template->getColumnValues());
-        return self::_select($template, $selectFields, $where, $orderBy, $limit);
-    }
-
-    private static function _select(DbEntity $template, $selectFields = null, $where = null, $orderBy = null, $limit = null) {
-        $sql = SqlHelper::select($template->getTable(), $selectFields, $where, $orderBy, $limit);
+    public static function selectWhereSql(DbEntity $template, $sql) {
         $rowset = $template->getConnection()->executeQuery($sql);
 
         $entities = array();

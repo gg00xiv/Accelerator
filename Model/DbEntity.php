@@ -153,9 +153,10 @@ class DbEntity {
      * @param mixed $fieldValue
      */
     public function setFieldValue($fieldName, $fieldValue) {
-        if (!array_key_exists($fieldName, $this->set_map))
-            return;
-        $accessor = $this->set_map[$fieldName];
+        $accessor = !array_key_exists($fieldName, $this->set_map) ?
+                $fieldName :
+                $this->set_map[$fieldName];
+
         //$fieldValue = mb_convert_encoding($fieldValue, $this->encoding, mb_detect_encoding($fieldValue));
         if (method_exists($this, $accessor))
             $this->$accessor($fieldValue);
