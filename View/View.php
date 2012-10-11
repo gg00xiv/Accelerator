@@ -16,9 +16,12 @@ class View {
     private $path;
     private $childView;
     private $parentViewName;
+    private $parameters;
     private $title;
+    private $pageSize;
     private $description;
     private $parentView;
+    private $renderViews;
 
     /**
      * Create a View from file path and parent view name.
@@ -26,9 +29,11 @@ class View {
      * 
      * @param string $path View full path on disk.
      * @param string $parentViewName The parent view name defined in configuration file.
+     * @param string $pageParameter The page parameter name containing page index.
+     * @param int $pageSize The number of items per page.
      * @throws \Accelerator\AcceleratorException
      */
-    public function __construct($path, $parentViewName = null) {
+    public function __construct($path, $parentViewName = null, $pageSize = null) {
         if (!is_string($path) || empty($path))
             throw new AcceleratorException('Invalid parameters.');
 
@@ -37,8 +42,13 @@ class View {
 
         $this->path = $path;
         $this->parentViewName = $parentViewName;
+        $this->pageSize = $pageSize? : $this->getApplication()->getPageSize();
     }
 
+    public function getPageSize() {
+        return $this->pageSize;
+    }
+    
     /**
      * Get the parent view of this View instance.
      * 
@@ -47,7 +57,7 @@ class View {
      */
     public function getParentView() {
         if (!$this->parentView && $this->parentViewName) {
-            $this->parentView = Application::instance()->getView($this->parentViewName);
+            $this->parentView = $this->getApplication()->getView($this->parentViewName);
             if (!$this->parentView)
                 throw new AcceleratorException('Parent view not found : ' . $this->parentViewName);
             $this->parentView->childView = $this;
@@ -73,7 +83,7 @@ class View {
     public function getTitle() {
         return $this->childView ?
                 $this->childView->getTitle() :
-                $this->title;
+                $this->title . ($this->pageParameter && $this->getPageIndex() > 1 ? ' - page ' . $this->getPageIndex() : '');
     }
 
     /**
@@ -94,7 +104,7 @@ class View {
     public function getDescription() {
         if ($this->childView)
             return $this->childView->getDescription();
-        return $this->description;
+        return $this->description? : $this->getTitle();
     }
 
     /**
@@ -112,22 +122,22 @@ class View {
      * @throws AcceleratorException If a specified parent View was not found.
      */
     public function render() {
-        if ($parentView = $this->getParentView())
-            $parentView->render();
-        else
-            $this->renderSelf();
+        $currentView = $this;
+        $this->renderViews = new \SplStack();
+        while ($currentView) {
+            $this->renderViews->push($currentView);
+            $currentView = $currentView->getParentView();
+        }
+
+        $this->renderChild();
     }
 
     /**
      * Used in templates (*.phtml files) to display child content.
+     * Each call to renderChild pop
      */
     public function renderChild() {
-        if ($this->childView)
-            $this->childView->renderSelf();
-    }
-
-    private function renderSelf() {
-        include $this->path;
+        include $this->renderViews->pop()->path;
     }
 
 }

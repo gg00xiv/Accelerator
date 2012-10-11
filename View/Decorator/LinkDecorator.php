@@ -18,12 +18,14 @@ abstract class LinkDecorator extends Decorator {
     protected abstract function getPath();
 
     public function getLink($classes = null) {
-        return '<a title="' . $this->getTitle() . '"' .
+        return $this->getText() ?
+                '<a title="' . $this->getTitle() . '"' .
                 ( is_array($classes) && count($classes) >= 1 ?
                         ' class="' . join(' ', $classes) . '"' :
-                        is_string($classes) ? ' class="' . $classes . '"' : '') .
+                        (is_string($classes) ? ' class="' . $classes . '"' : '')) .
                 ' href="' . rtrim(\Accelerator\Application::instance()->getBaseUrl(), '/') . '/' .
-                ltrim($this->getPath(), '/') . '">' . $this->getText() . '</a>';
+                ltrim($this->getPath(), '/') . '">' . $this->getText() . '</a>' :
+                '';
     }
 
     public function __toString() {

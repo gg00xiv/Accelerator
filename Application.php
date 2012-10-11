@@ -52,6 +52,14 @@ class Application {
         return $this->config->global->base_url;
     }
 
+    public function getPageSize() {
+        return $this->config->global->page_size;
+    }
+
+    public function getPageParameter() {
+        return $this->config->global->page_parameter;
+    }
+
     /**
      * Get a registered view by its name.
      * 
@@ -105,27 +113,6 @@ class Application {
     }
 
     /**
-     * Get controller from route path.
-     * 
-     * @param \Accelerator\Controller\Controller $routePath
-     */
-    private function executeControllerFromRoutePath($routePath) {
-        foreach ($this->routeHandlers as $route => $routeHandler) {
-            $routePattern = '|^' . preg_replace(array('/\?/', '/\[:(\w+)\]/i'), array('\?', '(?<$1>[a-z0-9_\-]*)'), $route) . '$|i';
-            
-            if (preg_match($routePattern, $routePath, $matches)) {
-                $parameters = new \ArrayObject($matches, \ArrayObject::ARRAY_AS_PROPS);
-                $controller = $routeHandler[0];
-                $view = $routeHandler[1];
-                $controller->execute($view, $parameters);
-                $view->render();
-                return $controller;
-            }
-        }
-        throw new AcceleratorException('Invalid route path, no controller defined for route : ' . $routePath);
-    }
-
-    /**
      * Dispatch current request to the right controller.
      * 
      * @return \Accelerator\Application The Application instance.
@@ -138,9 +125,19 @@ class Application {
             throw new AcceleratorException('Invalid script base url : ' . $full_route_uri);
 
         $routePath = '/' . trim(substr($full_route_uri, strlen($this->config->global->base_url)), '/');
-        $this->executeControllerFromRoutePath($routePath);
 
-        return $this;
+        foreach ($this->routeHandlers as $route => $routeHandler) {
+            $routePattern = '|^' . preg_replace(array('/(\?|\.)/', '/\[:(\w+)\]/i'), array('\\\\$1', '(?<$1>[^&/]*)'), $route) . '$|i';
+
+            if (preg_match($routePattern, $routePath, $matches)) {
+                $parameters = new \ArrayObject($matches, \ArrayObject::ARRAY_AS_PROPS);
+                $controller = $routeHandler[0];
+                $view = $routeHandler[1];
+                $controller->execute($view, $parameters);
+                return $this;
+            }
+        }
+        throw new AcceleratorException('Invalid route path, no controller defined for route : ' . $routePath);
     }
 
     private function loadEntityMaps() {
@@ -160,7 +157,7 @@ class Application {
                 $view = new View($path);
             } else if ($viewConfig instanceof \ArrayObject && isset($viewConfig->file)) {
                 $path = rtrim($this->config->views->path, '/') . '/' . trim($viewConfig->file, '/');
-                $view = new View($path, $viewConfig->parent);
+                $view = new View($path, $viewConfig->parent, $viewConfig->pageSize);
             }
 
             if ($view)
@@ -186,10 +183,10 @@ class Application {
         $this->routeHandlers = array();
         foreach ($this->config->routes as $route => $routeHandler) {
             $routePath = '/' . trim($route, '/');
-            
+
             if ((!is_array($routeHandler) && !$routeHandler instanceof \ArrayObject) || count($routeHandler) != 2)
                 throw new AcceleratorException('Invalid route handler for route : ' . $route);
-            
+
             $controller = $this->controllers[isset($routeHandler->controller) ? $routeHandler->controller : $routeHandler[0]];
             $view = $this->views[isset($routeHandler->view) ? $routeHandler->view : $routeHandler[1]];
             $this->routeHandlers[$routePath] = array($controller, $view);

@@ -183,6 +183,31 @@ class DbEntity {
     }
 
     /**
+     * Returns SQL column names used for selecting rows of this DbEntity.
+     * 
+     * @return array Array of string.
+     */
+    public function getSelectFields() {
+        return array_keys($this->get_map);
+    }
+
+    /**
+     * Get a filter map of SQL columns with their SQL value when using this DbEntity
+     * as a filter.
+     * 
+     * @param type $ignoreNullFields Ignores SQL-NULL fields for selecting entities (Default=true).
+     * @return array Array of SQL columns => SQL values
+     */
+    public function getSqlFilterMap($ignoreNullFields = true) {
+        $map = array();
+        foreach ($this->getColumnValues() as $column => $value) {
+            if (!$ignoreNullFields || !SqlHelper::isSqlNull($value))
+                $map[$column] = $value;
+        }
+        return $map;
+    }
+
+    /**
      * Returns the list of fields with their value
      * 
      * @return array

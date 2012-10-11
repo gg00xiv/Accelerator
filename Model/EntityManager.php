@@ -23,14 +23,7 @@ abstract class EntityManager {
      * @return array;
      */
     public static function select(DbEntity $filter, $orderBy = null, $limit = null, $ignoreNullFields = true) {
-        $selectFields = array();
-        $where = array();
-        foreach ($filter->getColumnValues() as $column => $value) {
-            $selectFields[] = $column;
-            if (!$ignoreNullFields || !SqlHelper::isSqlNull($value))
-                $where[$column] = $value;
-        }
-        $sql = SqlHelper::select($filter->getTable(), $selectFields, $where, null, $orderBy, $limit);
+        $sql = SqlHelper::select($filter->getTable(), $filter->getSelectFields(), $filter->getSqlFilterMap($ignoreNullFields), null, $orderBy, $limit);
         return self::selectWhereSql($filter, $sql);
     }
 
