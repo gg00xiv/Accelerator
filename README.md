@@ -93,7 +93,7 @@ require_once 'relative_path_to/Accelerator/Autoloader.php';
 <h2><a name="config"></a>Config</h2>
 
 <p>The configuration file is the main feature of PAF : It have to be as simple as we would like.</p>
-
+<p>The example below is the actual configuration file for the <a href="http://megasnippets.com">megasnippets.com</a> website.</p>
 <pre>
 <?php
 // notice : __DIR__ refers to this file directory
@@ -109,10 +109,10 @@ return array(
     'model' => array(
         'connection' => array(
             'driver' => 'MySql',
-            'host' => '<hostname>',
-            'dbname' => '<databasename>',
-            'username' => '<user>',
-            'password' => '<pass>',
+            'host' => '&lt;hostname&gt;',
+            'dbname' => '&lt;databasename&gt;',
+            'username' => '&lt;user&gt;',
+            'password' => '&lt;pass&gt;',
         ),
         'entities' => include __DIR__ . '/entities.config.php',
     ),
