@@ -103,8 +103,10 @@ return array(
         'namespace' => 'MegaSnippets',
         'base_url' => 'http://megasnippets.com/',
         'website_name' => 'MegaSnippets',
-        'page_size' => 40,
-        'page_parameter' => 'page',
+        'pagination' => array(
+            'items_per_page' => 40,
+            'page_parameter' => 'page',
+        ),
     ),
     'model' => array(
         'connection' => array(
@@ -120,9 +122,9 @@ return array(
         'path' => __DIR__ . '/../views/',
         'map' => array(
             'Code' => array('file' => 'main/code.phtml', 'parent' => 'MainLayout'),
-            'Language' => array('file' => 'main/language.phtml', 'parent' => 'SearchLayout', 'page_size' => 40),
-            'Category' => array('file' => 'main/category.phtml', 'parent' => 'SearchLayout', 'page_size' => 40),
-            'Search' => array('file' => 'main/search.phtml', 'parent' => 'SearchLayout', 'page_size' => 40),
+            'Language' => array('file' => 'main/language.phtml', 'parent' => 'SearchLayout', 'items_per_page' => 40),
+            'Category' => array('file' => 'main/category.phtml', 'parent' => 'SearchLayout', 'items_per_page' => 40),
+            'Search' => array('file' => 'main/search.phtml', 'parent' => 'SearchLayout', 'items_per_page' => 40),
             'SearchLayout' => array('file' => 'main/layouts/search.phtml', 'parent' => 'MainLayout'),
             'MainLayout' => 'main/layouts/main.phtml',
             'Home' => array('file' => 'main/index.phtml', 'parent' => 'MainLayout'),
