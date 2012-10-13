@@ -9,8 +9,8 @@ namespace Accelerator\View\Html\Form;
  */
 class ComboBox extends FormElement {
 
-    public function __construct($name, $multiple = false, array $attributes = array()) {
-        parent::__construct('select', array_merge(array('multiple' => $multiple ? 'multiple' : '', 'name' => $name), $attributes));
+    public function __construct($name, $multiple = false, array $attributes = null, $label = null) {
+        parent::__construct('select', array_merge(array('multiple' => $multiple ? 'multiple' : '', 'name' => $name), $attributes? : array()), $label);
     }
 
 }

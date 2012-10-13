@@ -9,8 +9,8 @@ namespace Accelerator\View\Html\Form;
  */
 class EmailBox extends TextBox {
 
-    public function __construct($name, array $attributes = array()) {
-        parent::__construct($name, false, array_merge(array('type' => 'email'), $attributes));
+    public function __construct($name, array $attributes = null, $label = null) {
+        parent::__construct($name, false, array_merge(array('type' => 'email'), $attributes? : array()), $label);
     }
 
 }

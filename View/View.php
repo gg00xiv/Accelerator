@@ -4,6 +4,8 @@ namespace Accelerator\View;
 
 use Accelerator\AcceleratorException;
 use Accelerator\Application;
+use Accelerator\View\Html\HeadLink;
+use Accelerator\View\Html\HeadMeta;
 
 /**
  * A View represents the PHP code behind a user interface (here a web page).
@@ -13,15 +15,17 @@ use Accelerator\Application;
  */
 class View {
 
-    private $path;
-    private $childView;
-    private $parentViewName;
-    private $parameters;
-    private $title;
-    private $pageSize;
-    private $description;
-    private $parentView;
-    private $renderViews;
+    private $_path;
+    private $_parentViewName;
+    private $_parameters;
+    private $_title;
+    private $_itemsPerPage;
+    private $_description;
+    private $_parentView;
+    private $_renderViews;
+    private $_styleSheets;
+    private $_headLinks;
+    private $_headMetas;
 
     /**
      * Create a View from file path and parent view name.
@@ -30,25 +34,26 @@ class View {
      * @param string $path View full path on disk.
      * @param string $parentViewName The parent view name defined in configuration file.
      * @param string $pageParameter The page parameter name containing page index.
-     * @param int $pageSize The number of items per page.
+     * @param int $itemsPerPage The number of items per page.
      * @throws \Accelerator\AcceleratorException
      */
-    public function __construct($path, $parentViewName = null, $pageSize = null) {
+    public function __construct($path, $parentViewName = null, $itemsPerPage = null) {
         if (!is_string($path) || empty($path))
             throw new AcceleratorException('Invalid parameters.');
 
         if ($parentViewName && !is_string($parentViewName))
             throw new AcceleratorException('Invalid parent view name : ' . $parentViewName);
 
-        $this->path = $path;
-        $this->parentViewName = $parentViewName;
-        $this->pageSize = $pageSize? : $this->getApplication()->getPageSize();
+        $this->_path = $path;
+        $this->_parentViewName = $parentViewName;
+        $this->_itemsPerPage = $itemsPerPage;
     }
 
-    public function getPageSize() {
-        return $this->pageSize;
+    public function getItemsPerPage() {
+        return $this->_itemsPerPage? :
+                ($this->_itemsPerPage = $this->getApplication()->getItemsPerPage());
     }
-    
+
     /**
      * Get the parent view of this View instance.
      * 
@@ -56,13 +61,13 @@ class View {
      * @throws \Accelerator\AcceleratorException
      */
     public function getParentView() {
-        if (!$this->parentView && $this->parentViewName) {
-            $this->parentView = $this->getApplication()->getView($this->parentViewName);
-            if (!$this->parentView)
-                throw new AcceleratorException('Parent view not found : ' . $this->parentViewName);
-            $this->parentView->childView = $this;
+        if (!$this->_parentView && $this->_parentViewName) {
+            $this->_parentView = $this->getApplication()->getView($this->_parentViewName);
+            if (!$this->_parentView)
+                throw new AcceleratorException('Parent view not found : ' . $this->_parentViewName);
+            $this->_parentView->_childView = $this;
         }
-        return $this->parentView;
+        return $this->_parentView;
     }
 
     /**
@@ -81,9 +86,7 @@ class View {
      * @return string Child View title. 
      */
     public function getTitle() {
-        return $this->childView ?
-                $this->childView->getTitle() :
-                $this->title . ($this->pageParameter && $this->getPageIndex() > 1 ? ' - page ' . $this->getPageIndex() : '');
+        return $this->_title;
     }
 
     /**
@@ -92,7 +95,7 @@ class View {
      * @param string $title The View title.
      */
     public function setTitle($title) {
-        $this->title = $title;
+        $this->_title = $title;
     }
 
     /**
@@ -102,9 +105,7 @@ class View {
      * @return string Child View description.
      */
     public function getDescription() {
-        if ($this->childView)
-            return $this->childView->getDescription();
-        return $this->description? : $this->getTitle();
+        return $this->_description? : $this->getTitle();
     }
 
     /**
@@ -113,7 +114,7 @@ class View {
      * @param string $description The View description.
      */
     public function setDescription($description) {
-        $this->description = $description;
+        $this->_description = $description;
     }
 
     /**
@@ -123,9 +124,9 @@ class View {
      */
     public function render() {
         $currentView = $this;
-        $this->renderViews = new \SplStack();
+        $this->_renderViews = new \SplStack();
         while ($currentView) {
-            $this->renderViews->push($currentView);
+            $this->_renderViews->push($currentView);
             $currentView = $currentView->getParentView();
         }
 
@@ -137,7 +138,47 @@ class View {
      * Each call to renderChild pop
      */
     public function renderChild() {
-        include $this->renderViews->pop()->path;
+        include $this->_renderViews->pop()->_path;
+    }
+
+    public function addMeta($metaOrName, $content = null) {
+        if ($metaOrName instanceof HeadMeta) {
+            $meta = $metaOrName;
+        } else if (is_string($metaOrName) && $content) {
+            $meta = new HeadMeta($metaOrName, $content);
+        }
+
+        if ($meta) {
+            if (!$this->_headMetas)
+                $this->_headMetas = array();
+            $this->_headMetas[] = $meta;
+        }
+    }
+
+    public function addHeadLink($relOrLink, $href = null, array $attributes = null) {
+        if ($relOrLink instanceof HeadLink) {
+            $link = $relOrLink;
+        } else if (is_string($relOrLink) && $href) {
+            $link = new HeadLink($relOrLink, $href, $attributes);
+        }
+
+        if ($link) {
+            if (!$this->_headLinks)
+                $this->_headLinks = array();
+            $this->_headLinks[] = $link;
+        }
+    }
+
+    public function getMetas() {
+        if ($this->_headMetas) {
+            return join('', $this->_headMetas);
+        }
+    }
+
+    public function getHeadLinks() {
+        if ($this->_headLinks) {
+            return join('', $this->_headLinks);
+        }
     }
 
 }

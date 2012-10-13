@@ -52,12 +52,22 @@ class Application {
         return $this->config->global->base_url;
     }
 
-    public function getPageSize() {
-        return $this->config->global->page_size;
+    /**
+     * Get the number of items to display per page in pagination context.
+     * 
+     * @return int Number of items per page to display.
+     */
+    public function getItemsPerPage() {
+        return $this->config->global->pagination->items_per_page;
     }
 
+    /**
+     * Get the page parameter name from route that identify the current page index.
+     * 
+     * @return string Page parameter name.
+     */
     public function getPageParameter() {
-        return $this->config->global->page_parameter;
+        return $this->config->global->pagination->page_parameter;
     }
 
     /**

@@ -1,12 +1,18 @@
 <?php
 
+namespace Accelerator\View\Html\Validator;
+
 /**
  * Description of EmailValidator
  *
- * @author gghez
+ * @author gg00xiv
  */
-class EmailValidator {
-    
+class EmailValidator extends RegexValidator {
+
+    public function __construct($msg = null) {
+        parent::__construct('/[\w\d\.\-_]+@[\w\d\-\.]+\.[\w+]/', $msg? : 'Invalid email address');
+    }
+
 }
 
 ?>

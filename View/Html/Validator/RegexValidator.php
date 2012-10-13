@@ -11,12 +11,13 @@ class RegexValidator extends Validator {
 
     private $validationPattern;
 
-    public function __construct($validationPattern) {
+    public function __construct($validationPattern, $msg = null) {
+        parent::__construct($msg? : 'Invalid field value');
         $this->validationPattern = $validationPattern;
     }
 
     public function validate($input) {
-        
+        return preg_match($this->validationPattern, $input);
     }
 
 }

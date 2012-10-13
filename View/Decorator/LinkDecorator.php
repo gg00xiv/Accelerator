@@ -11,11 +11,11 @@ use Accelerator\Decorator;
  */
 abstract class LinkDecorator extends Decorator {
 
-    protected abstract function getTitle();
+    public abstract function getTitle();
 
-    protected abstract function getText();
+    public abstract function getText();
 
-    protected abstract function getPath();
+    public abstract function getPath();
 
     public function getLink($classes = null) {
         return $this->getText() ?

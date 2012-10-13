@@ -37,15 +37,15 @@ abstract class Controller {
      * 
      * @return int Number of items per page.
      */
-    public function getPageSize() {
-        return $this->view->getPageSize();
+    public function getItemsPerPage() {
+        return $this->view->getItemsPerPage();
     }
 
     /**
      * Get the first item index in paginated View context.
      */
     public function getPageFirstItemIndex() {
-        return $this->getPageSize() * ($this->getPageIndex() - 1);
+        return $this->getItemsPerPage() * ($this->getPageIndex() - 1);
     }
 
     /**

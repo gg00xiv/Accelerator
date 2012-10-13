@@ -2,17 +2,17 @@
 
 namespace Accelerator\View\Html\Form;
 
-use Accelerator\View\Html\HtmlElement;
 
 /**
  * Description of Label
  *
  * @author gg00xiv
  */
-class Label extends HtmlElement {
+class Label extends FormElement {
 
-    public function __construct($text, FormElement $for, array $attributes = array()) {
-        parent::__construct('label', array_merge(array('for' => $for->getName()), $attributes));
+    public function __construct($text, FormElement $for, array $attributes = null) {
+        parent::__construct('label', array_merge(array('for' => $for->getName()), $attributes? : array()));
+        $this->setInnerHtml($text);
     }
 
 }

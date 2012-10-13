@@ -9,8 +9,8 @@ namespace Accelerator\View\Html\Validator;
  */
 class FloatValidator extends RegexValidator {
 
-    public function __construct($decimalSeparator = '.') {
-        parent::__construct('\d+(\\' . $decimalSeparator . '\d+)?');
+    public function __construct($msg = null, $decimalSeparator = '.') {
+        parent::__construct('/^\d*(\\' . $decimalSeparator . '\d+)?$/', $msg? : 'Invalid number');
     }
 
 }
