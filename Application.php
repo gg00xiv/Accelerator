@@ -6,6 +6,7 @@ use Accelerator\Model\GenericDatabase;
 use Accelerator\Config;
 use Accelerator\View\View;
 use Accelerator\AcceleratorException;
+use Accelerator\Helper\ResponseHelper;
 
 /**
  * Description of Application
@@ -147,7 +148,8 @@ class Application {
                 return $this;
             }
         }
-        throw new AcceleratorException('Invalid route path, no controller defined for route : ' . $routePath);
+
+        ResponseHelper::notFound();
     }
 
     private function loadEntityMaps() {
