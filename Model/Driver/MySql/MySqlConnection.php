@@ -49,7 +49,7 @@ class MySqlConnection extends DbConnection {
 
         $req = mysql_query($sql, $this->dbLink);
         if (!$req)
-            throw new AcceleratorException('Invalid request : '.mysql_error());
+            throw new AcceleratorException("Invalid request : \n".$sql."\n".mysql_error());
         $rowset = array();
         while ($row = mysql_fetch_array($req))
             $rowset[] = $row;

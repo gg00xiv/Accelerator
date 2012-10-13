@@ -6,6 +6,7 @@ use Accelerator\AcceleratorException;
 use Accelerator\Application;
 use Accelerator\View\Html\HeadLink;
 use Accelerator\View\Html\HeadMeta;
+use Accelerator\View\Html\ScriptLink;
 
 /**
  * A View represents the PHP code behind a user interface (here a web page).
@@ -26,6 +27,7 @@ class View {
     private $_styleSheets;
     private $_headLinks;
     private $_headMetas;
+    private $_headScripts;
 
     /**
      * Create a View from file path and parent view name.
@@ -155,17 +157,31 @@ class View {
         }
     }
 
-    public function addHeadLink($relOrLink, $href = null, array $attributes = null) {
+    public function addHeadLink($relOrLink, $href = null) {
         if ($relOrLink instanceof HeadLink) {
             $link = $relOrLink;
         } else if (is_string($relOrLink) && $href) {
-            $link = new HeadLink($relOrLink, $href, $attributes);
+            $link = new HeadLink($relOrLink, $href);
         }
 
         if ($link) {
             if (!$this->_headLinks)
                 $this->_headLinks = array();
             $this->_headLinks[] = $link;
+        }
+    }
+
+    public function addHeadScript($srcOrScript) {
+        if ($srcOrScript instanceof ScriptLink) {
+            $script = $srcOrScript;
+        } else if (is_string($srcOrScript)) {
+            $script = new ScriptLink($srcOrScript);
+        }
+
+        if ($script) {
+            if (!$this->_headScripts)
+                $this->_headScripts = array();
+            $this->_headScripts[] = $script;
         }
     }
 
@@ -178,6 +194,12 @@ class View {
     public function getHeadLinks() {
         if ($this->_headLinks) {
             return join('', $this->_headLinks);
+        }
+    }
+
+    public function getHeadScripts() {
+        if ($this->_headScripts) {
+            return join('', $this->_headScripts);
         }
     }
 

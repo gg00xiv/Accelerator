@@ -4,6 +4,7 @@ namespace Accelerator\View\Html\Form;
 
 use Accelerator\View\Html\HtmlElement;
 use Accelerator\AcceleratorException;
+use Accelerator\Helper\MailHelper;
 
 /**
  * Description of Form
@@ -15,7 +16,7 @@ class Form extends HtmlElement {
     const METHOD_POST = 'POST';
     const METHOD_GET = 'GET';
 
-    private $_destroyAfterSubmit = false;
+    private $_successHtml = false;
     private $_validationTemplate;
 
     public function __construct(array $attributes = array()) {
@@ -92,7 +93,7 @@ class Form extends HtmlElement {
     public function getValues() {
         $values = array();
         foreach ($this->getElements() as $element) {
-            if (!$element instanceof FormElement)
+            if (!$element instanceof FormElement || !$element->getName())
                 continue;
             $values[$element->getName()] = $element->getValue();
         }
@@ -133,12 +134,12 @@ class Form extends HtmlElement {
     }
 
     /**
-     * Destroy or not the form content after successfull submit.
+     * When form is successfully submitted, display the $html in place.
      * 
-     * @param boolean $trueOrFalse 
+     * @param string $html 
      */
-    public function destroyAfterSubmit($trueOrFalse) {
-        $this->_destroyAfterSubmit = $trueOrFalse;
+    public function setSuccessHtml($html) {
+        $this->_successHtml = $html;
     }
 
     /**
@@ -165,9 +166,27 @@ class Form extends HtmlElement {
      * @return string HTML content.
      */
     public function getHtml() {
-        if ($this->isPostBack() && $this->isValid() && $this->_destroyAfterSubmit)
-            return '';
+        if ($this->isPostBack() && $this->isValid() && ($this->_successHtml || $this->_successHtml === ''))
+            return $this->_successHtml;
         return parent::getHtml();
+    }
+
+    /**
+     * Send the current form content by email.
+     * 
+     * @param type $to Destination email address.
+     * @param type $fromName Sender name.
+     * @param type $fromAddress Sender email address.
+     * @param type $subject Email subject.
+     */
+    public function sendByMail($to, $fromName, $fromAddress, $subject) {
+        $html = '<p>Form content :</p>';
+        $html . '<ul>';
+        foreach ($this->getValues() as $fieldName => $fieldValue) {
+            $html.='<li>' . $fieldName . ' : ' . $fieldValue . '</li>';
+        }
+        $html.='</ul>';
+        MailHelper::sendHtml($to, $fromName, $fromAddress, $subject, $html);
     }
 
 }

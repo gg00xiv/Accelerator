@@ -3,6 +3,7 @@
 namespace Accelerator\View\Decorator;
 
 use Accelerator\Decorator;
+use Accelerator\View\Html\Link;
 
 /**
  * Description of LinkDecorator
@@ -17,19 +18,12 @@ abstract class LinkDecorator extends Decorator {
 
     public abstract function getPath();
 
-    public function getLink($classes = null) {
-        return $this->getText() ?
-                '<a title="' . $this->getTitle() . '"' .
-                ( is_array($classes) && count($classes) >= 1 ?
-                        ' class="' . join(' ', $classes) . '"' :
-                        (is_string($classes) ? ' class="' . $classes . '"' : '')) .
-                ' href="' . rtrim(\Accelerator\Application::instance()->getBaseUrl(), '/') . '/' .
-                ltrim($this->getPath(), '/') . '">' . $this->getText() . '</a>' :
-                '';
+    public function getLink(array $attributes = null) {
+        return new Link($this->getPath(), $this->getText(), $attributes);
     }
 
     public function __toString() {
-        return $this->getLink();
+        return $this->getLink()->__toString();
     }
 
 }
