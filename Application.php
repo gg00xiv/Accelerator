@@ -167,7 +167,7 @@ class Application {
                 $view = new View($path);
             } else if ($viewConfig instanceof \ArrayObject && isset($viewConfig->file)) {
                 $path = rtrim($this->config->views->path, '/') . '/' . trim($viewConfig->file, '/');
-                $view = new View($path, $viewConfig->parent, $viewConfig->pageSize);
+                $view = new View($path, $viewConfig->parent, $viewConfig->items_per_page);
             }
 
             if ($view)
