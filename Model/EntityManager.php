@@ -63,7 +63,7 @@ abstract class EntityManager {
         $entities = self::select($filter, null, null, $ignoreNullFields);
         $countEntities = count($entities);
         if ($countEntities > 1)
-            throw new AcceleratorException('More than one entity returned : ' . $countEntities . ' [' . $filter . ']');
+            throw new \Accelerator\Exception\AcceleratorException('More than one entity returned : ' . $countEntities . ' [' . $filter . ']');
 
         return $countEntities == 1 ? $entities[0] : null;
     }

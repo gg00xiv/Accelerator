@@ -2,13 +2,12 @@
 
 namespace Accelerator\View\Decorator;
 
-use Accelerator\Decorator;
 /**
  * Description of ListDecorator
  *
  * @author gg00xiv
  */
-abstract class ListDecorator extends Decorator {
+abstract class ListDecorator extends \Accelerator\Stdlib\Decorator {
 
     public function __construct(array $list) {
         parent::__construct($list);

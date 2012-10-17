@@ -1,6 +1,6 @@
 <?php
 
-namespace Accelerator;
+namespace Accelerator\Exception;
 
 /**
  * Handles any \Exception into Accelerator framework.

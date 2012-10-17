@@ -63,11 +63,14 @@ abstract class Controller {
      * @param \Accelerator\View\View View on which execute this controller.
      * @param \ArrayObject $parameters URL parameters.
      */
-    public function execute(\Accelerator\View\View $view, \ArrayObject $parameters) {
+    public function execute(\Accelerator\View\View $view = null, \ArrayObject $parameters = null) {
         $this->view = $view;
         $this->parameters = $parameters;
-        $this->onExecute();
-        $view->render($this);
+        $r = $this->onExecute();
+        if ($view)
+            $view->render($this);
+        else
+            echo $r;
     }
 
     /**

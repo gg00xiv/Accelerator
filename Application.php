@@ -107,7 +107,7 @@ class Application {
         if ($this->config)
             return;
         if (!is_array($config))
-            throw new AcceleratorException('$config parameter must be an array.');
+            throw new Exception\AcceleratorException('$config parameter must be an array.');
 
         $this->config = new Config($config);
 
@@ -133,7 +133,7 @@ class Application {
 
         $full_route_uri = 'http://' . $_SERVER['SERVER_NAME'] . '/' . ltrim($_SERVER['REQUEST_URI'], '/');
         if (substr($full_route_uri, 0, strlen($this->config->global->base_url)) != $this->config->global->base_url)
-            throw new AcceleratorException('Invalid script base url : ' . $full_route_uri);
+            throw new Exception\AcceleratorException('Invalid script base url : ' . $full_route_uri);
 
         $routePath = '/' . trim(substr($full_route_uri, strlen($this->config->global->base_url)), '/');
 
@@ -181,7 +181,7 @@ class Application {
         $this->controllers = array();
         $controllerNamespace = rtrim($this->config->global->namespace, '\\') . '\\' . trim($this->config->controllers->namespace, '\\');
         if (!$this->config->controllers || !$this->config->controllers->list || !is_array($this->config->controllers->list) || count($this->config->controllers->list) == 0)
-            throw new AcceleratorException('No controller defined in config.');
+            throw new Exception\AcceleratorException('No controller defined in config.');
 
         foreach ($this->config->controllers->list as $controllerClass) {
             $controllerClassPath = $controllerNamespace . '\\' . trim($controllerClass, '\\');
@@ -196,11 +196,27 @@ class Application {
         foreach ($this->config->routes as $route => $routeHandler) {
             $routePath = '/' . trim($route, '/');
 
-            if ((!is_array($routeHandler) && !$routeHandler instanceof \ArrayObject) || count($routeHandler) != 2)
-                throw new AcceleratorException('Invalid route handler for route : ' . $route);
+            $viewName=null;
+            if (is_string($routeHandler))
+                $controllerName = $routeHandler;
+            else if (is_array($routeHandler) || $routeHandler instanceof \ArrayObject) {
+                if (isset($routeHandler->controller))
+                    $controllerName = $routeHandler->controller;
+                else if (isset($routeHandler[0]))
+                    $controllerName = $routeHandler[0];
+                if (isset($routeHandler->view))
+                    $viewName = $routeHandler->view;
+                else if (isset($routeHandler[1]))
+                    $viewName = $routeHandler[1];
+            }
 
-            $controller = $this->controllers[isset($routeHandler->controller) ? $routeHandler->controller : $routeHandler[0]];
-            $view = $this->views[isset($routeHandler->view) ? $routeHandler->view : $routeHandler[1]];
+            if (!$controllerName)
+                throw new Exception\AcceleratorException('Invalid route handler for route : ' . $route);
+
+            $controller = $this->controllers[$controllerName];
+            $view = $viewName ?
+                    $this->views[$viewName] :
+                    null;
             $this->routeHandlers[$routePath] = array($controller, $view);
         }
     }

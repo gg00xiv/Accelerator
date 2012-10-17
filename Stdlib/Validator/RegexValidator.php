@@ -1,13 +1,13 @@
 <?php
 
-namespace Accelerator\View\Html\Validator;
+namespace Accelerator\Stdlib\Validator;
 
 /**
  * Description of RegexValidator
  *
  * @author gg00xiv
  */
-class RegexValidator extends Validator {
+class RegexValidator extends \Accelerator\Stdlib\Validator {
 
     private $validationPattern;
 

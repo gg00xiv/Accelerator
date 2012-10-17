@@ -1,6 +1,6 @@
 <?php
 
-namespace Accelerator;
+namespace Accelerator\Stdlib;
 
 /**
  * Description of Decorator

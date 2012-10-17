@@ -1,6 +1,6 @@
 <?php
 
-namespace Accelerator\View\Html\Validator;
+namespace Accelerator\Stdlib\Validator;
 
 /**
  * Description of IntegerValidator

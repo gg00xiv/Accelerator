@@ -2,7 +2,6 @@
 
 namespace Accelerator\View\Decorator;
 
-use Accelerator\Decorator;
 use Accelerator\View\Html\Link;
 
 /**
@@ -10,7 +9,7 @@ use Accelerator\View\Html\Link;
  *
  * @author gg00xiv
  */
-abstract class LinkDecorator extends Decorator {
+abstract class LinkDecorator extends \Accelerator\Stdlib\Decorator {
 
     public abstract function getTitle();
 

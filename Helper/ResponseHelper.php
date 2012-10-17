@@ -30,6 +30,14 @@ abstract class ResponseHelper {
         !$exit or exit;
     }
 
+    public static function setHeader($name, $value) {
+        header($name . ': ' . $value);
+    }
+
+    public static function setContentTypeXml() {
+        static::setHeader('Content-Type', 'text/xml');
+    }
+
 }
 
 ?>

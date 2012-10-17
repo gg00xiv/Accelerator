@@ -27,7 +27,7 @@ class MySqlConnection extends DbConnection {
         if (($this->dbLink = mysql_connect($this->host, $this->username, $this->password)) !== false)
             mysql_select_db($this->dbname, $this->dbLink);
         else
-            throw new AcceleratorException('Cannot connect database.');
+            throw new \Accelerator\Exception\AcceleratorException('Cannot connect database.');
     }
 
     /**
@@ -45,11 +45,11 @@ class MySqlConnection extends DbConnection {
      */
     public function executeQuery($sql) {
         if (in_array(strtolower(substr($sql, 0, 7)), array('insert ', 'update ', 'delete ')))
-            throw new AcceleratorException('executeNonQuery method cannot execute SELECT SQL statement.');
+            throw new \Accelerator\Exception\AcceleratorException('executeNonQuery method cannot execute SELECT SQL statement.');
 
         $req = mysql_query($sql, $this->dbLink);
         if (!$req)
-            throw new AcceleratorException("Invalid request : \n".$sql."\n".mysql_error());
+            throw new \Accelerator\Exception\AcceleratorException("Invalid request : \n".$sql."\n".mysql_error());
         $rowset = array();
         while ($row = mysql_fetch_array($req))
             $rowset[] = $row;
@@ -66,11 +66,11 @@ class MySqlConnection extends DbConnection {
      */
     public function executeNonQuery($sql, $mustReturnAutoId = false) {
         if (strtolower(substr($sql, 0, 7)) == 'select ')
-            throw new AcceleratorException('executeNonQuery method cannot execute SELECT SQL statement.');
+            throw new \Accelerator\Exception\AcceleratorException('executeNonQuery method cannot execute SELECT SQL statement.');
 
         $req = mysql_query($sql, $this->dbLink);
         if (!$req)
-            throw new AcceleratorException('Invalid request : '.mysql_error());
+            throw new \Accelerator\Exception\AcceleratorException('Invalid request : '.mysql_error());
         if ($mustReturnAutoId)
             return mysql_insert_id($this->dbLink);
     }

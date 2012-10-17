@@ -2,13 +2,13 @@
 
 namespace Accelerator\View\Html\Form;
 
-
+use Accelerator\View\Html\InlineElement;
 /**
  * Description of Label
  *
  * @author gg00xiv
  */
-class Label extends FormElement {
+class Label extends InlineElement {
 
     public function __construct($text, FormElement $for, array $attributes = null) {
         parent::__construct('label', array_merge(array('for' => $for->getName()), $attributes? : array()));

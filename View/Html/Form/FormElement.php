@@ -4,18 +4,19 @@ namespace Accelerator\View\Html\Form;
 
 use Accelerator\View\Html\HtmlElement;
 use Accelerator\View\Html\Validator\Validator;
+use Accelerator\View\Html\InlineElement;
 
 /**
  * Description of FormElement
  *
  * @author gg00xiv
  */
-abstract class FormElement extends HtmlElement {
+abstract class FormElement extends InlineElement {
 
     private $_label;
     private $_validators;
 
-    public function __construct($name, array $attributes = array(), $label = null) {
+    public function __construct($name, array $attributes = null, $label = null) {
         parent::__construct($name, $attributes);
         $this->setLabel($label);
     }

@@ -102,7 +102,7 @@ class DbEntity {
         // set connection and validate it
         $this->connection = Application::instance()->getDbConnection();
         if (!$this->connection)
-            throw new AcceleratorException('No/Invalid connection specified.');
+            throw new \Accelerator\Exception\AcceleratorException('No/Invalid connection specified.');
 
         switch ($this->loadMode) {
             case self::LOAD_MODE_CONFIG:
@@ -136,7 +136,7 @@ class DbEntity {
      */
     public function getFieldValue($fieldName) {
         if (!array_key_exists($fieldName, $this->get_map))
-            throw new AcceleratorException('Invalid field name : ' . $fieldName);
+            throw new \Accelerator\Exception\AcceleratorException('Invalid field name : ' . $fieldName);
         $accessor = $this->get_map[$fieldName];
         $fieldValue = method_exists($this, $accessor) ? $this->$accessor() : $this->$accessor;
         /* if ($fieldValue)
@@ -260,7 +260,7 @@ class DbEntity {
 
     private function checkIntegrity() {
         if (!$this->table)
-            throw new AcceleratorException('No/Invalid table name specified.');
+            throw new \Accelerator\Exception\AcceleratorException('No/Invalid table name specified.');
 
         if ($this->hasPrimaryKey()) {
             // check if only one primary key is defined if auto_increment_pk parameter is set to true
@@ -269,7 +269,7 @@ class DbEntity {
             // verify if primary keys are available in entity
             foreach ($this->primaryKeyColumns as $pk)
                 if (!array_key_exists($pk, $this->get_map) || !array_key_exists($pk, $this->set_map))
-                    throw new AcceleratorException('The ' . $pk . ' primary key get and/or set accessors were not found in current entity.');
+                    throw new \Accelerator\Exception\AcceleratorException('The ' . $pk . ' primary key get and/or set accessors were not found in current entity.');
         }
     }
 

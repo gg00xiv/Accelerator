@@ -22,9 +22,7 @@ class Form extends HtmlElement {
     public function __construct(array $attributes = array()) {
         parent::__construct('form', $attributes);
 
-        if (array_key_exists('method', $attributes)) {
-            $this->setMethod($attributes['method']);
-        }
+        $this->setMethod(array_key_exists('method', $attributes) ? $attributes['method'] : self::METHOD_GET);
     }
 
     /**

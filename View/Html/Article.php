@@ -3,14 +3,14 @@
 namespace Accelerator\View\Html;
 
 /**
- * Description of Button
+ * Description of Article
  *
  * @author gg00xiv
  */
-class Button extends InlineElement {
+class Article extends ContainerElement {
 
     public function __construct(array $attributes = null) {
-        parent::__construct('button', $attributes);
+        parent::__construct('article', $attributes);
     }
 
 }
