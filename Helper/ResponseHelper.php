@@ -37,6 +37,10 @@ abstract class ResponseHelper {
     public static function setContentTypeXml() {
         static::setHeader('Content-Type', 'text/xml');
     }
+    
+    public static function setContentTypeText(){
+        static::setHeader('Content-Type', 'text');
+    }
 
 }
 

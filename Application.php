@@ -34,6 +34,15 @@ class Application {
             self::$_instance = new Application();
         return self::$_instance;
     }
+    
+    /**
+     * Returns the cache configuration section.
+     * 
+     * @return Accelerator\Config
+     */
+    public function getCacheConfig(){
+        return $this->config->cache;
+    }
 
     /**
      * Get the website name defined in configuration file.

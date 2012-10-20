@@ -98,7 +98,7 @@ class RssItem {
     public function getXml() {
         return '<item>' .
                 ($this->getTitle() ? '<title>' . $this->getTitle() . '</title>' : '') .
-                ($this->getDescription() ? '<description>' . $this->getDescription() . '</description>' : '') .
+                ($this->getDescription() ? '<description><![CDATA[' . $this->getDescription() . ']]></description>' : '') .
                 ($this->getPubDate() ? '<pubDate>' . $this->getPubDate() . '</pubDate>' : '') .
                 ($this->getLanguage() ? '<language>' . $this->getLanguage() . '</language>' : '') .
                 ($this->getAuthor() ? '<author>' . $this->getAuthor() . '</author>' : '') .
