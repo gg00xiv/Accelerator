@@ -13,6 +13,11 @@ abstract class Validator {
         $this->msg = $msg;
     }
 
+    /**
+     * Validate string given in parameter.
+     * 
+     * @param string $input
+     */
     public abstract function validate($input);
 
     public function getMessage() {
