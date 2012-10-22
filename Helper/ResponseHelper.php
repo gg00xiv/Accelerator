@@ -34,12 +34,12 @@ abstract class ResponseHelper {
         header($name . ': ' . $value);
     }
 
-    public static function setContentTypeXml() {
-        static::setHeader('Content-Type', 'text/xml');
+    public static function setContentTypeXml($encoding = null) {
+        static::setHeader('Content-Type', 'text/xml' . ($encoding !== null ? '; charset=' . $encoding : ''));
     }
-    
-    public static function setContentTypeText(){
-        static::setHeader('Content-Type', 'text');
+
+    public static function setContentTypeText($encoding = null) {
+        static::setHeader('Content-Type', 'text' . ($encoding !== null ? '; charset=' . $encoding : ''));
     }
 
 }

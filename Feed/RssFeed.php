@@ -14,14 +14,24 @@ class RssFeed {
     private $description;
     private $link;
     private $items;
+    private $encoding = 'utf-8';
 
     public function __construct($xmlObj = null) {
-        if ($xmlE instanceof \SimpleXMLElement)
+        if ($xmlObj instanceof \SimpleXMLElement)
             $this->xmlObj = $xmlObj;
         else if (is_string($xmlObj))
             $this->xmlObj = new \SimpleXMLElement($xmlObj);
         else if ($xmlObj !== null)
             throw new \Accelerator\Exception\ArgumentException('$xmlObj', 'Only xml string or SimpleXMLElement allowed.');
+    }
+
+    /**
+     * Redefine <?xml node encoding attribute value. default is "utf-8"
+     * 
+     * @param string $encoding
+     */
+    public function setXmlEncoding($encoding) {
+        $this->encoding = $encoding;
     }
 
     /**
@@ -59,6 +69,15 @@ class RssFeed {
         $this->link = $link;
     }
 
+    /**
+     * Add inline item or RssItem object to this feed instance.
+     * 
+     * @param \Accelerator\Feed\RssItem $rssItemOrTitle
+     * @param string $description
+     * @param mixed $pubDate
+     * @param string $link
+     * @throws \Accelerator\Exception\ArgumentException
+     */
     public function addItem($rssItemOrTitle, $description = null, $pubDate = null, $link = null) {
         if (!$this->items)
             $this->items = array();
@@ -78,7 +97,7 @@ class RssFeed {
     }
 
     public function getXml() {
-        $xml = '<?xml version="1.0" encoding="utf8" ?>' . "\n" .
+        $xml = '<?xml version="1.0" encoding="' . $this->encoding . '" ?>' . "\n" .
                 '<rss version="2.0">' . "\n" .
                 "\t" . '<channel>' . "\n" .
                 ($this->getTitle() ? "\t\t" . '<title>' . $this->getTitle() . '</title>' . "\n" : '') .
