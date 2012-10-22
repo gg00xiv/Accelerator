@@ -93,7 +93,7 @@ require_once 'relative_path_to/Accelerator/Autoloader.php';
 <h2><a name="config"></a>Config</h2>
 
 <p>The configuration file is the main feature of PAF : It have to be as simple as we would like.</p>
-<p>The example below is the actual configuration file for the <a href="http://megasnippets.com">megasnippets.com</a> website.</p>
+<p>The example below is the near the actual configuration file for the <a href="http://megasnippets.com">megasnippets.com</a> website.</p>
 <pre>
 // notice : __DIR__ refers to this file directory
 
