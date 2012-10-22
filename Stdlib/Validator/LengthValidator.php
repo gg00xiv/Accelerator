@@ -12,7 +12,9 @@ class LengthValidator extends \Accelerator\Stdlib\Validator {
     private $min;
     private $max;
 
-    public function __construct($size) {
+    public function __construct($size, $msg = null) {
+        parent::__construct($msg? : 'Invalid input size.');
+
         if (is_array($size)) {
             if (count($size) != 2)
                 throw new \Accelerator\Exception\ArgumentException('$size', 'Must be an array of two values (ex: array(2,5))');
