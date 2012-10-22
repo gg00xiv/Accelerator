@@ -108,6 +108,13 @@ return array(
             'page_parameter' => 'page',
         ),
     ),
+    'cache' => array(
+        'feedCache' => array(
+            'mode' => 'file',
+            'path' => __DIR__ . '/../cache/',
+            'lifetime' => 3600
+        ),
+    ),
     'model' => array(
         'connection' => array(
             'driver' => 'MySql',
@@ -130,10 +137,7 @@ return array(
             'Home' => array('file' => 'main/index.phtml', 'parent' => 'MainLayout'),
             'Contact' => array('file' => 'main/contact.phtml', 'parent' => 'MainLayout'),
             'About' => array('file' => 'main/about.phtml', 'parent' => 'MainLayout'),
-            'Admin' => array('file' => 'admin/index.phtml', 'parent' => 'AdminMainLayout'),
-            'Login' => array('file' => 'main/login.phtml', 'parent' => 'MainLayout'),
-            'AdminCode' => array('file' => 'admin/code.phtml', 'parent' => 'AdminMainLayout'),
-            'AdminMainLayout' => 'admin/layouts/main.phtml',
+            'Submit' => array('file' => 'main/submit.phtml', 'parent' => 'MainLayout'),
         ),
     ),
     'controllers' => array(
@@ -145,9 +149,9 @@ return array(
             'CodeController',
             'SearchController',
             'AboutController',
-            'AdminIndexController',
-            'AdminCodeController',
             'LoginController',
+            'SubmitController',
+            'FeedController',
         ),
     ),
     'routes' => array(
@@ -161,9 +165,8 @@ return array(
         '/search.php?l=[:lang]&c=[:cat]&q=[:query]&p=[:page]' => array('SearchController', 'Search'),
         '/about' => array('AboutController', 'About'),
         '/contact' => array('ContactController', 'Contact'),
-        '/login' => array('LoginController', 'Login'),
-        '/admin' => array('AdminIndexController', 'Admin'),
-        '/admin/code/[:codeid]' => array('AdminCodeController', 'AdminCode'),
+        '/submit' => array('SubmitController', 'Submit'),
+        '/feed/[:feed]' => 'FeedController',
     ),
 );
 ?>
