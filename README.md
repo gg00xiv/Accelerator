@@ -95,7 +95,6 @@ require_once 'relative_path_to/Accelerator/Autoloader.php';
 <p>The configuration file is the main feature of PAF : It have to be as simple as we would like.</p>
 <p>The example below is the actual configuration file for the <a href="http://megasnippets.com">megasnippets.com</a> website.</p>
 <pre>
-<?php
 // notice : __DIR__ refers to this file directory
 
 return array(
@@ -169,5 +168,4 @@ return array(
         '/feed/[:feed]' => 'FeedController',
     ),
 );
-?>
 </pre>
