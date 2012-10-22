@@ -78,18 +78,29 @@ class RssFeed {
     }
 
     public function getXml() {
-        $xml = '<?xml version="1.0" encoding="utf8"?>' .
-                '<rss>' .
-                ($this->getTitle() ? '<title>' . $this->getTitle() . '</title>' : '') .
-                ($this->getDescription() ? '<descriptino>' . $this->getDescription() . '</description>' : '') .
-                ($this->getLink() ? '<link>' . $this->getLink() . '</link>' : '');
+        $xml = '<?xml version="1.0" encoding="utf8" ?>' . "\n" .
+                '<rss version="2.0">' . "\n" .
+                "\t" . '<channel>' . "\n" .
+                ($this->getTitle() ? "\t\t" . '<title>' . $this->getTitle() . '</title>' . "\n" : '') .
+                ($this->getDescription() ? "\t\t" . '<descriptino>' . $this->getDescription() . '</description>' . "\n" : '') .
+                "\t\t" . '<lastBuildDate>' . date(DATE_RFC822) . '</lastBuildDate>' . "\n" .
+                ($this->getLink() ? "\t\t" . '<link>' . $this->getLink() . '</link>' . "\n" : '');
         if ($this->items) {
             foreach ($this->items as $item) {
                 $xml.=$item;
             }
         }
-        $xml.='</rss>';
+        $xml.="\t" . '</channel>' . "\n" . '</rss>';
         return $xml;
+    }
+
+    /**
+     * Save current feed content to a file on disk.
+     * 
+     * @param string $filename
+     */
+    public function save($filename) {
+        file_put_contents($filename, $this->getXml());
     }
 
     public function __toString() {

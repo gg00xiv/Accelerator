@@ -96,15 +96,15 @@ class RssItem {
     }
 
     public function getXml() {
-        return '<item>' .
-                ($this->getTitle() ? '<title>' . $this->getTitle() . '</title>' : '') .
-                ($this->getDescription() ? '<description><![CDATA[' . $this->getDescription() . ']]></description>' : '') .
-                ($this->getPubDate() ? '<pubDate>' . $this->getPubDate() . '</pubDate>' : '') .
-                ($this->getLanguage() ? '<language>' . $this->getLanguage() . '</language>' : '') .
-                ($this->getAuthor() ? '<author>' . $this->getAuthor() . '</author>' : '') .
-                ($this->getCategory() ? '<category>' . $this->getCategory() . '</category>' : '') .
-                ($this->getLink() ? '<link>' . $this->getLink() . '</link>' : '') .
-                '</item>';
+        return "\t\t" . '<item>' . "\n" .
+                ($this->getTitle() ? "\t\t\t" . '<title>' . $this->getTitle() . '</title>' . "\n" : '') .
+                ($this->getDescription() ? "\t\t\t" . '<description><![CDATA[' . $this->getDescription() . ']]></description>' . "\n" : '') .
+                ($this->getPubDate() ? "\t\t\t" . '<pubDate>' . date(DATE_RFC822, $this->getPubDate()) . '</pubDate>' . "\n" : '') .
+                ($this->getLanguage() ? "\t\t\t" . '<language>' . $this->getLanguage() . '</language>' . "\n" : '') .
+                ($this->getAuthor() ? "\t\t\t" . '<author>' . $this->getAuthor() . '</author>' . "\n" : '') .
+                ($this->getCategory() ? "\t\t\t" . '<category>' . $this->getCategory() . '</category>' . "\n" : '') .
+                ($this->getLink() ? "\t\t\t" . '<link>' . $this->getLink() . '</link>' . "\n" : '') .
+                "\t\t" . '</item>' . "\n";
     }
 
     public function __toString() {
