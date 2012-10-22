@@ -35,7 +35,7 @@ abstract class HtmlElement {
      * 
      * @var array 
      */
-    private $_elements;
+    private $elements;
 
     /**
      * Inner HTML content of this instance if forced.
@@ -45,14 +45,50 @@ abstract class HtmlElement {
     protected $innerHtml;
 
     /**
+     * Indicates whethere to close the open tag by a closing tag or just /&gt;
+     * 
+     * @var boolean 
+     */
+    protected $mustCloseTag;
+
+    /**
      * Create a HTML element.
      * 
      * @param type $name Element tag name.
      * @param array $attributes Element attributes (like class="..." id="...")
      */
-    public function __construct($name, array $attributes = array()) {
+    public function __construct($name, array $attributes = null) {
         $this->name = $name;
         $this->attributes = $attributes;
+    }
+
+    /**
+     * Get the attribute list as an array(attrName=>attrValue)
+     * 
+     * @return array
+     */
+    public function getAttributes() {
+        return $this->attributes? : array();
+    }
+
+    /**
+     * Set an attribute value.
+     * 
+     * @param string $name
+     * @param mixed $value
+     */
+    public function setAttribute($name, $value) {
+        $this->attributes[$name] = $value;
+    }
+
+    /**
+     * Get an attribute value.
+     * 
+     * @param string $name
+     * @return mixed
+     */
+    public function getAttribute($name) {
+        return $this->attributes[$name];
     }
 
     /**
@@ -61,19 +97,16 @@ abstract class HtmlElement {
      * @return array Array of HtmlElement. 
      */
     public function getElements() {
-        return $this->_elements? : array();
+        return $this->elements? : array();
     }
 
     /**
      * Add HTML elements as child to this instance.
      * 
      * @param array $elements Child HTML elements.
-     * @throws \Accelerator\AcceleratorException If at least one element is not a HtmlElement instance.
      */
     public function addElements(array $elements) {
         foreach ($elements as $element) {
-            if (!$element instanceof HtmlElement)
-                throw new \Accelerator\AcceleratorException('Invalid element found.');
             $this->addElement($element);
         }
     }
@@ -84,10 +117,10 @@ abstract class HtmlElement {
      * @param HtmlElement $element Child HTML element.
      */
     public function addElement(HtmlElement $element) {
-        if (!$this->_elements)
-            $this->_elements = array();
+        if (!$this->elements)
+            $this->elements = array();
         $element->parent = $this;
-        $this->_elements[] = $element;
+        $this->elements[] = $element;
     }
 
     /**
@@ -97,7 +130,7 @@ abstract class HtmlElement {
      */
     public function setInnerHtml($html) {
         $this->innerHtml = $html;
-        $this->_elements = null;
+        $this->elements = null;
     }
 
     /**
@@ -107,11 +140,11 @@ abstract class HtmlElement {
      * @return string HTML or null. 
      */
     public function getInnerHtml() {
-        if ($this->innerHtml || $this->innerHtml === '')
+        if ($this->innerHtml)
             return $this->innerHtml;
-        else if ($this->_elements && count($this->_elements) >= 1) {
+        else if ($this->elements && count($this->elements) >= 1) {
             $renderList = array();
-            foreach ($this->_elements as $element) {
+            foreach ($this->elements as $element) {
                 $renderList[] = $element->getHtml();
             }
             return join('', $renderList);
@@ -136,9 +169,9 @@ abstract class HtmlElement {
 
         $innerHtml = $this->getInnerHtml();
 
-        return $innerHtml === null ?
-                $startTag . ' />' :
-                $startTag . '>' . $innerHtml . $endTag;
+        return $this->mustCloseTag || $innerHtml ?
+                $startTag . '>' . $innerHtml . $endTag :
+                $startTag . ' />';
     }
 
     /**

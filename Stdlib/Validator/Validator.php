@@ -1,6 +1,6 @@
 <?php
 
-namespace Accelerator\Stdlib;
+namespace Accelerator\Stdlib\Validator;
 
 /**
  * Description of Validator

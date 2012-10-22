@@ -99,13 +99,14 @@ require_once 'relative_path_to/Accelerator/Autoloader.php';
 
 return array(
     'global' => array(
-        'namespace' => 'MegaSnippets',
-        'base_url' => 'http://megasnippets.com/',
-        'website_name' => 'MegaSnippets',
+        'namespace' => 'MegaSnippets', // website application namespace
+        'base_url' => 'http://megasnippets.com/', // website base url
+        'website_name' => 'MegaSnippets', // website name
         'pagination' => array(
-            'items_per_page' => 40,
-            'page_parameter' => 'page',
+            'items_per_page' => 40, // default number of items to display per page
+            'page_parameter' => 'page', // the page parameter name used in routes config section
         ),
+        'use_session' => true, // auto-start session before calling any controller
     ),
     'cache' => array(
         'feedCache' => array(

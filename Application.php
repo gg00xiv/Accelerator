@@ -23,6 +23,7 @@ class Application {
     private $layouts;
     private $controllers;
     private $routeHandlers;
+    private $session;
 
     /**
      * Application singleton.
@@ -34,13 +35,22 @@ class Application {
             self::$_instance = new Application();
         return self::$_instance;
     }
-    
+
+    /**
+     * Returns the current session used by application.
+     * 
+     * @return Accelerator\Session
+     */
+    public function getSession() {
+        return $this->session;
+    }
+
     /**
      * Returns the cache configuration section.
      * 
      * @return Accelerator\Config
      */
-    public function getCacheConfig(){
+    public function getCacheConfig() {
         return $this->config->cache;
     }
 
@@ -113,8 +123,6 @@ class Application {
      * @return \Accelerator\Application 
      */
     public function run($config) {
-        if ($this->config)
-            return;
         if (!is_array($config))
             throw new Exception\AcceleratorException('$config parameter must be an array.');
 
@@ -128,7 +136,11 @@ class Application {
         $this->loadViews();
         $this->loadControllers();
         $this->loadRoutes();
-        
+
+        $this->session = new Session();
+        if ($this->config->global->autostart_session)
+            $this->session->start();
+
         $this->dispatch();
 
         return $this;
@@ -207,7 +219,7 @@ class Application {
         foreach ($this->config->routes as $route => $routeHandler) {
             $routePath = '/' . trim($route, '/');
 
-            $viewName=null;
+            $viewName = null;
             if (is_string($routeHandler))
                 $controllerName = $routeHandler;
             else if (is_array($routeHandler) || $routeHandler instanceof \ArrayObject) {

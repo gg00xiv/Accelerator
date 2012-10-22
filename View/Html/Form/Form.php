@@ -30,14 +30,13 @@ class Form extends HtmlElement {
      * FormElement elements.
      * 
      * @param HtmlElement $element FormElement element.
-     * @throws AcceleratorException If $element is not instance of FormElement.
      */
     public function addElement(HtmlElement $element) {
-        if (!$element instanceof FormElement)
-            throw new AcceleratorException('Only FormElement objects can be added to Form.');
-        $label = $element->getLabel();
-        if ($label) {
-            parent::addElement($label);
+        if ($element instanceof FormElement) {
+            $label = $element->getLabel();
+            if ($label) {
+                parent::addElement($label);
+            }
         }
         parent::addElement($element);
     }
@@ -191,7 +190,7 @@ class Form extends HtmlElement {
         $html = '<p>Form content :</p>';
         $html . '<ul>';
         foreach ($this->getValues() as $fieldName => $fieldValue) {
-            $html.='<li>' . $fieldName . ' : ' . $fieldValue . '</li>';
+            $html.='<li>' . $fieldName . ' : ' . str_replace("\n", '<br/>', $fieldValue) . '</li>';
         }
         $html.='</ul>';
         MailHelper::sendHtml($to, $fromName, $fromAddress, $subject, $html);

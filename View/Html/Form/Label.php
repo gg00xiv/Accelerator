@@ -8,7 +8,7 @@ use Accelerator\View\Html\InlineElement;
  *
  * @author gg00xiv
  */
-class Label extends InlineElement {
+class Label extends FormElement {
 
     public function __construct($text, FormElement $for, array $attributes = null) {
         parent::__construct('label', array_merge(array('for' => $for->getName()), $attributes? : array()));

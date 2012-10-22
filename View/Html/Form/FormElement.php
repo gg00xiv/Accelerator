@@ -2,19 +2,16 @@
 
 namespace Accelerator\View\Html\Form;
 
-use Accelerator\View\Html\HtmlElement;
-use Accelerator\View\Html\Validator\Validator;
-use Accelerator\View\Html\InlineElement;
-
 /**
  * Description of FormElement
  *
  * @author gg00xiv
  */
-abstract class FormElement extends InlineElement {
+abstract class FormElement extends \Accelerator\View\Html\InlineElement {
 
-    private $_label;
-    private $_validators;
+    private $label;
+    private $validators;
+    private $isValuePersistent = true;
 
     public function __construct($name, array $attributes = null, $label = null) {
         parent::__construct($name, $attributes);
@@ -23,6 +20,14 @@ abstract class FormElement extends InlineElement {
 
     public function getName() {
         return $this->attributes['name'];
+    }
+
+    public function isValuePersistent() {
+        return $this->isValuePersistent;
+    }
+
+    public function setValuePersistency($persistency) {
+        $this->isValuePersistent = $persistency;
     }
 
     /**
@@ -34,17 +39,17 @@ abstract class FormElement extends InlineElement {
     public function setLabel($text) {
         if ($text) {
             if ($text instanceof Label)
-                $this->_label = $text;
+                $this->label = $text;
             else if (is_string($text))
-                $this->_label = new Label($text, $this);
+                $this->label = new Label($text, $this);
 
-            return $this->_label;
+            return $this->label;
         }
         return null;
     }
 
     public function getLabel() {
-        return $this->_label;
+        return $this->label;
     }
 
     public function getValue() {
@@ -60,10 +65,10 @@ abstract class FormElement extends InlineElement {
         
     }
 
-    public function addValidator(Validator $validator) {
-        if (!$this->_validators)
-            $this->_validators = array();
-        $this->_validators[] = $validator;
+    public function addValidator(\Accelerator\Stdlib\Validator\Validator $validator) {
+        if (!$this->validators)
+            $this->validators = array();
+        $this->validators[] = $validator;
     }
 
     public function isValid() {
@@ -75,8 +80,8 @@ abstract class FormElement extends InlineElement {
         if (!$this->parent->isPostBack())
             return true;
 
-        if ($this->_validators) {
-            foreach ($this->_validators as $validator)
+        if ($this->validators) {
+            foreach ($this->validators as $validator)
                 if (!$validator->validate($this->getValue())) {
                     $this->_isValid = false;
                     break;
@@ -87,12 +92,12 @@ abstract class FormElement extends InlineElement {
     }
 
     public function getHtml() {
-        if ($this->parent->isPostBack()) {
+        if ($this->parent->isPostBack() && $this->isValuePersistent) {
             $this->setValue($this->getValue());
         }
         $output = parent::getHtml();
         if (!$this->isValid()) {
-            foreach ($this->_validators as $validator) {
+            foreach ($this->validators as $validator) {
                 if (!$validator->validate($this->getValue())) {
                     $msg = $validator->getMessage();
                     $template = $this->parent->getValidationTemplate();

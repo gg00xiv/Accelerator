@@ -7,7 +7,7 @@ namespace Accelerator\Stdlib\Validator;
  *
  * @author gg00xiv
  */
-class LengthValidator extends \Accelerator\Stdlib\Validator {
+class LengthValidator extends Validator {
 
     private $min;
     private $max;

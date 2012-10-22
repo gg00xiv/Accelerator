@@ -9,15 +9,29 @@ namespace Accelerator\View\Html\Form;
  */
 class TextBox extends FormElement {
 
-    public function __construct($name, $multipleLines = false, array $attributes = null, $label = null) {
-        parent::__construct($multipleLines ? 'textarea' : 'input', array_merge(
-                        array('name' => $name), $multipleLines ? array() : array('type' => 'text'), $attributes? : array()), $label);
-        if ($multipleLines)
-            parent::setInnerHtml('');
+    private $isMultilines;
+
+    public function __construct($name, $isMultilines = false, array $attributes = null, $label = null) {
+        parent::__construct($isMultilines ? 'textarea' : 'input', array_merge(
+                        array('name' => $name), $isMultilines ? array() : array('type' => 'text'), $attributes? : array()), $label);
+        $this->isMultilines = $isMultilines;
+        if ($this->isMultilines)
+            $this->mustCloseTag = true;
     }
-    
-    public function setValue($value){
-        $this->attributes['value'] = $value;
+
+    public function isMultilines() {
+        return $this->isMultilines;
+    }
+
+    public function setMultilines($isMultilines) {
+        $this->isMultilines = $isMultilines;
+    }
+
+    public function setValue($value) {
+        if ($this->isMultilines)
+            $this->setInnerHtml($value);
+        else if ($value)
+            $this->attributes['value'] = $value;
     }
 
 }

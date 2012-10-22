@@ -7,7 +7,7 @@ namespace Accelerator\Stdlib\Validator;
  *
  * @author gg00xiv
  */
-class RequiredValidator extends \Accelerator\Stdlib\Validator {
+class RequiredValidator extends Validator {
 
     public function __construct($msg = null) {
         parent::__construct($msg? : 'Required');

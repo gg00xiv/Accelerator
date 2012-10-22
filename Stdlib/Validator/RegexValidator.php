@@ -7,7 +7,7 @@ namespace Accelerator\Stdlib\Validator;
  *
  * @author gg00xiv
  */
-class RegexValidator extends \Accelerator\Stdlib\Validator {
+class RegexValidator extends Validator {
 
     private $validationPattern;
 
