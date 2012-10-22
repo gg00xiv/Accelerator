@@ -132,6 +132,16 @@ class Form extends HtmlElement {
     }
 
     /**
+     * Mixed call of isPostBack and isValid.
+     * $this->isPostBackIsValid() is equivalent to : $this->isPostBack() && $this->isValid()
+     * 
+     * @return boolean
+     */
+    public function isPostBackValid() {
+        return $this->isPostBack() && $this->isValid();
+    }
+
+    /**
      * When form is successfully submitted, display the $html in place.
      * 
      * @param string $html 
