@@ -21,7 +21,7 @@ abstract class Autoloader {
      * @param array $namespaces Autoloaded class namespaces.
      */
     public static function register(array $namespaces) {
-        static::$namespaces = $namespaces;
+        self::$namespaces = $namespaces;
         spl_autoload_register(array('\Accelerator\Autoloader', 'autoload'));
     }
 
@@ -31,25 +31,29 @@ abstract class Autoloader {
      * @param string $classpath Full class name.
      */
     public static function autoload($classpath) {
-        foreach (static::$namespaces as $namespace => $paths) {
+        foreach (self::$namespaces as $namespace => $paths) {
             if (is_string($paths))
                 $paths = array($paths);
             foreach ($paths as $path) {
-                $namespace = trim($namespace, static::NS_SEPARATOR);
-                if ($namespace == trim(substr($classpath, 0, strlen($namespace)), static::NS_SEPARATOR)) {
+                $namespace = trim($namespace, self::NS_SEPARATOR);
+                if ($namespace == trim(substr($classpath, 0, strlen($namespace)), self::NS_SEPARATOR)) {
                     $child_classpath = substr($classpath, strlen($namespace));
-                    $child_path = $path . str_replace(static::NS_SEPARATOR, static::PATH_SEPARATOR, $child_classpath) . '.php';
+                    $child_path = $path . str_replace(self::NS_SEPARATOR, self::PATH_SEPARATOR, $child_classpath) . '.php';
 
                     if (!file_exists($child_path)) {
                         $child_path = strtolower(dirname($child_path))
-                                . static::PATH_SEPARATOR
+                                . self::PATH_SEPARATOR
                                 . basename($child_path);
                     }
-                    if (file_exists($child_path))
+                    if (file_exists($child_path)) {
                         include_once $child_path;
+                        return;
+                    }
                 }
             }
         }
+
+        throw new Exception\AutoloadException('No file found for inclusion matching ' . $classpath);
     }
 
 }
