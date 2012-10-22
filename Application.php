@@ -107,12 +107,12 @@ class Application {
     }
 
     /**
-     * Load Application config.
+     * Load Application config and start dispatching.
      * 
      * @param array $config
      * @return \Accelerator\Application 
      */
-    public function init($config) {
+    public function run($config) {
         if ($this->config)
             return;
         if (!is_array($config))
@@ -128,6 +128,8 @@ class Application {
         $this->loadViews();
         $this->loadControllers();
         $this->loadRoutes();
+        
+        $this->dispatch();
 
         return $this;
     }
@@ -136,13 +138,13 @@ class Application {
      * Dispatch current request to the right controller.
      * 
      * @return \Accelerator\Application The Application instance.
-     * @throws AcceleratorException If the request path is invalid.
+     * @throws Exception\ConfigurationException If the request path is invalid.
      */
-    public function dispatch() {
+    private function dispatch() {
 
         $full_route_uri = 'http://' . $_SERVER['SERVER_NAME'] . '/' . ltrim($_SERVER['REQUEST_URI'], '/');
         if (substr($full_route_uri, 0, strlen($this->config->global->base_url)) != $this->config->global->base_url)
-            throw new Exception\AcceleratorException('Invalid script base url : ' . $full_route_uri);
+            throw new Exception\ConfigurationException('Invalid script base url : ' . $full_route_uri);
 
         $routePath = '/' . trim(substr($full_route_uri, strlen($this->config->global->base_url)), '/');
 
@@ -190,7 +192,7 @@ class Application {
         $this->controllers = array();
         $controllerNamespace = rtrim($this->config->global->namespace, '\\') . '\\' . trim($this->config->controllers->namespace, '\\');
         if (!$this->config->controllers || !$this->config->controllers->list || !is_array($this->config->controllers->list) || count($this->config->controllers->list) == 0)
-            throw new Exception\AcceleratorException('No controller defined in config.');
+            throw new Exception\ConfigurationException('No controller defined in config.');
 
         foreach ($this->config->controllers->list as $controllerClass) {
             $controllerClassPath = $controllerNamespace . '\\' . trim($controllerClass, '\\');
@@ -220,7 +222,7 @@ class Application {
             }
 
             if (!$controllerName)
-                throw new Exception\AcceleratorException('Invalid route handler for route : ' . $route);
+                throw new Exception\ConfigurationException('Invalid route handler for route : ' . $route);
 
             $controller = $this->controllers[$controllerName];
             $view = $viewName ?
