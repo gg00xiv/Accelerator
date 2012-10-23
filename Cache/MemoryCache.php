@@ -19,13 +19,14 @@ class MemoryCache extends Cache {
         if (!array_key_exists($key, $this->hashMap))
             return null;
 
-        $data = $this->hashMap[$key];
-        if ($data['expiration'] && time() > $data['lifetime']) {
+        $item = $this->hashMap[$key];
+        
+        // If content has expired, destroy item cache file.
+        if ($item->hasExpired()) {
             unset($this->hashMap[$key]);
-            return null;
         }
-
-        return $data['data'];
+        
+        return $item;
     }
 
     public function put($key, $data, $lifetime = null) {

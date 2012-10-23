@@ -2,13 +2,6 @@
 
 namespace Accelerator\Model;
 
-use Accelerator\AcceleratorException;
-use Accelerator\Model\SqlHelper;
-use Accelerator\Application;
-use \ReflectionClass;
-use \ReflectionProperty;
-use \ReflectionMethod;
-
 /**
  * DbEntity is a class your model objects should inherits to implement
  * connectivity to Application database.
@@ -91,6 +84,7 @@ class DbEntity {
      */
     protected $set_map = array();
     protected $encoding = 'utf-8';
+    private static $configCache;
 
     /**
      * Create a generic DbEntity based on a table name.
@@ -99,27 +93,50 @@ class DbEntity {
      * @throws \Accelerator\AcceleratorException
      */
     public function __construct(array $initVars = array()) {
-        // set connection and validate it
-        $this->connection = Application::instance()->getDbConnection();
-        if (!$this->connection)
-            throw new \Accelerator\Exception\AcceleratorException('No/Invalid connection specified.');
 
-        switch ($this->loadMode) {
-            case self::LOAD_MODE_CONFIG:
-                $config = Application::instance()->getEntityConfig($this);
-                $this->initFromConfig($config);
-                break;
+        if (!self::$configCache)
+            self::$configCache = new \Accelerator\Cache\MemoryCache ();
 
-            case self::LOAD_MODE_FIELDS:
-                $this->initFromVars();
-                break;
+        $calledClassName = get_called_class();
+        if (($selfConfig = self::$configCache->get($calledClassName)) == null) {
+            // set connection and validate it
+            $this->connection = \Accelerator\Application::instance()->getDbConnection();
+            if (!$this->connection)
+                throw new Exception\ModelException('No/Invalid connection specified.');
 
-            case self::LOAD_MODE_METHODS:
-                $this->initFromMethods();
-                break;
+            switch ($this->loadMode) {
+                case self::LOAD_MODE_CONFIG:
+                    $config = \Accelerator\Application::instance()->getEntityConfig($this);
+                    $this->initFromConfig($config);
+                    break;
+
+                case self::LOAD_MODE_FIELDS:
+                    $this->initFromVars();
+                    break;
+
+                case self::LOAD_MODE_METHODS:
+                    $this->initFromMethods();
+                    break;
+            }
+
+            $this->checkIntegrity();
+
+            self::$configCache->put($calledClassName, array(
+                'connection' => $this->connection,
+                'loadMode' => $this->loadMode,
+                'autoIncrementPk' => $this->autoIncrementPk,
+                'primaryKeyColumns' => $this->primaryKeyColumns,
+                'primaryKeyColumn' => $this->primaryKeyColumn,
+                'set_map' => $this->set_map,
+                'get_map' => $this->get_map,
+                'table' => $this->table,
+                'encoding' => $this->encoding,
+            ));
+        } else {
+            foreach ($selfConfig as $property => $value) {
+                $this->$property = $value;
+            }
         }
-
-        $this->checkIntegrity();
 
         foreach ($initVars as $var => $value) {
             $this->$var = $value;
@@ -136,7 +153,7 @@ class DbEntity {
      */
     public function getFieldValue($fieldName) {
         if (!array_key_exists($fieldName, $this->get_map))
-            throw new \Accelerator\Exception\AcceleratorException('Invalid field name : ' . $fieldName);
+            throw new Exception\ModelException('Invalid field name : ' . $fieldName);
         $accessor = $this->get_map[$fieldName];
         $fieldValue = method_exists($this, $accessor) ? $this->$accessor() : $this->$accessor;
         /* if ($fieldValue)
@@ -260,16 +277,16 @@ class DbEntity {
 
     private function checkIntegrity() {
         if (!$this->table)
-            throw new \Accelerator\Exception\AcceleratorException('No/Invalid table name specified.');
+            throw new Exception\ModelException('No/Invalid table name specified.');
 
         if ($this->hasPrimaryKey()) {
             // check if only one primary key is defined if auto_increment_pk parameter is set to true
             if ($this->autoIncrementPk && count($this->primaryKeyColumns) != 1)
-                throw new AcceleratorException('You must declare one and only one primary key column when auto_increment_pk parameter is set to true.');
+                throw new Exception\ModelException('You must declare one and only one primary key column when auto_increment_pk parameter is set to true.');
             // verify if primary keys are available in entity
             foreach ($this->primaryKeyColumns as $pk)
                 if (!array_key_exists($pk, $this->get_map) || !array_key_exists($pk, $this->set_map))
-                    throw new \Accelerator\Exception\AcceleratorException('The ' . $pk . ' primary key get and/or set accessors were not found in current entity.');
+                    throw new Exception\ModelException('The ' . $pk . ' primary key get and/or set accessors were not found in current entity.');
         }
     }
 
@@ -308,9 +325,9 @@ class DbEntity {
     private function initFromVars() {
         $this->initPrimaryKeyColumns();
 
-        $rClass = new ReflectionClass($this);
+        $rClass = new \ReflectionClass($this);
 
-        $vars = $rClass->getProperties(ReflectionProperty::IS_PUBLIC);
+        $vars = $rClass->getProperties(\ReflectionProperty::IS_PUBLIC);
         foreach ($vars as $var) {
             $fieldName = $var->getName();
             $this->get_map[$fieldName] = $fieldName;
@@ -321,9 +338,9 @@ class DbEntity {
     private function initFromMethods() {
         $this->initPrimaryKeyColumns();
 
-        $rClass = new ReflectionClass($this);
+        $rClass = new \ReflectionClass($this);
 
-        $methods = $rClass->getMethods(ReflectionMethod::IS_PUBLIC);
+        $methods = $rClass->getMethods(\ReflectionMethod::IS_PUBLIC);
         foreach ($methods as $method) {
             $methodName = $method->getName();
             if (strtolower(substr($methodName, 0, 3)) == 'get') {
