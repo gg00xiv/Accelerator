@@ -15,7 +15,14 @@ class CaptchaValidator extends Validator {
      */
     private $captcha;
 
-    public function __construct($captcha, $msg = null) {
+    /**
+     * Create a validator based on a Captcha derivated class.
+     * 
+     * @param \Accelerator\Captcha\Captcha $captcha
+     * @param string $msg
+     * @throws \Accelerator\Exception\ArgumentNullException
+     */
+    public function __construct(\Accelerator\Captcha\Captcha $captcha, $msg = null) {
         if (!$captcha)
             throw new \Accelerator\Exception\ArgumentNullException('$captcha');
 
@@ -24,7 +31,7 @@ class CaptchaValidator extends Validator {
         parent::__construct($msg? : 'Invalid captcha');
     }
 
-    public function validate($input) {
+    protected function onValidate($input) {
         return $this->captcha->isValid($input);
     }
 
