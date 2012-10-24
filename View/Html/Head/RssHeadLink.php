@@ -10,7 +10,7 @@ namespace Accelerator\View\Html\Head;
 class RssHeadLink extends HeadLink {
 
     public function __construct($href, array $attributes = null) {
-        parent::__construct('alternate', $href, 'application/rss+xml', $attributes);
+        parent::__construct('alternate', 'application/rss+xml', $href, $attributes);
     }
 
 }

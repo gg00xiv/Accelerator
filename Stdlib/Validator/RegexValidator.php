@@ -16,7 +16,7 @@ class RegexValidator extends Validator {
         $this->validationPattern = $validationPattern;
     }
 
-    public function validate($input) {
+    protected function onValidate($input) {
         return preg_match($this->validationPattern, $input);
     }
 

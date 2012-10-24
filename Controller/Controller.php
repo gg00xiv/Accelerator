@@ -68,7 +68,7 @@ abstract class Controller {
         $this->parameters = $parameters;
         $r = $this->onExecute();
         if ($view)
-            $view->render($this);
+            $view->render();
         else
             echo $r;
     }

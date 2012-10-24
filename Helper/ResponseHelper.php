@@ -34,12 +34,20 @@ abstract class ResponseHelper {
         header($name . ': ' . $value);
     }
 
+    public static function setContentType($mimeType, $encoding = null) {
+        self::setHeader('Content-Type', $mimeType . ($encoding !== null ? '; charset=' . $encoding : ''));
+    }
+
     public static function setContentTypeXml($encoding = null) {
-        static::setHeader('Content-Type', 'text/xml' . ($encoding !== null ? '; charset=' . $encoding : ''));
+        self::setContentType('text/xml', $encoding);
+    }
+    
+    public static function setContentTypePng(){
+        self::setContentType('image/png');
     }
 
     public static function setContentTypeText($encoding = null) {
-        static::setHeader('Content-Type', 'text' . ($encoding !== null ? '; charset=' . $encoding : ''));
+        self::setContentType('text', $encoding);
     }
 
 }

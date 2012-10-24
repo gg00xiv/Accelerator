@@ -13,7 +13,7 @@ class RequiredValidator extends Validator {
         parent::__construct($msg? : 'Required');
     }
 
-    public function validate($input) {
+    protected function onValidate($input) {
         return $input ? true : false;
     }
 

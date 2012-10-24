@@ -2,16 +2,12 @@
 
 namespace Accelerator\View\Html\Form;
 
-use Accelerator\View\Html\HtmlElement;
-use Accelerator\AcceleratorException;
-use Accelerator\Helper\MailHelper;
-
 /**
  * Description of Form
  *
  * @author gg00xiv
  */
-class Form extends HtmlElement {
+class Form extends \Accelerator\View\Html\HtmlElement {
 
     const METHOD_POST = 'POST';
     const METHOD_GET = 'GET';
@@ -29,9 +25,9 @@ class Form extends HtmlElement {
      * Override addElement of HtmlElement class to restrict adding element to
      * FormElement elements.
      * 
-     * @param HtmlElement $element FormElement element.
+     * @param \Accelerator\View\Html\HtmlElement $element FormElement element.
      */
-    public function addElement(HtmlElement $element) {
+    public function addElement(\Accelerator\View\Html\HtmlElement $element) {
         if ($element instanceof FormElement) {
             $label = $element->getLabel();
             if ($label) {
@@ -45,11 +41,11 @@ class Form extends HtmlElement {
      * Set the method used for data transmission.
      * 
      * @param string $method method name from Form::METHOD_xxx consts.
-     * @throws \Accelerator\AcceleratorException If method name is not known.
+     * @throws \Accelerator\View\Html\Exception\HtmlException If method name is not known.
      */
     public function setMethod($method) {
         if (!in_array($method, array(self::METHOD_GET, self::METHOD_POST))) {
-            throw new AcceleratorException('Invalid method : ' . $method);
+            throw new \Accelerator\View\Html\Exception\HtmlException('Invalid method : ' . $method);
         }
 
         $this->attributes['method'] = $method;
@@ -69,7 +65,7 @@ class Form extends HtmlElement {
      * 
      * @param string $name Field name.
      * @return mixed Field value.
-     * @throws \Accelerator\AcceleratorException If field name doesn't exists.
+     * @throws \Accelerator\View\Html\Exception\HtmlException If field name doesn't exists.
      */
     public function getValue($name) {
         foreach ($this->getElements() as $element) {
@@ -78,7 +74,7 @@ class Form extends HtmlElement {
             if ($element->getName() == $name)
                 return $element->getValue();
         }
-        throw new AcceleratorException('Value not found for : ' . $name);
+        throw new \Accelerator\View\Html\Exception\HtmlException('Value not found for : ' . $name);
     }
 
     /**
@@ -193,7 +189,7 @@ class Form extends HtmlElement {
             $html.='<li>' . $fieldName . ' : ' . str_replace("\n", '<br/>', $fieldValue) . '</li>';
         }
         $html.='</ul>';
-        MailHelper::sendHtml($to, $fromName, $fromAddress, $subject, $html);
+        \Accelerator\Helper\MailHelper::sendHtml($to, $fromName, $fromAddress, $subject, $html);
     }
 
 }

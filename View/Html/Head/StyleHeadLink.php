@@ -10,7 +10,7 @@ namespace Accelerator\View\Html\Head;
 class StyleHeadLink extends HeadLink {
 
     public function __construct($href, array $attributes = null) {
-        parent::__construct('stylesheet', $href, 'text/css', $attributes);
+        parent::__construct('stylesheet', 'text/css', $href, $attributes);
     }
 
 }

@@ -26,7 +26,7 @@ class LengthValidator extends Validator {
         parent::__construct($msg? : 'Length must be between ' . $this->min . ' and ' . $this->max);
     }
 
-    public function validate($input) {
+    protected function onValidate($input) {
         return strlen($input) >= $this->min && strlen($input) <= $this->max;
     }
 

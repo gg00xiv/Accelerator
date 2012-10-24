@@ -117,16 +117,17 @@ class Application {
     }
 
     /**
-     * Load Application config and start dispatching.
+     * Load application configuration and start dispatching current request.
      * 
      * @param array $config
-     * @return \Accelerator\Application 
+     * @return \Accelerator\Application
      */
-    public function run($config) {
-        if (!is_array($config))
-            throw new Exception\AcceleratorException('$config parameter must be an array.');
+    public function run(array $config) {
 
         $this->config = new Config($config);
+
+        if ($this->config->log)
+            Log\LogManager::init($this->config->log);
 
         $gdb = new GenericDatabase($this->config->model->connection);
         $this->dbConnection = $gdb->getConnection();

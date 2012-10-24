@@ -43,6 +43,14 @@ class Session {
         $_SESSION[$name] = $value;
     }
 
+    public function get($name) {
+        return $this->$name;
+    }
+
+    public function set($name, $value) {
+        $this->$name = $value;
+    }
+
 }
 
 ?>

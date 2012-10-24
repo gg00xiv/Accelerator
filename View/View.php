@@ -2,12 +2,6 @@
 
 namespace Accelerator\View;
 
-use Accelerator\AcceleratorException;
-use Accelerator\Application;
-use Accelerator\View\Html\HeadLink;
-use Accelerator\View\Html\HeadMeta;
-use Accelerator\View\Html\ScriptLink;
-
 /**
  * A View represents the PHP code behind a user interface (here a web page).
  * A View can have a parent and a child (see application configuration file).
@@ -18,13 +12,11 @@ class View {
 
     private $_path;
     private $_parentViewName;
-    private $_parameters;
     private $_title;
     private $_itemsPerPage;
     private $_description;
     private $_parentView;
     private $_renderViews;
-    private $_styleSheets;
     private $_headLinks;
     private $_headMetas;
     private $_headScripts;
@@ -37,14 +29,14 @@ class View {
      * @param string $parentViewName The parent view name defined in configuration file.
      * @param string $pageParameter The page parameter name containing page index.
      * @param int $itemsPerPage The number of items per page.
-     * @throws \Accelerator\AcceleratorException
+     * @throws Html\Exception\HtmlException
      */
     public function __construct($path, $parentViewName = null, $itemsPerPage = null) {
         if (!is_string($path) || empty($path))
-            throw new AcceleratorException('Invalid parameters.');
+            throw new Html\Exception\HtmlException('Invalid parameters.');
 
         if ($parentViewName && !is_string($parentViewName))
-            throw new AcceleratorException('Invalid parent view name : ' . $parentViewName);
+            throw new Html\Exception\HtmlException('Invalid parent view name : ' . $parentViewName);
 
         $this->_path = $path;
         $this->_parentViewName = $parentViewName;
@@ -60,13 +52,13 @@ class View {
      * Get the parent view of this View instance.
      * 
      * @return \Accelerator\View\View A View instance or nothing.
-     * @throws \Accelerator\AcceleratorException
+     * @throws Html\Exception\HtmlException
      */
     public function getParentView() {
         if (!$this->_parentView && $this->_parentViewName) {
             $this->_parentView = $this->getApplication()->getView($this->_parentViewName);
             if (!$this->_parentView)
-                throw new AcceleratorException('Parent view not found : ' . $this->_parentViewName);
+                throw new Html\Exception\HtmlException('Parent view not found : ' . $this->_parentViewName);
             $this->_parentView->_childView = $this;
         }
         return $this->_parentView;
@@ -78,7 +70,7 @@ class View {
      * @return \Accelerator\Application Application instance.
      */
     public function getApplication() {
-        return Application::instance();
+        return \Accelerator\Application::instance();
     }
 
     /**
@@ -144,10 +136,10 @@ class View {
     }
 
     public function addMeta($metaOrName, $content = null) {
-        if ($metaOrName instanceof HeadMeta) {
+        if ($metaOrName instanceof Html\Head\HeadMeta) {
             $meta = $metaOrName;
         } else if (is_string($metaOrName) && $content) {
-            $meta = new HeadMeta($metaOrName, $content);
+            $meta = new Html\Head\HeadMeta($metaOrName, $content);
         }
 
         if ($meta) {
@@ -158,10 +150,10 @@ class View {
     }
 
     public function addHeadLink($relOrLink, $href = null) {
-        if ($relOrLink instanceof HeadLink) {
+        if ($relOrLink instanceof Html\Head\HeadLink) {
             $link = $relOrLink;
         } else if (is_string($relOrLink) && $href) {
-            $link = new HeadLink($relOrLink, $href);
+            $link = new Html\Head\HeadLink($relOrLink, $href);
         }
 
         if ($link) {
@@ -172,10 +164,10 @@ class View {
     }
 
     public function addHeadScript($srcOrScript) {
-        if ($srcOrScript instanceof ScriptLink) {
+        if ($srcOrScript instanceof Html\Head\ScriptLink) {
             $script = $srcOrScript;
         } else if (is_string($srcOrScript)) {
-            $script = new ScriptLink($srcOrScript);
+            $script = new Html\Head\ScriptLink($srcOrScript);
         }
 
         if ($script) {
