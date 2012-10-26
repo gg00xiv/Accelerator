@@ -92,7 +92,7 @@ class DbEntity {
      * @param array $initVars Initialize instance vars.
      * @throws \Accelerator\AcceleratorException
      */
-    public function __construct(array $initVars = array()) {
+    public function __construct(array $initVars = null) {
 
         if (!self::$configCache)
             self::$configCache = new \Accelerator\Cache\MemoryCache ();
@@ -138,8 +138,10 @@ class DbEntity {
             }
         }
 
-        foreach ($initVars as $var => $value) {
-            $this->$var = $value;
+        if ($initVars) {
+            foreach ($initVars as $var => $value) {
+                $this->$var = $value;
+            }
         }
     }
 
@@ -156,8 +158,7 @@ class DbEntity {
             throw new Exception\ModelException('Invalid field name : ' . $fieldName);
         $accessor = $this->get_map[$fieldName];
         $fieldValue = method_exists($this, $accessor) ? $this->$accessor() : $this->$accessor;
-        /* if ($fieldValue)
-          $fieldValue = mb_convert_encoding($fieldValue, $this->encoding, mb_detect_encoding($fieldValue)); */
+        
         return $fieldValue;
     }
 
@@ -174,7 +175,6 @@ class DbEntity {
                 $fieldName :
                 $this->set_map[$fieldName];
 
-        //$fieldValue = mb_convert_encoding($fieldValue, $this->encoding, mb_detect_encoding($fieldValue));
         if (method_exists($this, $accessor))
             $this->$accessor($fieldValue);
         else

@@ -42,14 +42,15 @@ class MySqlConnection extends DbConnection {
      * 
      * @param string $sql SQL statement.
      * @return array Row set array. 
+     * @throws \Accelerator\Model\Exception\ModelException
      */
     public function executeQuery($sql) {
         if (in_array(strtolower(substr($sql, 0, 7)), array('insert ', 'update ', 'delete ')))
-            throw new \Accelerator\Exception\AcceleratorException('executeNonQuery method cannot execute SELECT SQL statement.');
+            throw new \Accelerator\Model\Exception\ModelException('executeNonQuery method cannot execute SELECT SQL statement.');
 
         $req = mysql_query($sql, $this->dbLink);
         if (!$req)
-            throw new \Accelerator\Exception\AcceleratorException("Invalid request : \n".$sql."\n".mysql_error());
+            throw new \Accelerator\Model\Exception\ModelException("Invalid request : \n".$sql."\n".mysql_error());
         $rowset = array();
         while ($row = mysql_fetch_array($req))
             $rowset[] = $row;
@@ -62,15 +63,15 @@ class MySqlConnection extends DbConnection {
      * @param type $sql SQL statement.
      * @param type $mustReturnAutoId
      * @return mixed Nothing or auto generated id for INSERT SQL statement.
-     * @throws AcceleratorException If called with SELECT SQL statement.
+     * @throws \Accelerator\Model\Exception\ModelException If called with SELECT SQL statement.
      */
     public function executeNonQuery($sql, $mustReturnAutoId = false) {
         if (strtolower(substr($sql, 0, 7)) == 'select ')
-            throw new \Accelerator\Exception\AcceleratorException('executeNonQuery method cannot execute SELECT SQL statement.');
+            throw new \Accelerator\Model\Exception\ModelException('executeNonQuery method cannot execute SELECT SQL statement.');
 
         $req = mysql_query($sql, $this->dbLink);
         if (!$req)
-            throw new \Accelerator\Exception\AcceleratorException('Invalid request : '.mysql_error());
+            throw new \Accelerator\Model\Exception\ModelException('Invalid request : '.mysql_error());
         if ($mustReturnAutoId)
             return mysql_insert_id($this->dbLink);
     }

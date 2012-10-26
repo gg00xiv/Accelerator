@@ -32,12 +32,12 @@ abstract class EntityManager {
      * 
      * @param \Accelerator\Model\DbEntity $template The DbEntity to use as template for entities retrieved.
      * @param string $sql SQL full SELECT request.
-     * @return array Array of \Accelerator\Model\DbEntity of $template type. 
+     * @return \Accelerator\Model\DbEntityCollection
      */
     public static function selectWhereSql(DbEntity $template, $sql) {
         $rowset = $template->getConnection()->executeQuery($sql);
 
-        $entities = array();
+        $entities = new DbEntityCollection();
         foreach ($rowset as $row) {
             $entity = clone $template;
             foreach ($row as $column => $value) {
@@ -45,7 +45,7 @@ abstract class EntityManager {
                     continue;
                 $entity->setFieldValue($column, $value);
             }
-            $entities[] = $entity;
+            $entities->append($entity);
         }
 
         return $entities;
