@@ -158,7 +158,7 @@ class DbEntity {
             throw new Exception\ModelException('Invalid field name : ' . $fieldName);
         $accessor = $this->get_map[$fieldName];
         $fieldValue = method_exists($this, $accessor) ? $this->$accessor() : $this->$accessor;
-        
+
         return $fieldValue;
     }
 
@@ -259,7 +259,17 @@ class DbEntity {
     public function delete() {
         $sql = SqlHelper::delete($this->table, $this->getPrimaryKeyValues());
 
-        $this->connection->executeNonQuery($sql);
+        $this->_isDeleted = true;
+        return $this->connection->executeNonQuery($sql);
+    }
+
+    /**
+     * Checks whether the current entity has been deleted from database.
+     * 
+     * @return boolean
+     */
+    public function isDeleted() {
+        return $this->_isDeleted;
     }
 
     /**
@@ -377,7 +387,7 @@ class DbEntity {
     }
 
     private function update() {
-        $sql = SqlHelper::update($this->table, $this->getSetFieldValues(), $this->getPrimaryKeyValues());
+        $sql = SqlHelper::update($this->table, $this->getColumnValues(), $this->getPrimaryKeyValues());
 
         $this->connection->executeNonQuery($sql);
     }
