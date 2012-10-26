@@ -44,6 +44,15 @@ class Application {
     public function getSession() {
         return $this->session;
     }
+    
+    /**
+     * Returns the default contact email for this website.
+     * 
+     * @return string
+     */
+    public function getContactEmail(){
+        return $this->config->global->contact_email;
+    }
 
     /**
      * Returns the cache configuration section.
@@ -165,7 +174,9 @@ class Application {
             $routePattern = '|^' . preg_replace(array('/(\?|\.)/', '/\[:(\w+)\]/i'), array('\\\\$1', '(?<$1>[^&/]*)'), $route) . '$|i';
 
             if (preg_match($routePattern, $routePath, $matches)) {
-                $parameters = new \ArrayObject($matches, \ArrayObject::ARRAY_AS_PROPS);
+                $parameters = new \ArrayObject(array(), \ArrayObject::ARRAY_AS_PROPS);
+                foreach ($matches as $name => $value)
+                    $parameters->$name = urldecode($value);
                 $controller = $routeHandler[0];
                 $view = $routeHandler[1];
                 $controller->execute($view, $parameters);

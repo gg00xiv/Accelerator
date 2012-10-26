@@ -9,7 +9,10 @@ namespace Accelerator\View\Decorator;
  */
 abstract class ListDecorator extends \Accelerator\Stdlib\Decorator {
 
-    public function __construct(array $list) {
+    public function __construct($list) {
+        /*if (!is_array($list) && !$list instanceof Traversable)
+            throw new \Accelerator\Exception\ArgumentException('$list', 'Must be Traversable or array instance.');*/
+        
         parent::__construct($list);
     }
 
@@ -26,6 +29,7 @@ abstract class ListDecorator extends \Accelerator\Stdlib\Decorator {
     public function __toString() {
         return $this->getList();
     }
+
 }
 
 ?>

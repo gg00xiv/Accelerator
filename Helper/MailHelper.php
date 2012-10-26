@@ -2,8 +2,6 @@
 
 namespace Accelerator\Helper;
 
-use Accelerator\AcceleratorException;
-
 /**
  * Description of MailHelper
  *
@@ -11,9 +9,27 @@ use Accelerator\AcceleratorException;
  */
 abstract class MailHelper {
 
+    /**
+     * Send an HTML formatted email.
+     * 
+     * @param string $to
+     * @param string $fromName
+     * @param string $fromAddress
+     * @param string $subject
+     * @param string $html
+     * @param string $encoding
+     * @return boolean mail function return.
+     * @throws \Accelerator\Exception\ArgumentNullException
+     */
     public static function sendHtml($to, $fromName, $fromAddress, $subject, $html, $encoding = 'utf-8') {
-        if (!$to || !$fromName || !$fromAddress || !$subject || !$html)
-            throw new AcceleratorException('Invalid mail parameter.');
+        if (!$to)
+            throw new \Accelerator\Exception\ArgumentNullException('$to');
+        if (!$fromName)
+            throw new \Accelerator\Exception\ArgumentNullException('$fromName');
+        if (!$fromAddress)
+            throw new \Accelerator\Exception\ArgumentNullException('$fromAddress');
+        if (!$subject)
+            throw new \Accelerator\Exception\ArgumentNullException('$subject');
 
         $headers = 'From: "' . $fromName . '" <' . $fromAddress . '>' . "\n";
         $headers .= "MIME-Version: 1.0\n";

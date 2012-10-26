@@ -18,9 +18,11 @@ class LengthValidator extends Validator {
                 throw new \Accelerator\Exception\ArgumentException('$size', 'Must be an array of two values (ex: array(2,5))');
             $this->min = $size[0];
             $this->max = $size[1];
-        }else {
+        }else if (is_int($size)) {
             $this->min = 0;
             $this->max = $size;
+        } else {
+            throw new \Accelerator\Exception\ArgumentException('$size', 'Must be an array of two values or an integer.');
         }
 
         parent::__construct($msg? : 'Length must be between ' . $this->min . ' and ' . $this->max);

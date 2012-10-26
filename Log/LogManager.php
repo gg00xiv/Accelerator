@@ -43,6 +43,20 @@ abstract class LogManager {
         return self::$loggers[$name];
     }
 
+    /**
+     * Create a logger as a combination of multiple loggers.
+     * 
+     * @param array $names
+     * @return \Accelerator\Log\MergeLogger
+     * @throws \Accelerator\Exception\ArgumentNullException
+     */
+    public static function getMergedLoggers(array $names) {
+        if (!$names || count($names) == 0)
+            throw new \Accelerator\Exception\ArgumentNullException('$names');
+        
+        return new MergeLogger($names);
+    }
+
 }
 
 ?>

@@ -3,7 +3,7 @@
 namespace Accelerator\Captcha;
 
 /**
- * Description of ImageCaptcha
+ * Not yet validated. do not use.
  *
  * @author gg00xiv
  */
