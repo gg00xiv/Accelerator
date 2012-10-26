@@ -12,29 +12,28 @@ class Form extends \Accelerator\View\Html\HtmlElement {
     const METHOD_POST = 'POST';
     const METHOD_GET = 'GET';
 
-    private $_successHtml = false;
-    private $_validationTemplate;
+    private $successHtml = null;
+    private $validationTemplate;
 
-    public function __construct(array $attributes = array()) {
+    public function __construct(array $attributes = null) {
         parent::__construct('form', $attributes);
 
-        $this->setMethod(array_key_exists('method', $attributes) ? $attributes['method'] : self::METHOD_GET);
+        $this->setMethod(is_array($attributes) && array_key_exists('method', $attributes) ? $attributes['method'] : self::METHOD_GET);
     }
 
     /**
-     * Override addElement of HtmlElement class to restrict adding element to
-     * FormElement elements.
      * 
+     * @param int $position
      * @param \Accelerator\View\Html\HtmlElement $element FormElement element.
      */
-    public function addElement(\Accelerator\View\Html\HtmlElement $element) {
+    public function insertElement($position, \Accelerator\View\Html\HtmlElement $element) {
         if ($element instanceof FormElement) {
             $label = $element->getLabel();
             if ($label) {
-                parent::addElement($label);
+                parent::insertElement($position++, $label);
             }
         }
-        parent::addElement($element);
+        parent::insertElement($position, $element);
     }
 
     /**
@@ -137,12 +136,12 @@ class Form extends \Accelerator\View\Html\HtmlElement {
     }
 
     /**
-     * When form is successfully submitted, display the $html in place.
+     * When form is successfully submitted with no error, display the $html in place.
      * 
      * @param string $html 
      */
     public function setSuccessHtml($html) {
-        $this->_successHtml = $html;
+        $this->successHtml = $html;
     }
 
     /**
@@ -151,7 +150,7 @@ class Form extends \Accelerator\View\Html\HtmlElement {
      * @param string $template 
      */
     public function setValidationTemplate($template) {
-        $this->_validationTemplate = $template;
+        $this->validationTemplate = $template;
     }
 
     /**
@@ -160,7 +159,7 @@ class Form extends \Accelerator\View\Html\HtmlElement {
      * @return string 
      */
     public function getValidationTemplate() {
-        return $this->_validationTemplate;
+        return $this->validationTemplate;
     }
 
     /**
@@ -169,8 +168,9 @@ class Form extends \Accelerator\View\Html\HtmlElement {
      * @return string HTML content.
      */
     public function getHtml() {
-        if ($this->isPostBack() && $this->isValid() && ($this->_successHtml || $this->_successHtml === ''))
-            return $this->_successHtml;
+        if ($this->isPostBack() && $this->isValid() && $this->successHtml !== null)
+            return $this->successHtml;
+
         return parent::getHtml();
     }
 

@@ -76,9 +76,12 @@ abstract class HtmlElement {
      * 
      * @param string $name
      * @param mixed $value
+     * @return \Accelerator\View\Html\HtmlElement
      */
     public function setAttribute($name, $value) {
         $this->attributes[$name] = $value;
+        
+        return $this;
     }
 
     /**
@@ -101,36 +104,68 @@ abstract class HtmlElement {
     }
 
     /**
+     * Clear child element list of this HtmlElement instance.
+     * 
+     * @return \Accelerator\View\Html\HtmlElement
+     */
+    public function clearElements() {
+        $this->elements = null;
+        return $this;
+    }
+
+    /**
      * Add HTML elements as child to this instance.
      * 
      * @param array $elements Child HTML elements.
+     * @return \Accelerator\View\Html\HtmlElement
      */
     public function addElements(array $elements) {
         foreach ($elements as $element) {
             $this->addElement($element);
         }
+        return $this;
     }
 
     /**
      * Add an HTML element as child to this instance.
      * 
-     * @param HtmlElement $element Child HTML element.
+     * @param \Accelerator\View\Html\HtmlElement $element Child HTML element.
+     * @return \Accelerator\View\Html\HtmlElement
      */
     public function addElement(HtmlElement $element) {
+        $this->insertElement($this->elements ? count($this->elements) : 0, $element);
+        return $this;
+    }
+
+    /**
+     * Add an HTML element as child to this instance at a specified position.
+     * 
+     * @param type $position
+     * @param \Accelerator\View\Html\HtmlElement $element
+     * @return \Accelerator\View\Html\HtmlElement
+     */
+    public function insertElement($position, HtmlElement $element) {
         if (!$this->elements)
             $this->elements = array();
         $element->parent = $this;
-        $this->elements[] = $element;
+        for ($i = count($this->elements) - 1; $i >= $position; $i--) {
+            $this->elements[$i + 1] = $this->elements[$i];
+        }
+        $this->elements[$position] = $element;
+        return $this;
     }
 
     /**
      * Force inner HTML content, removes all existing elements from this instance.
      * 
      * @param string $html HTML content.
+     * @return \Accelerator\View\Html\HtmlElement
      */
     public function setInnerHtml($html) {
         $this->innerHtml = $html;
         $this->elements = null;
+        
+        return $this;
     }
 
     /**

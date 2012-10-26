@@ -11,6 +11,7 @@ class EmailBox extends TextBox {
 
     public function __construct($name, array $attributes = null, $label = null) {
         parent::__construct($name, false, array_merge(array('type' => 'email'), $attributes? : array()), $label);
+        $this->addValidator(new \Accelerator\Stdlib\Validator\EmailValidator());
     }
 
 }

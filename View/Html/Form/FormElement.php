@@ -12,6 +12,7 @@ abstract class FormElement extends \Accelerator\View\Html\InlineElement {
     private $label;
     private $validators;
     private $isValuePersistent = true;
+    private $errorMessage = null;
 
     public function __construct($name, array $attributes = null, $label = null) {
         parent::__construct($name, $attributes);
@@ -55,10 +56,13 @@ abstract class FormElement extends \Accelerator\View\Html\InlineElement {
     public function getValue() {
         switch ($this->parent->getMethod()) {
             case Form::METHOD_GET:
-                return $_GET[$this->getName()];
+                $value = $_GET[$this->getName()];
+                break;
             case Form::METHOD_POST:
-                return $_POST[$this->getName()];
+                $value = $_POST[$this->getName()];
+                break;
         }
+        return stripslashes($value);
     }
 
     public function setValue($value) {
@@ -71,6 +75,14 @@ abstract class FormElement extends \Accelerator\View\Html\InlineElement {
         $this->validators[] = $validator;
     }
 
+    public function setErrorMessage($msg) {
+        $this->errorMessage = $msg;
+    }
+
+    public function getErrorMessage() {
+        return $this->errorMessage;
+    }
+
     public function isValid() {
         if (isset($this->_isValid))
             return $this->_isValid;
@@ -80,7 +92,9 @@ abstract class FormElement extends \Accelerator\View\Html\InlineElement {
         if (!$this->parent->isPostBack())
             return true;
 
-        if ($this->validators) {
+        if ($this->errorMessage) {
+            $this->_isValid = false;
+        } else if ($this->validators) {
             foreach ($this->validators as $validator)
                 if (!$validator->validate($this->getValue())) {
                     $this->_isValid = false;
@@ -91,22 +105,31 @@ abstract class FormElement extends \Accelerator\View\Html\InlineElement {
         return $this->_isValid;
     }
 
+    private function getErrorHtml($msg) {
+        $template = $this->parent->getValidationTemplate();
+        return $template ?
+                str_replace(':error', $msg, $template) :
+                $msg;
+    }
+
     public function getHtml() {
         if ($this->parent->isPostBack() && $this->isValuePersistent) {
             $this->setValue($this->getValue());
         }
         $output = parent::getHtml();
         if (!$this->isValid()) {
-            foreach ($this->validators as $validator) {
-                if (!$validator->validate($this->getValue())) {
-                    $msg = $validator->getMessage();
-                    $template = $this->parent->getValidationTemplate();
-                    $output.=$template ?
-                            str_replace(':error', $validator->getMessage(), $template) :
-                            $msg;
+            if ($this->errorMessage) {
+                $output.=$this->getErrorHtml($this->errorMessage);
+            } else {
+                foreach ($this->validators as $validator) {
+                    if (!$validator->validate($this->getValue())) {
+                        $msg = $validator->getMessage();
+                        $output.=$this->getErrorHtml($msg);
+                    }
                 }
             }
         }
+
         return $output;
     }
 
