@@ -7,7 +7,7 @@ namespace Accelerator\View\Html;
  *
  * @author gg00xiv
  */
-abstract class HtmlElement {
+class HtmlElement {
 
     /**
      * The tag name of this element.
@@ -80,7 +80,7 @@ abstract class HtmlElement {
      */
     public function setAttribute($name, $value) {
         $this->attributes[$name] = $value;
-        
+
         return $this;
     }
 
@@ -164,7 +164,7 @@ abstract class HtmlElement {
     public function setInnerHtml($html) {
         $this->innerHtml = $html;
         $this->elements = null;
-        
+
         return $this;
     }
 
@@ -209,6 +209,17 @@ abstract class HtmlElement {
                 $startTag . ' />';
     }
 
+    /**
+     * Define a JavaScript code to execute when user click on this HtmlElement.
+     * 
+     * @param string $jsCode
+     * @return \Accelerator\View\Html\HtmlElement
+     */
+    public function onClick($jsCode) {
+        $this->attributes['onclick'] = $jsCode;
+        return $this;
+    }
+    
     /**
      *
      * @return string Call to ->getHtml().

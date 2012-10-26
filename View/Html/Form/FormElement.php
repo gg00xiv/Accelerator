@@ -7,7 +7,7 @@ namespace Accelerator\View\Html\Form;
  *
  * @author gg00xiv
  */
-abstract class FormElement extends \Accelerator\View\Html\InlineElement {
+abstract class FormElement extends \Accelerator\View\Html\HtmlElement {
 
     private $label;
     private $validators;
@@ -53,12 +53,21 @@ abstract class FormElement extends \Accelerator\View\Html\InlineElement {
         return $this->label;
     }
 
+    /**
+     * Get current value for this FormElement.
+     * 
+     * @return string NULL if no data present in $_GET or $_POST super globals.
+     */
     public function getValue() {
         switch ($this->parent->getMethod()) {
             case Form::METHOD_GET:
+                if (!isset($_GET[$this->getName()]))
+                    return null;
                 $value = $_GET[$this->getName()];
                 break;
             case Form::METHOD_POST:
+                if (!isset($_POST[$this->getName()]))
+                    return null;
                 $value = $_POST[$this->getName()];
                 break;
         }
@@ -89,7 +98,7 @@ abstract class FormElement extends \Accelerator\View\Html\InlineElement {
 
         $this->_isValid = true;
 
-        if (!$this->parent->isPostBack())
+        if ($this->parent && !$this->parent->isPostBack())
             return true;
 
         if ($this->errorMessage) {
@@ -113,8 +122,10 @@ abstract class FormElement extends \Accelerator\View\Html\InlineElement {
     }
 
     public function getHtml() {
-        if ($this->parent->isPostBack() && $this->isValuePersistent) {
-            $this->setValue($this->getValue());
+        if ($this->parent && $this->parent->isPostBack() && $this->isValuePersistent) {
+            $postBackValue = $this->getValue();
+            if ($postBackValue !== null)
+                $this->setValue($postBackValue);
         }
         $output = parent::getHtml();
         if (!$this->isValid()) {

@@ -7,10 +7,11 @@ namespace Accelerator\View\Html;
  *
  * @author gg00xiv
  */
-class Article extends ContainerElement {
+class Article extends HtmlElement {
 
-    public function __construct(array $attributes = null) {
+    public function __construct($innerHtml = null, array $attributes = null) {
         parent::__construct('article', $attributes);
+        $this->setInnerHtml($innerHtml);
     }
 
 }

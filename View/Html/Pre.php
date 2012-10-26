@@ -3,14 +3,14 @@
 namespace Accelerator\View\Html;
 
 /**
- * Description of Div
+ * Description of Pre
  *
  * @author gg00xiv
  */
-class Div extends HtmlElement {
+class Pre extends HtmlElement {
 
     public function __construct($innerHtml = null, array $attributes = null) {
-        parent::__construct('div', $attributes);
+        parent::__construct('pre', $attributes);
         $this->setInnerHtml($innerHtml);
     }
 

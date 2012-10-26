@@ -2,7 +2,6 @@
 
 namespace Accelerator\View\Html\Form;
 
-use Accelerator\View\Html\InlineElement;
 /**
  * Description of Label
  *

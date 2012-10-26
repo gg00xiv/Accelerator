@@ -15,10 +15,13 @@ class Form extends \Accelerator\View\Html\HtmlElement {
     private $successHtml = null;
     private $validationTemplate;
 
-    public function __construct(array $attributes = null) {
+    public function __construct($method = null, array $attributes = null) {
         parent::__construct('form', $attributes);
 
-        $this->setMethod(is_array($attributes) && array_key_exists('method', $attributes) ? $attributes['method'] : self::METHOD_GET);
+        if ($method)
+            $this->setMethod($method);
+        else if (is_array($attributes) && !array_key_exists('method', $attributes))
+            $this->setMethod(self::METHOD_GET);
     }
 
     /**

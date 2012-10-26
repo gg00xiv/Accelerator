@@ -7,7 +7,7 @@ namespace Accelerator\View\Html\Form;
  *
  * @author gg00xiv
  */
-class ComboBoxItem extends \Accelerator\View\Html\InlineElement {
+class ComboBoxItem extends \Accelerator\View\Html\HtmlElement {
 
     public function __construct($text, $value = null) {
         parent::__construct('option', $value ? array('value' => $value) : null );

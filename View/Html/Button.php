@@ -7,10 +7,11 @@ namespace Accelerator\View\Html;
  *
  * @author gg00xiv
  */
-class Button extends InlineElement {
+class Button extends HtmlElement {
 
-    public function __construct(array $attributes = null) {
+    public function __construct($innerHtml = null, array $attributes = null) {
         parent::__construct('button', $attributes);
+        $this->setInnerHtml($innerHtml);
     }
 
 }

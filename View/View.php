@@ -164,10 +164,10 @@ class View {
     }
 
     public function addHeadScript($srcOrScript) {
-        if ($srcOrScript instanceof Html\Head\ScriptLink) {
+        if ($srcOrScript instanceof Html\Script) {
             $script = $srcOrScript;
         } else if (is_string($srcOrScript)) {
-            $script = new Html\Head\ScriptLink($srcOrScript);
+            $script = new Html\Script($srcOrScript);
         }
 
         if ($script) {

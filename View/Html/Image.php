@@ -3,14 +3,14 @@
 namespace Accelerator\View\Html;
 
 /**
- * Description of Paragraph
+ * Description of Image
  *
  * @author gg00xiv
  */
-class Paragraph extends HtmlElement {
+class Image extends HtmlElement {
 
     public function __construct(array $attributes = null) {
-        parent::__construct('p', $attributes);
+        parent::__construct('img', $attributes);
     }
 
 }

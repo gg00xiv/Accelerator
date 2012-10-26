@@ -30,8 +30,6 @@ class ComboBox extends FormElement {
                 return;
             }
         }
-
-        throw new \Accelerator\View\Html\Exception\HtmlException('Value not found');
     }
 
     public function addItem($text, $value = null) {

@@ -7,7 +7,7 @@ namespace Accelerator\View\Html;
  *
  * @author gg00xiv
  */
-class Section extends ContainerElement {
+class Section extends HtmlElement {
 
     public function __construct(array $attributes = null) {
         parent::__construct('section', $attributes);

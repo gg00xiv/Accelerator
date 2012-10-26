@@ -34,6 +34,7 @@ class TextBox extends FormElement {
             $this->attributes['value'] = $value;
     }
 
+
 }
 
 ?>
