@@ -9,8 +9,9 @@ namespace Accelerator\View\Html;
  */
 class ListItem extends HtmlElement {
 
-    public function __construct(array $attributes = null) {
+    public function __construct($innerHtml = null, array $attributes = null) {
         parent::__construct('li', $attributes);
+        $this->setInnerHtml($innerHtml);
     }
 
 }

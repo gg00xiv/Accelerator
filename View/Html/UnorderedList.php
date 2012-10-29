@@ -9,8 +9,8 @@ namespace Accelerator\View\Html;
  */
 class UnorderedList extends AbstractList {
 
-    public function __construct(array $attributes = null) {
-        parent::__construct('ul', $attributes);
+    public function __construct(array $list = null, array $attributes = null) {
+        parent::__construct('ul', $attributes, $list);
     }
 
 }

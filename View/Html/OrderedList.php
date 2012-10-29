@@ -9,8 +9,8 @@ namespace Accelerator\View\Html;
  */
 class OrderedList extends AbstractList {
 
-    public function __construct(array $attributes = null) {
-        parent::__construct('ol', $attributes);
+    public function __construct(array $list = null, array $attributes = null) {
+        parent::__construct('ol', $attributes, $list);
     }
 
 }

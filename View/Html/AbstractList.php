@@ -9,6 +9,15 @@ namespace Accelerator\View\Html;
  */
 abstract class AbstractList extends HtmlElement {
 
+    public function __construct($name, array $attributes = null, array $list = null) {
+        parent::__construct($name, $attributes);
+        if ($list) {
+            foreach ($list as $item) {
+                $this->addElement(new ListItem($item));
+            }
+        }
+    }
+
     /**
      * Overrides parent method to allow only ListItem instances for $element parameter.
      * 
