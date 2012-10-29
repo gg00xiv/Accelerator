@@ -11,7 +11,15 @@ use Accelerator\View\Helper\ResponseHelper;
  */
 abstract class Controller {
 
+    /**
+     *
+     * @var Accelerator\View\View
+     */
     protected $view;
+    /**
+     *
+     * @var \ArrayObject
+     */
     protected $parameters;
 
     /**
