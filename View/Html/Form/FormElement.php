@@ -63,15 +63,13 @@ abstract class FormElement extends \Accelerator\View\Html\HtmlElement {
             case Form::METHOD_GET:
                 if (!isset($_GET[$this->getName()]))
                     return null;
-                $value = $_GET[$this->getName()];
-                break;
+                return $_GET[$this->getName()];
+
             case Form::METHOD_POST:
                 if (!isset($_POST[$this->getName()]))
                     return null;
-                $value = $_POST[$this->getName()];
-                break;
+                return $_POST[$this->getName()];
         }
-        return stripslashes($value);
     }
 
     public function setValue($value) {
