@@ -11,7 +11,7 @@ abstract class Decorator {
 
     protected $innerObj;
 
-    protected function __construct($obj) {
+    public function __construct($obj) {
         $this->innerObj = $obj;
     }
 
