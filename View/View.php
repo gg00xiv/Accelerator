@@ -195,6 +195,9 @@ class View {
         }
     }
 
+    public function getUrl(){
+        return $_SERVER['REQUEST_URI'];
+    }
 }
 
 ?>
