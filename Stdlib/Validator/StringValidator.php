@@ -9,15 +9,15 @@ namespace Accelerator\Stdlib\Validator;
  */
 class StringValidator extends Validator {
 
-    private $validationString;
+    private $validationStrings;
 
     public function __construct($validationString, $msg = null) {
         parent::__construct($msg? : 'Invalid value');
-        $this->validationString = $validationString;
+        $this->validationStrings = is_array($validationString) ? $validationString : array($validationString);
     }
 
     protected function onValidate($input) {
-        return $input == $this->validationString;
+        return in_array($input, $this->validationStrings);
     }
 
 }
