@@ -7,9 +7,11 @@ namespace Accelerator\View\Decorator;
  *
  * @author gg00xiv
  */
-abstract class ListDecorator extends \Accelerator\Stdlib\Decorator {
+class ListDecorator extends \Accelerator\Stdlib\Decorator {
 
-    protected abstract function getTemplate($item);
+    protected function getTemplate($item) {
+        return $item;
+    }
 
     public function getList($startTag = null, $endTag = null) {
         $list = $startTag? : '';
