@@ -120,7 +120,7 @@ class Form extends \Accelerator\View\Html\HtmlElement {
     }
 
     /**
-     * Check if current request is a postback on the same page.
+     * Check if current request is a postback
      * 
      * @return boolean 
      */
