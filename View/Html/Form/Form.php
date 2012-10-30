@@ -125,8 +125,7 @@ class Form extends \Accelerator\View\Html\HtmlElement {
      * @return boolean 
      */
     public function isPostBack() {
-        return $_SERVER['HTTP_REFERER'] == $_SERVER['SCRIPT_URI']
-                && $_SERVER['REQUEST_METHOD'] == $this->getMethod();
+        return $_SERVER['REQUEST_METHOD'] == $this->getMethod();
     }
 
     /**
