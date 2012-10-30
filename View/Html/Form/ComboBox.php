@@ -9,11 +9,10 @@ namespace Accelerator\View\Html\Form;
  */
 class ComboBox extends FormElement {
 
-    private $items;
-
-    public function __construct($name, $multiple = false, array $attributes = null, $label = null) {
+    public function __construct($name, $multiple = false, array $attributes = null, $label = null, array $items = null) {
         parent::__construct('select', array_merge($multiple ? array('multiple' => '') : array(), array('name' => $name), $attributes? : array()), $label);
-        $this->items = array();
+        if ($items)
+            $this->addItems($items);
     }
 
     public function addElement(\Accelerator\View\Html\HtmlElement $element) {
@@ -39,6 +38,12 @@ class ComboBox extends FormElement {
     public function addItems(array $items) {
         foreach ($items as $text => $value)
             $this->addItem($text, $value);
+    }
+
+    public function populate(\Accelerator\Model\DbEntity $filter, $textField, $valueField) {
+        $entities = $filter->select();
+        foreach ($entities as $entity)
+            $this->addItem($entity->$textField, $entity->$valueField);
     }
 
 }

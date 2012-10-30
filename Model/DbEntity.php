@@ -273,6 +273,15 @@ class DbEntity {
     }
 
     /**
+     * Select entities based on $this model.
+     * 
+     * @return Accelerator\Model\DbEntityCollection
+     */
+    public function select() {
+        return EntityManager::select($this);
+    }
+
+    /**
      * Get a JSON representation of the DbEntity instance.
      * 
      * @return string JSON string. 
