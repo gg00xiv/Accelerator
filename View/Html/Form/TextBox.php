@@ -34,6 +34,16 @@ class TextBox extends FormElement {
             $this->attributes['value'] = $value;
     }
 
+    /**
+     * Define a JavaScript code to execute when user type something on this HtmlElement.
+     * 
+     * @param type $jsCode
+     * @return \Accelerator\View\Html\HtmlElement
+     */
+    public function onKeyPress($jsCode) {
+        $this->attributes['onkeypress'] = $jsCode;
+        return $this;
+    }
 
 }
 

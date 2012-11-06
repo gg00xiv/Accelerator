@@ -46,6 +46,17 @@ class ComboBox extends FormElement {
             $this->addItem($entity->$textField, $entity->$valueField);
     }
 
+    /**
+     * Define a JavaScript code to execute when user change selected element on this HtmlElement.
+     * 
+     * @param type $jsCode
+     * @return \Accelerator\View\Html\HtmlElement
+     */
+    public function onChange($jsCode) {
+        $this->attributes['onchange'] = $jsCode;
+        return $this;
+    }
+
 }
 
 ?>

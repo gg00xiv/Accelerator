@@ -219,7 +219,7 @@ class HtmlElement {
         $this->attributes['onclick'] = $jsCode;
         return $this;
     }
-    
+
     /**
      * Define a JavaScript code to execute when user focus this HtmlElement.
      * 
@@ -230,7 +230,7 @@ class HtmlElement {
         $this->attributes['onfocus'] = $jsCode;
         return $this;
     }
-    
+
     /**
      * Define a JavaScript code to execute when user leave focus from this HtmlElement.
      * 
@@ -241,7 +241,7 @@ class HtmlElement {
         $this->attributes['onblur'] = $jsCode;
         return $this;
     }
-    
+
     /**
      *
      * @return string Call to ->getHtml().
