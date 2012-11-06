@@ -12,7 +12,7 @@ class JsBuilder {
     private $js = '';
 
     private static function getElementById($id) {
-        return 'document.getElementById(\'' . $id . '\')';
+        return '$(\'#' . $id . '\')';
     }
 
     private static function getLiteralFromValue($value) {
@@ -31,6 +31,21 @@ class JsBuilder {
 
     public function elementId($id) {
         $this->js.=self::getElementById($id);
+        return $this;
+    }
+
+    public function toggleClass($id, $classes) {
+        $this->js.=self::getElementById($id) . '.toggleClass(\'' . $classes . '\');';
+        return $this;
+    }
+    
+    public function addClass($id, $classes) {
+        $this->js.=self::getElementById($id) . '.addClass(\'' . $classes . '\');';
+        return $this;
+    }
+    
+    public function removeClass($id, $classes) {
+        $this->js.=self::getElementById($id) . '.removeClass(\'' . $classes . '\');';
         return $this;
     }
 
@@ -58,6 +73,11 @@ class JsBuilder {
 
     public function confirm($message) {
         $this->js.='confirm(\'' . $message . '\');';
+        return $this;
+    }
+
+    public function append($js) {
+        $this->js.=$js;
         return $this;
     }
 
