@@ -86,6 +86,8 @@ class Table extends HtmlElement {
                 ->addElement($row = new TableRow());
         foreach ($columnNames as $columnName)
             $row->addElement(new TableHeader($columnName));
+        
+        return $this;
     }
 
     /**
