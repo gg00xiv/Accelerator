@@ -67,7 +67,7 @@ class Table extends HtmlElement {
                 $this->addElement($this->_head);
             }
         }
-        
+
         return $this->_head;
     }
 
@@ -96,12 +96,15 @@ class Table extends HtmlElement {
      */
     public function addRow($rowOrArray) {
         if ($rowOrArray instanceof TableRow) {
-            $this->getBody()->addElement($rowOrArray);
+            $row = $rowOrArray;
         } else if (is_array($rowOrArray)) {
-            $this->getBody()->addElement(new TableRow($rowOrArray));
+            $row = new TableRow($rowOrArray);
         } else {
             throw new \Accelerator\Exception\ArgumentException('$rowOrArray', 'Must be an instance of array or TableRow.');
         }
+
+        $this->getBody()->addElement($row);
+        return $row;
     }
 
 }
