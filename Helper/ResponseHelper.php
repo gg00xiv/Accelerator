@@ -41,13 +41,21 @@ abstract class ResponseHelper {
     public static function setContentTypeXml($encoding = null) {
         self::setContentType('text/xml', $encoding);
     }
-    
-    public static function setContentTypePng(){
+
+    public static function setContentTypePng() {
         self::setContentType('image/png');
     }
 
     public static function setContentTypeText($encoding = null) {
         self::setContentType('text', $encoding);
+    }
+
+    public static function noCache() {
+        header('Expires: Sat, 26 Jul 1997 05:00:00 GMT');
+        header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
+        header('Cache-Control: no-store, no-cache, must-revalidate');
+        header('Cache-Control: post-check=0, pre-check=0', false);
+        header('Pragma: no-cache');
     }
 
 }

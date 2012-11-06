@@ -10,17 +10,17 @@ namespace Accelerator\Log;
 class FileLogger extends Logger {
 
     private $logFilename;
-    private $revertlog;
+    private $toplog;
 
     public function __construct(\ArrayObject $config) {
         $this->logFilename = $config->path;
-        $this->revertlog = $config->revertlog;
+        $this->toplog = $config->toplog;
     }
 
     protected function onLog($errorLevel, $message) {
         $logMessage = date(DATE_ATOM, time()) . '[' . strtoupper($errorLevel) . '] - ' . $message . "\n";
 
-        if ($this->revertlog) {
+        if ($this->toplog) {
             file_put_contents($this->logFilename, $logMessage . file_get_contents($this->logFilename));
         } else {
             $fp = fopen($this->logFilename, 'a');

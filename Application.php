@@ -168,7 +168,7 @@ class Application {
         if (substr($full_route_uri, 0, strlen($this->config->global->base_url)) != $this->config->global->base_url)
             throw new Exception\ConfigurationException('Invalid script base url : ' . $full_route_uri);
 
-        $routePath = '/' . trim(substr($full_route_uri, strlen($this->config->global->base_url)), '/');
+        $routePath = '/' . ltrim(substr($full_route_uri, strlen($this->config->global->base_url)), '/');
 
         foreach ($this->routeHandlers as $route => $routeHandler) {
             $routePattern = '|^' . preg_replace(array('/(\?|\.)/', '/\[:(\w+)\]/i'), array('\\\\$1', '(?<$1>[^&/]*)'), $route) . '$|i';

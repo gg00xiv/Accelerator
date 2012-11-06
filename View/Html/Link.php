@@ -14,6 +14,30 @@ class Link extends HtmlElement {
         $this->setInnerHtml($innerHtml);
     }
 
+    public function getHref() {
+        return $this->getAttribute('href');
+    }
+
+    public function setHref($href) {
+        $this->setAttribute('href', $href);
+    }
+
+    public function getTitle() {
+        return $this->getAttribute('title');
+    }
+
+    public function setTitle($title) {
+        $this->setAttribute('title', $title);
+    }
+
+    public function getTarget() {
+        return $this->getAttribute('target');
+    }
+
+    public function setTarget($target) {
+        $this->setAttribute('target', $target);
+    }
+
 }
 
 ?>
