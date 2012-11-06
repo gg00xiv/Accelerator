@@ -20,7 +20,7 @@ abstract class EntityManager {
      * @param mixed $orderBy The SQL statement ORDER BY list.
      * @param mixed $limit The SQL statement LIMIT condition.
      * @param bool $ignoreNullFields Ignores SQL-NULL fields for selecting entities (Default=true).
-     * @return array;
+     * @return \Accelerator\Model\DbEntityCollection;
      */
     public static function select(DbEntity $filter, $orderBy = null, $limit = null, $ignoreNullFields = true) {
         $sql = SqlHelper::select($filter->getTable(), $filter->getSelectFields(), $filter->getSqlFilterMap($ignoreNullFields), null, $orderBy, $limit);

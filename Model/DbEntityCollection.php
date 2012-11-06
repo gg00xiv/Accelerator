@@ -33,6 +33,10 @@ class DbEntityCollection extends \ArrayObject {
         return $table;
     }
 
+    public function first() {
+        return $this[0];
+    }
+    
 }
 
 ?>
