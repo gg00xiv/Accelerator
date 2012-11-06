@@ -221,6 +221,28 @@ class HtmlElement {
     }
     
     /**
+     * Define a JavaScript code to execute when user focus this HtmlElement.
+     * 
+     * @param type $jsCode
+     * @return \Accelerator\View\Html\HtmlElement
+     */
+    public function onFocus($jsCode) {
+        $this->attributes['onfocus'] = $jsCode;
+        return $this;
+    }
+    
+    /**
+     * Define a JavaScript code to execute when user leave focus from this HtmlElement.
+     * 
+     * @param type $jsCode
+     * @return \Accelerator\View\Html\HtmlElement
+     */
+    public function onBlur($jsCode) {
+        $this->attributes['onblur'] = $jsCode;
+        return $this;
+    }
+    
+    /**
      *
      * @return string Call to ->getHtml().
      */
