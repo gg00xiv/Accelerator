@@ -10,15 +10,23 @@ namespace Accelerator\Log;
 class FileLogger extends Logger {
 
     private $logFilename;
+    private $revertlog;
 
     public function __construct(\ArrayObject $config) {
         $this->logFilename = $config->path;
+        $this->revertlog = $config->revertlog;
     }
 
     protected function onLog($errorLevel, $message) {
-        $fp = fopen($this->logFilename, 'a');
-        fwrite($fp, date(DATE_ATOM, time()) . '[' . strtoupper($errorLevel) . '] - ' . $message . "\n");
-        fclose($fp);
+        $logMessage = date(DATE_ATOM, time()) . '[' . strtoupper($errorLevel) . '] - ' . $message . "\n";
+
+        if ($this->revertlog) {
+            file_put_contents($this->logFilename, $logMessage . file_get_contents($this->logFilename));
+        } else {
+            $fp = fopen($this->logFilename, 'a');
+            fwrite($fp, $logMessage);
+            fclose($fp);
+        }
     }
 
 }
