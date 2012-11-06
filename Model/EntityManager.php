@@ -65,7 +65,7 @@ abstract class EntityManager {
         if ($countEntities > 1)
             throw new \Accelerator\Exception\AcceleratorException('More than one entity returned : ' . $countEntities . ' [' . $filter . ']');
 
-        return $countEntities == 1 ? $entities[0] : null;
+        return $entities->first();
     }
 
     /**
