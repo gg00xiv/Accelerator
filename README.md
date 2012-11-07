@@ -17,7 +17,13 @@
 <ul>
   <li><a href="#get-started">Get started</a></li>
   <li><a href="#config">Config</a></li>
-  <li><a href="#model">Model</a></li>
+  <li><a href="#model">Model</a>
+    <ul>
+      <li><a href="#save">Saving</a></li>
+      <li><a href="#delete">Deleting</a></li>
+      <li><a href="#select">Selecting</a></li>
+    </ul>
+  </li>
 </ul>
 
 <h2><a name="get-started"></a>Get started</h2>
@@ -189,7 +195,7 @@ return array(
     ),
 );
 </pre>
-<p>entities.config.php sample :</p>
+<p><em>entities.config.php</em> sample :</p>
 <pre>
 
 return array(
@@ -198,8 +204,8 @@ return array(
         'auto_increment_pk' => true,
         'primary_key_columns' => array('cat_id'),
         'map' => array(
-            'category_id' => 'categoryId',
-            'name' => 'name',
+            'cat_id' => 'categoryId',
+            'cat_name' => 'name',
             'rewrited_name' => 'rewritedName',
         ),
     ),
@@ -208,7 +214,7 @@ return array(
         'auto_increment_pk' => true,
         'primary_key_columns' => array('c_id'),
         'map' => array(
-            'code_id' => 'codeId',
+            'c_id' => 'codeId',
             'definition' => 'definition',
             'rewrited_name' => 'rewritedName',
             'code' => 'code',
@@ -225,7 +231,7 @@ return array(
         'auto_increment_pk' => true,
         'primary_key_columns' => array('lang_id'),
         'map' => array(
-            'language_id' => 'languageId',
+            'lang_id' => 'languageId',
             'default_category_id' => 'defaultCategoryId',
             'name' => 'name',
             'rewrited_name' => 'rewritedName',
@@ -271,5 +277,85 @@ class Category extends DbEntity {
     }
 
 }
+
+</pre>
+
+<p>DbEntity abstract class implements some mehtod allowing you to save, delete or select
+ from database where its connected.</p>
+
+<h3><a name="save"></a>Saving</h3>
+
+<p>Saving DbEntity is done using the <em>save</em> method. When save method is called, INSERT or UPDATE
+sql statement is involved based on primary keys, if they are defined or not. Look at the example below :</p>
+
+<pre>
+$cat = new Category();
+$cat->name = 'My category';
+
+// This statement will insert a new category in database 
+$cat->save();
+// now $cat->categoryId has been filled with auto generated id as defined in config.
+
+$cat->rewritedName = 'my_category';
+
+// This statement will now update the previously inserted category
+$cat->save();
+</pre>
+
+<h3><a name="delete"></a>Deleting</h3>
+
+<p>Deleting entities is as simple as saving. Just call <em>delete</em> method of DbEntity.</p>
+
+<pre>
+// $cat variable is defined and has its primary key defined.
+...
+$cat->delete();
+// now $cat->categoryId is set to null.
+</pre>
+
+<h3><a name="select"></a>Selecting</h3>
+
+<p>There is multiple ways for selecting DbEntity. There are static methods from DbEntity and instance methods
+allowing to use an DbEntity instance as selection filter.</p>
+<p>Look at examples below :</p>
+
+<h4>Static methods</h4>
+<pre>
+// execute a SELECT statement on categories_table where cat_name like '%my%'
+// Category class is configured to be binded to categories_table database table and cat_name column to Category name field.
+// Here, the value '%my%' use like operator because of '%' symbol only. If not '%' is present in value, = operator is used.
+$cats = Category::select(array('name' => '%my%'));
+
+// $cats is an instance of DbEntityCollection
+
+// get the first record of DbEntityCollection
+$cat = $cats->first();
+// $cat is an instance of Category
+</pre>
+
+<pre>
+// This statement throws a ModelException if more than one row is returned
+$cat = Category::selectSingle(array('name' => '%my%'));
+
+// $cat is an instance of Category
+</pre>
+
+<h4>Instance methods (filter mode)</h4>
+<pre>
+
+$catFilter = new Category();
+$catFilter->name = '%my%';
+
+$cats = $catFilter->filter();
+// $cats is an instance of DbEntityCollection
+</pre>
+
+<pre>
+$catFilter = new Category(array('name' => 'My Category'));
+
+// This statement throws a ModelException if more than one row is returned
+$cat = $catFilter->filterSingle();
+
+// $cat is an instance of Category
 
 </pre>
