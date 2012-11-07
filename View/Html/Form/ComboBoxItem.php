@@ -14,10 +14,20 @@ class ComboBoxItem extends \Accelerator\View\Html\HtmlElement {
         $this->setInnerHtml($text);
     }
 
+    /**
+     * Returns the value of this ComboBoxItem.
+     * 
+     * @return string
+     */
     public function getValue() {
         return $this->attributes['value'];
     }
 
+    /**
+     * Returns the displayed text of this ComboBoxItem.
+     * 
+     * @return string
+     */
     public function getText() {
         return $this->getInnerHtml();
     }
