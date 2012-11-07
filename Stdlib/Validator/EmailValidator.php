@@ -10,7 +10,7 @@ namespace Accelerator\Stdlib\Validator;
 class EmailValidator extends RegexValidator {
 
     public function __construct($msg = null) {
-        parent::__construct('/^([\w\d\.\-_]+@[\w\d\-\.]+\.[\w+])?$/', $msg? : 'Invalid email address');
+        parent::__construct('/^([\w\.\-_]+@[\w\-\.]+\.\w+)?$/', $msg? : 'Invalid email address');
     }
 
 }
