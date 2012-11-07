@@ -31,26 +31,50 @@ class ComboBox extends FormElement {
         }
     }
 
+    /**
+     * Add new item to this ComboBox instance.
+     * 
+     * @param string $text
+     * @param string $value
+     * @return \Accelerator\View\Html\Form\ComboBoxItem
+     */
     public function addItem($text, $value = null) {
-        $this->addElement(new ComboBoxItem($text, $value));
+        $this->addElement($item = new ComboBoxItem($text, $value));
+        return $item;
     }
 
+    /**
+     * Add new items to this ComboBox instance.
+     * 
+     * @param array $items Must be an associative array.
+     * @return \Accelerator\View\Html\Form\ComboBox
+     */
     public function addItems(array $items) {
         foreach ($items as $text => $value)
             $this->addItem($text, $value);
+        return $this;
     }
 
+    /**
+     * Fill this ComboBox instance with result of DbEntity filter.
+     * 
+     * @param \Accelerator\Model\DbEntity $filter
+     * @param string $textField
+     * @param string $valueField
+     * @return \Accelerator\View\Html\Form\ComboBox
+     */
     public function populate(\Accelerator\Model\DbEntity $filter, $textField, $valueField) {
         $entities = $filter->select();
         foreach ($entities as $entity)
             $this->addItem($entity->$textField, $entity->$valueField);
+        return $this;
     }
 
     /**
      * Define a JavaScript code to execute when user change selected element on this HtmlElement.
      * 
-     * @param type $jsCode
-     * @return \Accelerator\View\Html\HtmlElement
+     * @param string $jsCode
+     * @return \Accelerator\View\Html\Form\ComboBox
      */
     public function onChange($jsCode) {
         $this->attributes['onchange'] = $jsCode;
