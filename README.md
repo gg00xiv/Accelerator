@@ -80,8 +80,6 @@ RewriteRule ^.*$ index.php [NC,L]
 <h3>index.php</h3>
 
 <pre>
-<?php
-
 require_once 'relative_path_to/Accelerator/Autoloader.php';
 \Accelerator\Autoloader::register(array(
     'Accelerator' => 'relative_path_to_accelerator/Accelerator',
@@ -94,7 +92,6 @@ require_once 'relative_path_to/Accelerator/Autoloader.php';
 \Accelerator\Application::instance()
         ->init(include '../config/app.config.php')
         ->dispatch();
-?>
 </pre>
 
 <h2><a name="config"></a>Config</h2>
