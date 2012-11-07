@@ -22,6 +22,26 @@ class ComboBoxItem extends \Accelerator\View\Html\HtmlElement {
         return $this->getInnerHtml();
     }
 
+    /**
+     * Checks whether this ComboBoxItem instance is defined as selected.
+     * 
+     * @return boolean
+     */
+    public function isSelected(){
+        return isset($this->attributes['selected']);
+    }
+    
+    /**
+     * Define this ComboBoxItem instance as selected or not.
+     * 
+     * @param boolean $selected
+     */
+    public function setSelected($selected){
+        if ($selected)
+            $this->setAttribute ('selected', 'selected');
+        else
+            $this->removeAttribute ('selected');
+    }
 }
 
 ?>
