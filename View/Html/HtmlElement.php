@@ -83,6 +83,18 @@ class HtmlElement {
 
         return $this;
     }
+    
+    /**
+     * Remove an attribute.
+     * 
+     * @param string $name
+     * @return \Accelerator\View\Html\HtmlElement
+     */
+    public function removeAttribute($name){
+        unset($this->attributes[$name]);
+        
+        return $this;
+    }
 
     /**
      * Get an attribute value.
