@@ -260,6 +260,9 @@ class DbEntity {
         $sql = SqlHelper::delete($this->table, $this->getPrimaryKeyValues());
 
         $this->_isDeleted = true;
+        foreach ($this->primaryKeyColumns as $pk)
+            $this->setFieldValue($pk, null);
+
         return $this->connection->executeNonQuery($sql);
     }
 
@@ -275,7 +278,10 @@ class DbEntity {
     /**
      * Retrieve entities by given its field filter values.
      * 
-     * @param array $filter
+     * @param array $filter Array of field=>value of DbEntity derived class.
+     * @param mixed $orderBy
+     * @param mixed $limit
+     * @param boolean $ignoreNullFields
      * @return Accelerator\Model\DbEntityCollection
      */
     public static function select(array $filter = null, $orderBy = null, $limit = null, $ignoreNullFields = true) {
@@ -286,7 +292,8 @@ class DbEntity {
     /**
      * Retrieve entities by given its field filter values.
      * 
-     * @param array $filter
+     * @param array $filter Array of field=>value of DbEntity derived class.
+     * @param boolean $ignoreNullFields
      * @return Accelerator\Model\DbEntity
      */
     public static function selectSingle(array $filter = null, $ignoreNullFields = true) {
@@ -297,6 +304,9 @@ class DbEntity {
     /**
      * Select entities based on $this model.
      * 
+     * @param mixed $orderBy
+     * @param mixed $limit
+     * @param boolean $ignoreNullFields
      * @return Accelerator\Model\DbEntityCollection
      */
     public function filter($orderBy = null, $limit = null, $ignoreNullFields = true) {
@@ -306,6 +316,7 @@ class DbEntity {
     /**
      * Select a single entity based on $this model.
      * 
+     * @param boolean $ignoreNullFields
      * @return Accelerator\Model\DbEntity
      */
     public function filterSingle($ignoreNullFields = true) {
