@@ -13,7 +13,7 @@ abstract class Controller {
 
     /**
      *
-     * @var Accelerator\View\View
+     * @var \Accelerator\View\View
      */
     protected $view;
     /**

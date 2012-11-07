@@ -241,9 +241,9 @@ class DbEntity {
      * Save entity to database, internal use of insert or update depending on entity status
      */
     public function save() {
-        if ($this->hasPrimaryKey()) {
+        if ($this->hasPrimaryKeys()) {
             foreach ($this->primaryKeyColumns as $pk) {
-                $pk_value = $this->getfieldValue($pk);
+                $pk_value = $this->getFieldValue($pk);
                 if (!$pk_value) { // 0, null, empty string
                     $this->insert();
                     return;
@@ -273,12 +273,43 @@ class DbEntity {
     }
 
     /**
+     * Retrieve entities by given its field filter values.
+     * 
+     * @param array $filter
+     * @return Accelerator\Model\DbEntityCollection
+     */
+    public static function select(array $filter = null, $orderBy = null, $limit = null, $ignoreNullFields = true) {
+        $entity = new static($filter);
+        return $entity->filter($orderBy, $limit, $ignoreNullFields);
+    }
+
+    /**
+     * Retrieve entities by given its field filter values.
+     * 
+     * @param array $filter
+     * @return Accelerator\Model\DbEntity
+     */
+    public static function selectSingle(array $filter = null, $ignoreNullFields = true) {
+        $entity = new static($filter);
+        return $entity->filterSingle($ignoreNullFields);
+    }
+
+    /**
      * Select entities based on $this model.
      * 
      * @return Accelerator\Model\DbEntityCollection
      */
-    public function select() {
-        return EntityManager::select($this);
+    public function filter($orderBy = null, $limit = null, $ignoreNullFields = true) {
+        return EntityManager::select($this, $orderBy, $limit, $ignoreNullFields);
+    }
+
+    /**
+     * Select a single entity based on $this model.
+     * 
+     * @return Accelerator\Model\DbEntity
+     */
+    public function filterSingle($ignoreNullFields = true) {
+        return EntityManager::selectSingle($this, $ignoreNullFields);
     }
 
     /**
@@ -298,7 +329,7 @@ class DbEntity {
         if (!$this->table)
             throw new Exception\ModelException('No/Invalid table name specified.');
 
-        if ($this->hasPrimaryKey()) {
+        if ($this->hasPrimaryKeys()) {
             // check if only one primary key is defined if auto_increment_pk parameter is set to true
             if ($this->autoIncrementPk && count($this->primaryKeyColumns) != 1)
                 throw new Exception\ModelException('You must declare one and only one primary key column when auto_increment_pk parameter is set to true.');
@@ -374,7 +405,7 @@ class DbEntity {
     }
 
     private function getPrimaryKeyValues() {
-        if (!$this->hasPrimaryKey())
+        if (!$this->hasPrimaryKeys())
             return array();
         $pks = array();
         foreach ($this->primaryKeyColumns as $pk)
@@ -382,7 +413,7 @@ class DbEntity {
         return $pks;
     }
 
-    private function hasPrimaryKey() {
+    private function hasPrimaryKeys() {
         return is_array($this->primaryKeyColumns) && count($this->primaryKeyColumns) > 0;
     }
 

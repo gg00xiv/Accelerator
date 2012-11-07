@@ -28,6 +28,17 @@ class HeadMeta extends \Accelerator\View\Html\HtmlElement {
     public function setInnerHtml($html) {
         throw new \Accelerator\View\Html\Exception\HtmlException('Cannot set inner HTML content for this object.');
     }
+    
+    /**
+     * Invalidate insertElement calls.
+     * 
+     * @param int $position
+     * @param \Accelerator\View\Html\HtmlElement $element
+     * @throws \Accelerator\View\Html\Exception\HtmlException
+     */
+    public function insertElement($position, \Accelerator\View\Html\HtmlElement $element) {
+        throw new \Accelerator\View\Html\Exception\HtmlException('Cannot add child elements to this object.');
+    }
 }
 
 ?>

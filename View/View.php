@@ -135,6 +135,12 @@ class View {
         include $this->_renderViews->pop()->_path;
     }
 
+    /**
+     * Add a meta element to head part of this view.
+     * 
+     * @param \Accelerator\View\HeadMeta $metaOrName
+     * @param string $content Javascript code content if needed.
+     */
     public function addMeta($metaOrName, $content = null) {
         if ($metaOrName instanceof Html\Head\HeadMeta) {
             $meta = $metaOrName;
@@ -149,6 +155,12 @@ class View {
         }
     }
 
+    /**
+     * Add a link element to head part of this view.
+     * 
+     * @param \Accelerator\View\HeadLink $relOrLink
+     * @param string $href
+     */
     public function addHeadLink($relOrLink, $href = null) {
         if ($relOrLink instanceof Html\Head\HeadLink) {
             $link = $relOrLink;
@@ -163,7 +175,13 @@ class View {
         }
     }
 
-    public function addHeadScript($srcOrScript) {
+    /**
+     * Add a script element to head part of this view.
+     * 
+     * @param \Accelerator\View\Script $srcOrScript
+     * @param string $jsCode
+     */
+    public function addHeadScript($srcOrScript, $jsCode = null) {
         if ($srcOrScript instanceof Html\Script) {
             $script = $srcOrScript;
         } else if (is_string($srcOrScript)) {
@@ -171,33 +189,57 @@ class View {
         }
 
         if ($script) {
+            if ($jsCode) {
+                $script->setInnerHtml($jsCode);
+            }
             if (!$this->_headScripts)
                 $this->_headScripts = array();
             $this->_headScripts[] = $script;
         }
     }
 
+    /**
+     * Get the HTML of meta tags in head part of this view.
+     * 
+     * @return string
+     */
     public function getMetas() {
         if ($this->_headMetas) {
             return join('', $this->_headMetas);
         }
     }
 
+    /**
+     * Get the HTML of link tags in head part of this view.
+     * 
+     * @return string
+     */
     public function getHeadLinks() {
         if ($this->_headLinks) {
             return join('', $this->_headLinks);
         }
     }
 
+    /**
+     * Get the HTML of script tags in head part of this view.
+     * 
+     * @return string
+     */
     public function getHeadScripts() {
         if ($this->_headScripts) {
             return join('', $this->_headScripts);
         }
     }
 
-    public function getUrl(){
-        return $_SERVER['REQUEST_URI'];
+    /**
+     * Returns the current request url.
+     * 
+     * @return string
+     */
+    public function getUrl($includeBaseUrl = false) {
+        return ($includeBaseUrl ? $this->getApplication()->getBaseUrl() : '') . $_SERVER['REQUEST_URI'];
     }
+
 }
 
 ?>

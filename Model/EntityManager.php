@@ -4,7 +4,6 @@ namespace Accelerator\Model;
 
 use Accelerator\Model\DbEntity;
 use Accelerator\Model\SqlHelper;
-use Accelerator\AcceleratorException;
 
 /**
  * Get and Remove entities from database based on templated DbEntity objects.
@@ -57,13 +56,13 @@ abstract class EntityManager {
      * @param \Accelerator\Model\DbEntity $filter DbEntity template instance for filtering.
      * @param type $ignoreNullFields Ignores SQL-NULL fields for selecting entities (Default=true).
      * @return \Accelerator\Model\DbEntity DbEntity instance.
-     * @throws \Accelerator\AcceleratorException If more than one entity returned.
+     * @throws Exception\ModelException If more than one entity returned.
      */
     public static function selectSingle(DbEntity $filter, $ignoreNullFields = true) {
         $entities = self::select($filter, null, null, $ignoreNullFields);
         $countEntities = count($entities);
         if ($countEntities > 1)
-            throw new \Accelerator\Exception\AcceleratorException('More than one entity returned : ' . $countEntities . ' [' . $filter . ']');
+            throw new Exception\ModelException('More than one entity returned : ' . $countEntities . ' [' . $filter . ']');
 
         return $entities->first();
     }
