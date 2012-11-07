@@ -17,6 +17,7 @@
 <ul>
   <li><a href="#get-started">Get started</a></li>
   <li><a href="#config">Config</a></li>
+  <li><a href="#model">Model</a></li>
 </ul>
 
 <h2><a name="get-started"></a>Get started</h2>
@@ -146,7 +147,7 @@ return array(
             'username' => '&lt;user&gt;',
             'password' => '&lt;pass&gt;',
         ),
-        'entities' => include __DIR__ . '/entities.config.php',
+        'entities' => include __DIR__ . '/entities.config.php', // See below this file section the entities.config.php sample
     ),
     'views' => array(
         'path' => __DIR__ . '/../views/',
@@ -187,4 +188,88 @@ return array(
         '/feed/(:feed)' => 'FeedController',
     ),
 );
+</pre>
+<p>entities.config.php sample :</p>
+<pre>
+
+return array(
+    'NamespaceTo\Category' => array(
+        'table' => 'categories_table',
+        'auto_increment_pk' => true,
+        'primary_key_columns' => array('cat_id'),
+        'map' => array(
+            'category_id' => 'categoryId',
+            'name' => 'name',
+            'rewrited_name' => 'rewritedName',
+        ),
+    ),
+    'NamespaceTo\Code' => array(
+        'table' => 'codes_table',
+        'auto_increment_pk' => true,
+        'primary_key_columns' => array('c_id'),
+        'map' => array(
+            'code_id' => 'codeId',
+            'definition' => 'definition',
+            'rewrited_name' => 'rewritedName',
+            'code' => 'code',
+            'post_date' => 'postDate',
+            'validated' => 'isValidated',
+            'language_id' => 'languageId',
+            'category_id' => 'categoryId',
+            'last_modified' => 'lastModified',
+            'password' => 'password',
+        ),
+    ),
+    'NamespaceTo\Language' => array(
+        'table' => 'languages_table',
+        'auto_increment_pk' => true,
+        'primary_key_columns' => array('lang_id'),
+        'map' => array(
+            'language_id' => 'languageId',
+            'default_category_id' => 'defaultCategoryId',
+            'name' => 'name',
+            'rewrited_name' => 'rewritedName',
+            'tags' => 'tags',
+            'sh_class' => 'shClass',
+            'extension' => 'extension',
+        ),
+    ),
+);
+
+</pre>
+
+<h2><a name="model"></a>Model</h2>
+
+<p>The model is the basis of all your application. This feature must be as simple as secured to allow you building a great architecture with a few risk.</p>
+<p>The main object here is the DbEntity. All your model classes should inherits from this class to offer you all the Accelerator Framework interactions you can need in an MVC designed application.</p>
+
+<p>Look at this sample class :</p>
+<pre>
+
+class Category extends DbEntity {
+
+    protected $loadMode = parent::LOAD_MODE_CONFIG;
+    public $categoryId;
+    public $name;
+    public $rewritedName;
+
+    /**
+     * Get a Category instance from a rewrited name.
+     * 
+     * @param string $rewritedName
+     * @return NamespaceTo\Category
+     */
+    public static function getByRewrite($rewritedName) {
+        return $rewritedName ?
+                \Accelerator\Model\EntityManager::selectSingle(new Category(array(
+                            'rewritedName' => $rewritedName))) :
+                null;
+    }
+
+    public function __toString() {
+        return $this->name;
+    }
+
+}
+
 </pre>
