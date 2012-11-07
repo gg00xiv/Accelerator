@@ -99,21 +99,44 @@ require_once 'relative_path_to/Accelerator/Autoloader.php';
 
 return array(
     'global' => array(
-        'namespace' => 'MegaSnippets', // website application namespace
-        'base_url' => 'http://megasnippets.com/', // website base url
-        'website_name' => 'MegaSnippets', // website name
+        'namespace' => 'MegaSnippets',
+        'base_url' => 'http://megasnippets.com/',
+        'website_name' => 'MegaSnippets',
+        'contact_email' => 'webmaster@megasnippets.com',
         'pagination' => array(
-            'items_per_page' => 40, // default number of items to display per page
-            'page_parameter' => 'page', // the page parameter name used in routes config section
+            'items_per_page' => 40,
+            'page_parameter' => 'page',
         ),
-        'use_session' => true, // auto-start session before calling any controller
+        'autostart_session' => false,
     ),
     'cache' => array(
         'feedCache' => array(
             'mode' => 'file',
-            'path' => __DIR__ . '/../cache/',
+            'path' => __DIR__ . '/../cachedir',
             'lifetime' => 3600
         ),
+    ),
+    'log' => array(
+        'filelog' => array(
+            'type' => 'file',
+            'params' => array(
+                'toplog' => true,
+                'path' => __DIR__ . '/../logs/logfile.dat',
+            ),
+        ),
+        'dblog' => array(
+            'type' => 'database',
+            'params' => array(
+                'table' => 'cu_logs',
+            ),
+        ),
+        'logs' => array(
+            'type' => 'merge',
+            'params' => array(
+                'filelog',
+                'dblog',
+            )
+        )
     ),
     'model' => array(
         'connection' => array(
@@ -156,17 +179,12 @@ return array(
     ),
     'routes' => array(
         '/' => array('IndexController', 'Home'),
-        '/source-codes/[:lang]/[:code]' => array('controller' => 'CodeController', 'view' => 'Code'),
-        '/languages/[:lang]' => array('SearchController', 'Language'),
-        '/languages/[:lang]/page-[:page]' => array('SearchController', 'Language'),
-        '/languages/[:lang]/categories/[:cat]' => array('SearchController', 'Category'),
-        '/languages/[:lang]/categories/[:cat]/page-[:page]' => array('SearchController', 'Category'),
-        '/search.php?l=[:lang]&c=[:cat]&q=[:query]' => array('SearchController', 'Search'),
-        '/search.php?l=[:lang]&c=[:cat]&q=[:query]&p=[:page]' => array('SearchController', 'Search'),
+        '/source-codes/(:lang)/(:code)' => array('controller' => 'CodeController', 'view' => 'Code'),
+        '/languages/(:lang)' => array('SearchController', 'Language'),
+        '/languages/(:lang)/page-(:page)' => array('SearchController', 'Language'),
         '/about' => array('AboutController', 'About'),
-        '/contact' => array('ContactController', 'Contact'),
-        '/submit' => array('SubmitController', 'Submit'),
-        '/feed/[:feed]' => 'FeedController',
+        '/submit(/(:lang))' => array('SubmitController', 'Submit'),
+        '/feed/(:feed)' => 'FeedController',
     ),
 );
 </pre>
