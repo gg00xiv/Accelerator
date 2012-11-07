@@ -44,13 +44,13 @@ class Application {
     public function getSession() {
         return $this->session;
     }
-    
+
     /**
      * Returns the default contact email for this website.
      * 
      * @return string
      */
-    public function getContactEmail(){
+    public function getContactEmail() {
         return $this->config->global->contact_email;
     }
 
@@ -163,7 +163,6 @@ class Application {
      * @throws Exception\ConfigurationException If the request path is invalid.
      */
     private function dispatch() {
-
         $full_route_uri = 'http://' . $_SERVER['SERVER_NAME'] . '/' . ltrim($_SERVER['REQUEST_URI'], '/');
         if (substr($full_route_uri, 0, strlen($this->config->global->base_url)) != $this->config->global->base_url)
             throw new Exception\ConfigurationException('Invalid script base url : ' . $full_route_uri);
@@ -171,7 +170,9 @@ class Application {
         $routePath = '/' . ltrim(substr($full_route_uri, strlen($this->config->global->base_url)), '/');
 
         foreach ($this->routeHandlers as $route => $routeHandler) {
-            $routePattern = '|^' . preg_replace(array('/(\?|\.)/', '/\[:(\w+)\]/i'), array('\\\\$1', '(?<$1>[^&/]*)'), $route) . '$|i';
+            $patterns = array('/(\?|\.)/', '/:([a-z]+)/i', '/\((.+)\)/');
+            $replacements = array('\\\\$1', '?<$1>[^&/]*', '($1)?');
+            $routePattern = '|^' . preg_replace($patterns, $replacements, $route) . '$|i';
 
             if (preg_match($routePattern, $routePath, $matches)) {
                 $parameters = new \ArrayObject(array(), \ArrayObject::ARRAY_AS_PROPS);
