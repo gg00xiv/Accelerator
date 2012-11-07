@@ -1,5 +1,6 @@
 <h1>PHP Accelerator Framework : PAF</h1>
 ===========
+</p><strong style="color:red;">PAF is actually in developpement stage. Please do not use it until at least a beta version has been released !</strong></p>
 
 <p><strong>PHP Accelerator Framework speeds up your projects.</strong></p>
 
@@ -314,9 +315,9 @@ allowing to use an DbEntity instance as selection filter.</p>
 <p>Look at examples below :</p>
 
 <h4>Static methods</h4>
-<p>execute a SELECT statement on categories_table where cat_name like '%my%'
- Category class is configured to be binded to categories_table database table and cat_name column to Category name field.
- Here, the value '%my%' use like operator because of '%' symbol only. If not '%' is present in value, = operator is used.</p>
+<p>execute a SELECT statement on categories_table where cat_name like '%my%'<br/>
+Category class is configured to be binded to categories_table database table and cat_name column to Category name field.<br/>
+Here, the value '%my%' use like operator because of '%' symbol only. If not '%' is present in value, = operator is used.</p>
 
 <pre>
 $cats = Category::select(array('name' => '%my%'));
