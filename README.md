@@ -194,7 +194,6 @@ return array(
 </pre>
 <p><em>entities.config.php</em> sample :</p>
 <pre>
-
 return array(
     'NamespaceTo\Category' => array(
         'table' => 'categories_table',
@@ -238,7 +237,6 @@ return array(
         ),
     ),
 );
-
 </pre>
 
 <h2><a name="model"></a>Model</h2>
@@ -248,7 +246,6 @@ return array(
 
 <p>Look at this sample class :</p>
 <pre>
-
 class Category extends DbEntity {
 
     protected $loadMode = parent::LOAD_MODE_CONFIG;
@@ -317,12 +314,12 @@ allowing to use an DbEntity instance as selection filter.</p>
 <p>Look at examples below :</p>
 
 <h4>Static methods</h4>
-<pre>
-// execute a SELECT statement on categories_table where cat_name like '%my%'
-// Category class is configured to be binded to categories_table database table and cat_name column to Category name field.
-// Here, the value '%my%' use like operator because of '%' symbol only. If not '%' is present in value, = operator is used.
-$cats = Category::select(array('name' => '%my%'));
+<p>execute a SELECT statement on categories_table where cat_name like '%my%'
+ Category class is configured to be binded to categories_table database table and cat_name column to Category name field.
+ Here, the value '%my%' use like operator because of '%' symbol only. If not '%' is present in value, = operator is used.</p>
 
+<pre>
+$cats = Category::select(array('name' => '%my%'));
 // $cats is an instance of DbEntityCollection
 
 // get the first record of DbEntityCollection
@@ -339,7 +336,6 @@ $cat = Category::selectSingle(array('name' => '%my%'));
 
 <h4>Instance methods (filter mode)</h4>
 <pre>
-
 $catFilter = new Category();
 $catFilter->name = '%my%';
 
@@ -354,5 +350,4 @@ $catFilter = new Category(array('name' => 'My Category'));
 $cat = $catFilter->filterSingle();
 
 // $cat is an instance of Category
-
 </pre>
