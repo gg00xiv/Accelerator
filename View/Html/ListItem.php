@@ -11,7 +11,10 @@ class ListItem extends HtmlElement {
 
     public function __construct($innerHtml = null, array $attributes = null) {
         parent::__construct('li', $attributes);
-        $this->setInnerHtml($innerHtml);
+        if ($innerHtml instanceof HtmlElement)
+            $this->addElement($innerHtml);
+        else if (is_string($innerHtml))
+            $this->setInnerHtml($innerHtml);
     }
 
 }
