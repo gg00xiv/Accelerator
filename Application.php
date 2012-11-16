@@ -257,11 +257,12 @@ class Application {
             }
 
             if (!$controllerName)
-                throw new Exception\ConfigurationException('Invalid route handler for route : ' . $route);
+                $controller = new Controller\DefaultController ();
+            else if ($controllerName[0] == '\\')
+                $controller = new $controllerName ();
+            else
+                $controller = $this->controllers[$controllerName];
 
-            $controller = $controllerName[0] == '\\' ?
-                    new $controllerName() :
-                    $this->controllers[$controllerName];
             $view = $viewName ?
                     $this->views[$viewName] :
                     null;
