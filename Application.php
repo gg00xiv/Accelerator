@@ -82,6 +82,16 @@ class Application {
     }
 
     /**
+     * Returns a full URL based on base url defined in configuration file.
+     * 
+     * @param string $relativeUrl
+     * @return string
+     */
+    public function getCompleteUrl($relativeUrl) {
+        return rtrim($this->getBaseUrl(), '/') . '/' . ltrim($relativeUrl, '/');
+    }
+
+    /**
      * Get the number of items to display per page in pagination context.
      * 
      * @return int Number of items per page to display.
@@ -164,10 +174,10 @@ class Application {
      */
     private function dispatch() {
         $full_route_uri = 'http://' . $_SERVER['SERVER_NAME'] . '/' . ltrim($_SERVER['REQUEST_URI'], '/');
-        if (substr($full_route_uri, 0, strlen($this->config->global->base_url)) != $this->config->global->base_url)
-            throw new Exception\ConfigurationException('Invalid script base url : ' . $full_route_uri);
+        if (substr($full_route_uri, 0, strlen($this->getBaseUrl())) != $this->getBaseUrl())
+            throw new Exception\ConfigurationException('Invalid script base url for : ' . $full_route_uri);
 
-        $routePath = '/' . ltrim(substr($full_route_uri, strlen($this->config->global->base_url)), '/');
+        $routePath = '/' . ltrim(substr($full_route_uri, strlen($this->getBaseUrl())), '/');
 
         foreach ($this->routeHandlers as $route => $routeHandler) {
             $patterns = array('/(\?|\.)/', '/:([a-z]+)/i', '/\((.+)\)/');
@@ -249,7 +259,9 @@ class Application {
             if (!$controllerName)
                 throw new Exception\ConfigurationException('Invalid route handler for route : ' . $route);
 
-            $controller = $this->controllers[$controllerName];
+            $controller = $controllerName[0] == '\\' ?
+                    new $controllerName() :
+                    $this->controllers[$controllerName];
             $view = $viewName ?
                     $this->views[$viewName] :
                     null;
