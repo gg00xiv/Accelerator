@@ -200,8 +200,10 @@ class Application {
 
     private function loadEntityMaps() {
         $this->entityConfig = array();
-        foreach ($this->config->model->entities as $entityClass => $entityConfig) {
-            $this->entityConfigs[$entityClass] = $entityConfig;
+        if ($this->config->model->entities) {
+            foreach ($this->config->model->entities as $entityClass => $entityConfig) {
+                $this->entityConfigs[$entityClass] = $entityConfig;
+            }
         }
     }
 
@@ -246,14 +248,20 @@ class Application {
             if (is_string($routeHandler))
                 $controllerName = $routeHandler;
             else if (is_array($routeHandler) || $routeHandler instanceof \ArrayObject) {
+                // read controller
                 if (isset($routeHandler->controller))
                     $controllerName = $routeHandler->controller;
                 else if (isset($routeHandler[0]))
                     $controllerName = $routeHandler[0];
+
+                // read view
                 if (isset($routeHandler->view))
                     $viewName = $routeHandler->view;
                 else if (isset($routeHandler[1]))
                     $viewName = $routeHandler[1];
+
+                // read static parameters
+                // TODO
             }
 
             if (!$controllerName)
