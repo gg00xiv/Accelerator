@@ -8,26 +8,40 @@ namespace Accelerator\Captcha;
  * @author gg00xiv
  */
 class SimpleQuestionCaptcha extends Captcha {
-    
-    /*public function __construct(){
+
+    private $formats;
+
+    public function __construct($formats = null) {
         parent::__construct();
-    }*/
+        if (!$formats) {
+            $this->formats = array(
+                'How do %d and %d ?',
+                'How do %d multiplied by %d ?',
+                'How do %d minus %d ?'
+            );
+        }else{
+            $this->formats=$formats;
+        }
+    }
 
     protected function generate(&$captchaValue) {
         $a = rand(0, 10);
         $b = rand(0, 10);
-        
-        switch (rand() % 3) {
+
+        $rand = rand() % 3;
+        switch ($rand) {
             case 0:
                 $captchaValue = $a + $b;
-                return 'How do ' . $a . ' and ' . $b . ' ?';
+                break;
             case 1:
                 $captchaValue = $a * $b;
-                return 'How do ' . $a . ' multiplied by ' . $b . ' ?';
+                break;
             case 2:
                 $captchaValue = $a - $b;
-                return 'How do ' . $a . ' minus ' . $b . ' ?';
+                break;
         }
+        
+        return sprintf($this->formats[$rand], $a, $b);
     }
 
 }
