@@ -21,7 +21,7 @@ class Form extends \Accelerator\View\Html\HtmlElement {
         if ($method)
             $this->setMethod($method);
         else if (is_array($attributes) && !array_key_exists('method', $attributes))
-            $this->setMethod(self::METHOD_GET);
+            $this->setMethod(self::METHOD_POST);
     }
 
     /**
