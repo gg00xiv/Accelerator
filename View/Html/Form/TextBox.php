@@ -45,6 +45,15 @@ class TextBox extends FormElement {
         return $this;
     }
 
+    /**
+     * Define a placeholder text for current TextBox.
+     * 
+     * @param string $placeholder
+     */
+    public function setPlaceholder($placeholder){
+        $this->attributes['placeholder'] = $placeholder;
+        return $this;
+    }
 }
 
 ?>
