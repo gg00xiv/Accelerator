@@ -110,7 +110,7 @@ class Form extends \Accelerator\View\Html\HtmlElement {
             return true;
 
         foreach ($this->getElements() as $element) {
-            if (!$element->isValid()) {
+            if ($element instanceof FormElement && !$element->isValid()) {
                 $this->_isValid = false;
                 break;
             }
