@@ -147,6 +147,11 @@ class Form extends \Accelerator\View\Html\HtmlElement {
         $this->successHtml = $html;
     }
 
+    /**
+     * Define an error to be display on top of form.
+     * 
+     * @param \Accelerator\View\Html\HtmlElement $error Any html element like Div, Span or other.
+     */
     public function setError(\Accelerator\View\Html\HtmlElement $error) {
         $this->setSuccessHtml(null);
         $this->insertElement(0, $error);
