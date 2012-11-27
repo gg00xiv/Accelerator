@@ -29,6 +29,7 @@ abstract class FormElement extends \Accelerator\View\Html\HtmlElement {
 
     public function setValuePersistency($persistency) {
         $this->isValuePersistent = $persistency;
+        return $this;
     }
 
     /**
@@ -43,10 +44,8 @@ abstract class FormElement extends \Accelerator\View\Html\HtmlElement {
                 $this->label = $text;
             else if (is_string($text))
                 $this->label = new Label($text, $this);
-
-            return $this->label;
         }
-        return null;
+        return $this;
     }
 
     public function getLabel() {
@@ -83,10 +82,13 @@ abstract class FormElement extends \Accelerator\View\Html\HtmlElement {
         if (!$this->validators)
             $this->validators = array();
         $this->validators[] = $validator;
+        
+        return $this;
     }
 
     public function setErrorMessage($msg) {
         $this->errorMessage = $msg;
+        return $this;
     }
 
     public function getErrorMessage() {

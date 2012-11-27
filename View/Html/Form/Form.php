@@ -147,6 +147,11 @@ class Form extends \Accelerator\View\Html\HtmlElement {
         $this->successHtml = $html;
     }
 
+    public function setError(\Accelerator\View\Html\HtmlElement $error) {
+        $this->setSuccessHtml(null);
+        $this->insertElement(0, $error);
+    }
+
     /**
      * Define the validation message template when input error occurs.
      * 
