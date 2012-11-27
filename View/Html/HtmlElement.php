@@ -253,6 +253,16 @@ class HtmlElement {
         $this->attributes['onblur'] = $jsCode;
         return $this;
     }
+    
+    /**
+     * Define a placeholder text for current HtmlElement.
+     * 
+     * @param string $placeholder
+     */
+    public function setPlaceholder($placeholder){
+        $this->attributes['placeholder'] = $placeholder;
+        return $this;
+    }
 
     /**
      *
