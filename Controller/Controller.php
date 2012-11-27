@@ -75,8 +75,12 @@ abstract class Controller {
         $this->view = $view;
         $this->parameters = $parameters;
         $r = $this->onExecute();
-        if ($view)
+        if ($view){
+            $view->addMeta($this->initMetas());
+            $view->addHeadLinks($this->initHeadLinks());
+            $view->addHeadScripts($this->initHeadScripts());
             $view->render();
+        }
         else
             echo $r;
     }
@@ -85,6 +89,30 @@ abstract class Controller {
      * This method have to be implemented on custom controller to handle request parameters.
      */
     protected abstract function onExecute();
+    
+    /**
+     * 
+     * @return array of \Accelerator\View\Html\Head\HeadLink
+     */
+    protected function initHeadLinks() {
+        return null;
+    }
+
+    /**
+     * 
+     * @return array of \Accelerator\View\Html\Head\HeadMeta
+     */
+    protected function initMetas() {
+        return null;
+    }
+
+    /**
+     * 
+     * @return array of \Accelerator\View\Html\Script
+     */
+    protected function initHeadScripts() {
+        return null;
+    }
 }
 
 ?>

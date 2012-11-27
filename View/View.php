@@ -155,6 +155,13 @@ class View {
         }
     }
 
+    public function addMetas(array $metas = null) {
+        if (!$metas)
+            return;
+        foreach ($metas as $meta)
+            $this->addMeta($meta);
+    }
+
     /**
      * Add a link element to head part of this view.
      * 
@@ -172,6 +179,14 @@ class View {
             if (!$this->_headLinks)
                 $this->_headLinks = array();
             $this->_headLinks[] = $link;
+        }
+    }
+
+    public function addHeadLinks(array $headLinks = null) {
+        if (!$headLinks)
+            return;
+        foreach ($headLinks as $headLink) {
+            $this->addHeadLink($headLink);
         }
     }
 
@@ -198,6 +213,14 @@ class View {
         }
     }
 
+    public function addHeadScripts(array $headScripts = null) {
+        if (!$headScripts)
+            return;
+        foreach ($headScripts as $headScript) {
+            $this->addHeadScript($headScript);
+        }
+    }
+
     /**
      * Get the HTML of meta tags in head part of this view.
      * 
@@ -206,9 +229,6 @@ class View {
     public function getMetas() {
         if (!$this->_headMetas)
             $this->_headMetas = array();
-
-        $initMetas = $this->initMetas();
-        array_merge($this->_headMetas, $initMetas);
 
         return join('', $this->_headMetas);
     }
@@ -222,9 +242,6 @@ class View {
         if (!$this->_headLinks)
             $this->_headLinks = array();
 
-        $initLinks = $this->initHeadLinks();
-        array_merge($this->_headLinks, $initLinks);
-
         return join('', $this->_headLinks);
     }
 
@@ -237,34 +254,7 @@ class View {
         if (!$this->_headScripts)
             $this->_headScripts = array();
 
-        $initScripts = $this->initHeadScripts();
-        array_merge($this->_headScripts, $initScripts);
-
         return join('', $this->_headScripts);
-    }
-
-    /**
-     * 
-     * @return array of \Accelerator\View\Html\Head\HeadLink
-     */
-    protected function initHeadLinks() {
-        return null;
-    }
-
-    /**
-     * 
-     * @return array of \Accelerator\View\Html\Head\HeadMeta
-     */
-    protected function initMetas() {
-        return null;
-    }
-
-    /**
-     * 
-     * @return array of \Accelerator\View\Html\Script
-     */
-    protected function initHeadScripts() {
-        return null;
     }
 
     /**
