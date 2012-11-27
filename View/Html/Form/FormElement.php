@@ -59,6 +59,9 @@ abstract class FormElement extends \Accelerator\View\Html\HtmlElement {
      * @return string NULL if no data present in $_GET or $_POST super globals.
      */
     public function getValue() {
+        if (!$this->parent)
+            return null;
+        
         switch ($this->parent->getMethod()) {
             case Form::METHOD_GET:
                 if (!isset($_GET[$this->getName()]))
