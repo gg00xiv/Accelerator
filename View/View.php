@@ -204,9 +204,13 @@ class View {
      * @return string
      */
     public function getMetas() {
-        if ($this->_headMetas) {
-            return join('', $this->_headMetas);
-        }
+        if (!$this->_headMetas)
+            $this->_headMetas = array();
+
+        $initMetas = $this->initMetas();
+        array_merge($this->_headMetas, $initMetas);
+
+        return join('', $this->_headMetas);
     }
 
     /**
@@ -215,9 +219,13 @@ class View {
      * @return string
      */
     public function getHeadLinks() {
-        if ($this->_headLinks) {
-            return join('', $this->_headLinks);
-        }
+        if (!$this->_headLinks)
+            $this->_headLinks = array();
+
+        $initLinks = $this->initHeadLinks();
+        array_merge($this->_headLinks, $initLinks);
+
+        return join('', $this->_headLinks);
     }
 
     /**
@@ -226,9 +234,37 @@ class View {
      * @return string
      */
     public function getHeadScripts() {
-        if ($this->_headScripts) {
-            return join('', $this->_headScripts);
-        }
+        if (!$this->_headScripts)
+            $this->_headScripts = array();
+
+        $initScripts = $this->initHeadScripts();
+        array_merge($this->_headScripts, $initScripts);
+
+        return join('', $this->_headScripts);
+    }
+
+    /**
+     * 
+     * @return array of \Accelerator\View\Html\Head\HeadLink
+     */
+    protected function initHeadLinks() {
+        return null;
+    }
+
+    /**
+     * 
+     * @return array of \Accelerator\View\Html\Head\HeadMeta
+     */
+    protected function initMetas() {
+        return null;
+    }
+
+    /**
+     * 
+     * @return array of \Accelerator\View\Html\Script
+     */
+    protected function initHeadScripts() {
+        return null;
     }
 
     /**
