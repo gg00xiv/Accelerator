@@ -76,7 +76,7 @@ abstract class Controller {
         $this->parameters = $parameters;
         $r = $this->onExecute();
         if ($view){
-            $view->addMeta($this->initMetas());
+            $view->addMetas($this->initMetas());
             $view->addHeadLinks($this->initHeadLinks());
             $view->addHeadScripts($this->initHeadScripts());
             $view->render();
