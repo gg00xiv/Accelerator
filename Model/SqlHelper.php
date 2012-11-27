@@ -29,7 +29,7 @@ class SqlHelper {
     public static function getSqlValue($value) {
         if (self::isSqlNull($value))
             return "NULL";
-        return is_numeric($value) ? $value : "'" . addslashes($value) . "'";
+        return "'" . addslashes($value) . "'";
     }
 
     /**
