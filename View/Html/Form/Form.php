@@ -195,6 +195,43 @@ class Form extends \Accelerator\View\Html\HtmlElement {
         \Accelerator\Helper\MailHelper::sendHtml($to, $fromName, $fromAddress, $subject, $html);
     }
 
+    /**
+     * 
+     * @param type $name
+     * @param type $isMultilines
+     * @param array $attributes
+     * @param type $label
+     * @return \Accelerator\View\Html\Form\TextBox
+     */
+    public function createTextBox($name, $isMultilines = false, array $attributes = null, $label = null) {
+        $this->addElement($textBox = new TextBox($name, $isMultilines, $attributes, $label));
+        return $textBox;
+    }
+
+    /**
+     * 
+     * @param type $name
+     * @param array $attributes
+     * @param type $label
+     * @return \Accelerator\View\Html\Form\EmailBox
+     */
+    public function createEmailBox($name, array $attributes = null, $label = null) {
+        $this->addElement($emailBox = new EmailBox($name, $attributes, $label));
+        return $emailBox;
+    }
+
+    /**
+     * 
+     * @param type $name
+     * @param array $attributes
+     * @param type $label
+     * @return \Accelerator\View\Html\Form\PasswordBox
+     */
+    public function createPasswordBox($name, array $attributes = null, $label = null) {
+        $this->addElement($passBox = new PasswordBox($name, $attributes, $label));
+        return $passBox;
+    }
+
 }
 
 ?>
