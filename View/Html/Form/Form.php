@@ -232,6 +232,18 @@ class Form extends \Accelerator\View\Html\HtmlElement {
         return $passBox;
     }
 
+    /**
+     * 
+     * @param type $name
+     * @param type $displayText
+     * @param array $attributes
+     * @return \Accelerator\View\Html\Form\SubmitButton
+     */
+    public function createSubmitButton($name = null, $displayText = null, array $attributes = null) {
+        $this->addElement($submit = new SubmitButton($name, $displayText, $attributes));
+        return $submit;
+    }
+
 }
 
 ?>
