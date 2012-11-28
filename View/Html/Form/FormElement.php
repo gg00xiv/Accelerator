@@ -60,7 +60,7 @@ abstract class FormElement extends \Accelerator\View\Html\HtmlElement {
     public function getValue() {
         if (!$this->parent)
             return null;
-        
+
         switch ($this->parent->getMethod()) {
             case Form::METHOD_GET:
                 if (!isset($_GET[$this->getName()]))
@@ -73,16 +73,21 @@ abstract class FormElement extends \Accelerator\View\Html\HtmlElement {
                 return $_POST[$this->getName()];
         }
     }
+    
+    protected function onSetValue($value){
+        
+    }
 
     public function setValue($value) {
-        
+        $this->onSetValue($value);
+        return $this;
     }
 
     public function addValidator(\Accelerator\Stdlib\Validator\Validator $validator) {
         if (!$this->validators)
             $this->validators = array();
         $this->validators[] = $validator;
-        
+
         return $this;
     }
 
@@ -131,15 +136,14 @@ abstract class FormElement extends \Accelerator\View\Html\HtmlElement {
                 $this->setValue($postBackValue);
         }
         $output = parent::getHtml();
-        if (!$this->isValid()) {
-            if ($this->errorMessage) {
-                $output.=$this->getErrorHtml($this->errorMessage);
-            } else {
-                foreach ($this->validators as $validator) {
-                    if (!$validator->validate($this->getValue())) {
-                        $msg = $validator->getMessage();
-                        $output.=$this->getErrorHtml($msg);
-                    }
+
+        if ($this->errorMessage) {
+            $output.=$this->getErrorHtml($this->errorMessage);
+        } else if (!$this->isValid()) {
+            foreach ($this->validators as $validator) {
+                if (!$validator->validate($this->getValue())) {
+                    $msg = $validator->getMessage();
+                    $output.=$this->getErrorHtml($msg);
                 }
             }
         }

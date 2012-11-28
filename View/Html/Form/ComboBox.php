@@ -22,7 +22,7 @@ class ComboBox extends FormElement {
         parent::addElement($element);
     }
 
-    public function setValue($value) {
+    protected function onSetValue($value) {
         foreach ($this->getElements() as $element) {
             if ($element->getValue() == $value) {
                 $element->setAttribute('selected', '');

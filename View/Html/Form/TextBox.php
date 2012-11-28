@@ -27,7 +27,7 @@ class TextBox extends FormElement {
         $this->isMultilines = $isMultilines;
     }
 
-    public function setValue($value) {
+    protected function onSetValue($value) {
         if ($this->isMultilines)
             $this->setInnerHtml($value);
         else if ($value)
