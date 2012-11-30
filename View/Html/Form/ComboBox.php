@@ -50,8 +50,9 @@ class ComboBox extends FormElement {
      * @return \Accelerator\View\Html\Form\ComboBox
      */
     public function addItems(array $items) {
-        foreach ($items as $text => $value)
+        foreach ($items as $value => $text) {
             $this->addItem($text, $value);
+        }
         return $this;
     }
 

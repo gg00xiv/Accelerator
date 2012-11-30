@@ -274,7 +274,7 @@ class Form extends \Accelerator\View\Html\HtmlElement {
 
         $form = new Form();
         foreach ($map as $fieldName => $fieldClass) {
-            $form->addElement(new $fieldClass($fieldName));
+            $form->addElement($form->$fieldName = new $fieldClass($fieldName));
         }
 
         return $form;
