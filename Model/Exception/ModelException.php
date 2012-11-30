@@ -9,8 +9,15 @@ namespace Accelerator\Model\Exception;
  */
 class ModelException extends \Exception {
 
-    public function __construct($message) {
+    private $sql;
+
+    public function __construct($message, $sql = null) {
         parent::__construct($message);
+        $this->sql = $sql;
+    }
+
+    public function getSql() {
+        return $this->sql;
     }
 
 }

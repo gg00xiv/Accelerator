@@ -50,7 +50,7 @@ class MySqlConnection extends DbConnection {
 
         $req = mysql_query($sql, $this->dbLink);
         if (!$req)
-            throw new \Accelerator\Model\Exception\ModelException("Invalid request : \n".$sql."\n".mysql_error());
+            throw new \Accelerator\Model\Exception\ModelException("Invalid request : ".mysql_error(), $sql);
         $rowset = array();
         while ($row = mysql_fetch_array($req))
             $rowset[] = $row;
@@ -71,7 +71,7 @@ class MySqlConnection extends DbConnection {
 
         $req = mysql_query($sql, $this->dbLink);
         if (!$req)
-            throw new \Accelerator\Model\Exception\ModelException('Invalid request : '.mysql_error());
+            throw new \Accelerator\Model\Exception\ModelException('Invalid request : '.mysql_error(), $sql);
         if ($mustReturnAutoId)
             return mysql_insert_id($this->dbLink);
     }
