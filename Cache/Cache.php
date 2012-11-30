@@ -47,6 +47,11 @@ abstract class Cache {
      * @return Accelerator\Cache\CacheItem 
      */
     public abstract function put($key, $data, $lifetime = null);
+    
+    /**
+     * @return Accelerator\Cache\CacheItem 
+     */
+    public abstract function remove($key);
 }
 
 ?>
