@@ -245,12 +245,11 @@ class DbEntity {
             foreach ($this->primaryKeyColumns as $pk) {
                 $pk_value = $this->getFieldValue($pk);
                 if (!$pk_value) { // 0, null, empty string
-                    $this->insert();
-                    return;
+                    return $this->insert();
                 }
             }
         }
-        $this->update();
+        return $this->update();
     }
 
     /**
