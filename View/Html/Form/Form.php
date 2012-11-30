@@ -244,6 +244,20 @@ class Form extends \Accelerator\View\Html\HtmlElement {
 
     /**
      * 
+     * @param string $name
+     * @param boolean $multiple
+     * @param array $attributes
+     * @param mixed $label
+     * @param array $items
+     * @return \Accelerator\View\Html\Form\ComboBox
+     */
+    public function createComboBox($name, $multiple = false, array $attributes = null, $label = null, array $items = null) {
+        $this->addElement($combo = new ComboBox($name, $multiple, $attributes, $label, $items));
+        return $combo;
+    }
+
+    /**
+     * 
      * @param type $name
      * @param type $displayText
      * @param array $attributes
@@ -252,6 +266,18 @@ class Form extends \Accelerator\View\Html\HtmlElement {
     public function createSubmitButton($name = null, $displayText = null, array $attributes = null) {
         $this->addElement($submit = new SubmitButton($name, $displayText, $attributes));
         return $submit;
+    }
+
+    public static function fromMap(array $map) {
+        if (!$map)
+            throw new \Accelerator\Exception\ArgumentNullException('$map');
+
+        $form = new Form();
+        foreach ($map as $fieldName => $fieldClass) {
+            $form->addElement(new $fieldClass($fieldName));
+        }
+
+        return $form;
     }
 
 }
