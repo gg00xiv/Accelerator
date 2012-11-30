@@ -335,6 +335,23 @@ class DbEntity {
         }
         return '{' . join(', ', $ret) . '}';
     }
+    
+    private function insert() {
+        $sql = SqlHelper::insert($this->table, $this->getColumnValues());
+
+        $ret = $this->connection->executeNonQuery($sql, $this->autoIncrementPk);
+        if ($this->autoIncrementPk) {
+            $this->setFieldValue($this->primaryKeyColumn, $ret);
+        }
+        
+        return $ret;
+    }
+
+    private function update() {
+        $sql = SqlHelper::update($this->table, $this->getColumnValues(), $this->getPrimaryKeyValues());
+
+        return $this->connection->executeNonQuery($sql);
+    }
 
     private function checkIntegrity() {
         if (!$this->table)
@@ -428,20 +445,7 @@ class DbEntity {
         return is_array($this->primaryKeyColumns) && count($this->primaryKeyColumns) > 0;
     }
 
-    private function insert() {
-        $sql = SqlHelper::insert($this->table, $this->getColumnValues());
-
-        $ret = $this->connection->executeNonQuery($sql, $this->autoIncrementPk);
-        if ($this->autoIncrementPk) {
-            $this->setFieldValue($this->primaryKeyColumn, $ret);
-        }
-    }
-
-    private function update() {
-        $sql = SqlHelper::update($this->table, $this->getColumnValues(), $this->getPrimaryKeyValues());
-
-        $this->connection->executeNonQuery($sql);
-    }
+    
 
 }
 
