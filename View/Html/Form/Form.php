@@ -20,7 +20,7 @@ class Form extends \Accelerator\View\Html\HtmlElement {
 
         if ($method)
             $this->setMethod($method);
-        else if (is_array($attributes) && !array_key_exists('method', $attributes))
+        else if ($attributes === null || (is_array($attributes) && !array_key_exists('method', $attributes)))
             $this->setMethod(self::METHOD_POST);
     }
 
@@ -274,6 +274,7 @@ class Form extends \Accelerator\View\Html\HtmlElement {
 
         $form = new Form();
         foreach ($map as $fieldName => $fieldClass) {
+            $fieldClass = '\\Accelerator\\View\\Html\\Form\\' . $fieldClass;
             $form->addElement($form->$fieldName = new $fieldClass($fieldName));
         }
 
