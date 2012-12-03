@@ -268,6 +268,12 @@ class Form extends \Accelerator\View\Html\HtmlElement {
         return $submit;
     }
 
+    /**
+     * 
+     * @param array $map Must be an associative array of fieldName=>FormElement derivated class name
+     * @return \Accelerator\View\Html\Form\Form
+     * @throws \Accelerator\Exception\ArgumentNullException
+     */
     public static function fromMap(array $map) {
         if (!$map)
             throw new \Accelerator\Exception\ArgumentNullException('$map');
@@ -276,6 +282,24 @@ class Form extends \Accelerator\View\Html\HtmlElement {
         foreach ($map as $fieldName => $fieldClass) {
             $fieldClass = '\\Accelerator\\View\\Html\\Form\\' . $fieldClass;
             $form->addElement($form->$fieldName = new $fieldClass($fieldName));
+        }
+
+        return $form;
+    }
+
+    /**
+     * 
+     * @param array $fieldNames A simple array of field names as defined in view
+     * @return \Accelerator\View\Html\Form\Form
+     * @throws \Accelerator\Exception\ArgumentNullException
+     */
+    public static function fromFieldNames(array $fieldNames) {
+        if (!$fieldNames)
+            throw new \Accelerator\Exception\ArgumentNullException('$fieldNames');
+
+        $form = new Form();
+        foreach ($fieldNames as $fieldName) {
+            $form->addElement($form->$fieldName = new Hidden($fieldName));
         }
 
         return $form;
