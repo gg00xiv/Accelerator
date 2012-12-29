@@ -46,11 +46,11 @@ class MySqlConnection extends DbConnection {
      */
     public function executeQuery($sql) {
         if (in_array(strtolower(substr($sql, 0, 7)), array('insert ', 'update ', 'delete ')))
-            throw new \Accelerator\Model\Exception\ModelException('executeNonQuery method cannot execute SELECT SQL statement.');
+            throw new \Accelerator\Model\Exception\ModelException('executeNonQuery method cannot execute SELECT SQL statement.', $sql);
 
         $req = mysql_query($sql, $this->dbLink);
         if (!$req)
-            throw new \Accelerator\Model\Exception\ModelException("Invalid request : \n".$sql."\n".mysql_error());
+            throw new \Accelerator\Model\Exception\ModelException("Invalid request : ".mysql_error(), $sql);
         $rowset = array();
         while ($row = mysql_fetch_array($req))
             $rowset[] = $row;
@@ -67,11 +67,11 @@ class MySqlConnection extends DbConnection {
      */
     public function executeNonQuery($sql, $mustReturnAutoId = false) {
         if (strtolower(substr($sql, 0, 7)) == 'select ')
-            throw new \Accelerator\Model\Exception\ModelException('executeNonQuery method cannot execute SELECT SQL statement.');
+            throw new \Accelerator\Model\Exception\ModelException('executeNonQuery method cannot execute SELECT SQL statement.', $sql);
 
         $req = mysql_query($sql, $this->dbLink);
         if (!$req)
-            throw new \Accelerator\Model\Exception\ModelException('Invalid request : '.mysql_error());
+            throw new \Accelerator\Model\Exception\ModelException('Invalid request : '.mysql_error(), $sql);
         if ($mustReturnAutoId)
             return mysql_insert_id($this->dbLink);
     }
