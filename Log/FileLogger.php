@@ -23,9 +23,7 @@ class FileLogger extends Logger {
         if ($this->toplog) {
             file_put_contents($this->logFilename, $logMessage . file_get_contents($this->logFilename));
         } else {
-            $fp = fopen($this->logFilename, 'a');
-            fwrite($fp, $logMessage);
-            fclose($fp);
+            file_put_contents($this->logFilename, $logMessage, FILE_APPEND);
         }
     }
 
