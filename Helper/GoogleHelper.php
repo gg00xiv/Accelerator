@@ -42,9 +42,6 @@ abstract class GoogleHelper {
 
             })();
 
-            $('#q').focus();
-            SyntaxHighlighter.all();
-
         </script>
         <?php
     }
