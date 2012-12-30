@@ -20,12 +20,12 @@ class MemoryCache extends Cache {
             return null;
 
         $item = $this->hashMap[$key];
-        
+
         // If content has expired, destroy item cache file.
         if ($item->hasExpired()) {
             unset($this->hashMap[$key]);
         }
-        
+
         return $item;
     }
 
@@ -37,6 +37,11 @@ class MemoryCache extends Cache {
         $this->hashMap[$key] = $item;
 
         return $item;
+    }
+
+    public function remove($key) {
+        if (array_key_exists($key, $this->hashMap))
+            unset($this->hashMap[$key]);
     }
 
 }

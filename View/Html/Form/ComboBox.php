@@ -22,7 +22,7 @@ class ComboBox extends FormElement {
         parent::addElement($element);
     }
 
-    public function setValue($value) {
+    protected function onSetValue($value) {
         foreach ($this->getElements() as $element) {
             if ($element->getValue() == $value) {
                 $element->setAttribute('selected', '');
@@ -50,8 +50,9 @@ class ComboBox extends FormElement {
      * @return \Accelerator\View\Html\Form\ComboBox
      */
     public function addItems(array $items) {
-        foreach ($items as $text => $value)
+        foreach ($items as $value => $text) {
             $this->addItem($text, $value);
+        }
         return $this;
     }
 

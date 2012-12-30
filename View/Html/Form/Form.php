@@ -20,8 +20,8 @@ class Form extends \Accelerator\View\Html\HtmlElement {
 
         if ($method)
             $this->setMethod($method);
-        else if (is_array($attributes) && !array_key_exists('method', $attributes))
-            $this->setMethod(self::METHOD_GET);
+        else if ($attributes === null || (is_array($attributes) && !array_key_exists('method', $attributes)))
+            $this->setMethod(self::METHOD_POST);
     }
 
     /**
@@ -110,7 +110,7 @@ class Form extends \Accelerator\View\Html\HtmlElement {
             return true;
 
         foreach ($this->getElements() as $element) {
-            if (!$element->isValid()) {
+            if ($element instanceof FormElement && !$element->isValid()) {
                 $this->_isValid = false;
                 break;
             }
@@ -145,6 +145,16 @@ class Form extends \Accelerator\View\Html\HtmlElement {
      */
     public function setSuccessHtml($html) {
         $this->successHtml = $html;
+    }
+
+    /**
+     * Define an error to be display on top of form.
+     * 
+     * @param \Accelerator\View\Html\HtmlElement $error Any html element like Div, Span or other.
+     */
+    public function setError(\Accelerator\View\Html\HtmlElement $error) {
+        $this->setSuccessHtml(null);
+        $this->insertElement(0, $error);
     }
 
     /**
@@ -193,6 +203,106 @@ class Form extends \Accelerator\View\Html\HtmlElement {
         }
         $html.='</ul>';
         \Accelerator\Helper\MailHelper::sendHtml($to, $fromName, $fromAddress, $subject, $html);
+    }
+
+    /**
+     * 
+     * @param type $name
+     * @param type $isMultilines
+     * @param array $attributes
+     * @param type $label
+     * @return \Accelerator\View\Html\Form\TextBox
+     */
+    public function createTextBox($name, $isMultilines = false, array $attributes = null, $label = null) {
+        $this->addElement($textBox = new TextBox($name, $isMultilines, $attributes, $label));
+        return $textBox;
+    }
+
+    /**
+     * 
+     * @param type $name
+     * @param array $attributes
+     * @param type $label
+     * @return \Accelerator\View\Html\Form\EmailBox
+     */
+    public function createEmailBox($name, array $attributes = null, $label = null) {
+        $this->addElement($emailBox = new EmailBox($name, $attributes, $label));
+        return $emailBox;
+    }
+
+    /**
+     * 
+     * @param type $name
+     * @param array $attributes
+     * @param type $label
+     * @return \Accelerator\View\Html\Form\PasswordBox
+     */
+    public function createPasswordBox($name, array $attributes = null, $label = null) {
+        $this->addElement($passBox = new PasswordBox($name, $attributes, $label));
+        return $passBox;
+    }
+
+    /**
+     * 
+     * @param string $name
+     * @param boolean $multiple
+     * @param array $attributes
+     * @param mixed $label
+     * @param array $items
+     * @return \Accelerator\View\Html\Form\ComboBox
+     */
+    public function createComboBox($name, $multiple = false, array $attributes = null, $label = null, array $items = null) {
+        $this->addElement($combo = new ComboBox($name, $multiple, $attributes, $label, $items));
+        return $combo;
+    }
+
+    /**
+     * 
+     * @param type $name
+     * @param type $displayText
+     * @param array $attributes
+     * @return \Accelerator\View\Html\Form\SubmitButton
+     */
+    public function createSubmitButton($name = null, $displayText = null, array $attributes = null) {
+        $this->addElement($submit = new SubmitButton($name, $displayText, $attributes));
+        return $submit;
+    }
+
+    /**
+     * 
+     * @param array $map Must be an associative array of fieldName=>FormElement derivated class name
+     * @return \Accelerator\View\Html\Form\Form
+     * @throws \Accelerator\Exception\ArgumentNullException
+     */
+    public static function fromMap(array $map) {
+        if (!$map)
+            throw new \Accelerator\Exception\ArgumentNullException('$map');
+
+        $form = new Form();
+        foreach ($map as $fieldName => $fieldClass) {
+            $fieldClass = '\\Accelerator\\View\\Html\\Form\\' . $fieldClass;
+            $form->addElement($form->$fieldName = new $fieldClass($fieldName));
+        }
+
+        return $form;
+    }
+
+    /**
+     * 
+     * @param array $fieldNames A simple array of field names as defined in view
+     * @return \Accelerator\View\Html\Form\Form
+     * @throws \Accelerator\Exception\ArgumentNullException
+     */
+    public static function fromFieldNames(array $fieldNames) {
+        if (!$fieldNames)
+            throw new \Accelerator\Exception\ArgumentNullException('$fieldNames');
+
+        $form = new Form();
+        foreach ($fieldNames as $fieldName) {
+            $form->addElement($form->$fieldName = new Hidden($fieldName));
+        }
+
+        return $form;
     }
 
 }

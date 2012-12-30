@@ -245,12 +245,11 @@ class DbEntity {
             foreach ($this->primaryKeyColumns as $pk) {
                 $pk_value = $this->getFieldValue($pk);
                 if (!$pk_value) { // 0, null, empty string
-                    $this->insert();
-                    return;
+                    return $this->insert();
                 }
             }
         }
-        $this->update();
+        return $this->update();
     }
 
     /**
@@ -334,6 +333,23 @@ class DbEntity {
             $ret[] = $column . ':' . SqlHelper::getSqlValue($value);
         }
         return '{' . join(', ', $ret) . '}';
+    }
+    
+    private function insert() {
+        $sql = SqlHelper::insert($this->table, $this->getColumnValues());
+
+        $ret = $this->connection->executeNonQuery($sql, $this->autoIncrementPk);
+        if ($this->autoIncrementPk) {
+            $this->setFieldValue($this->primaryKeyColumn, $ret);
+        }
+        
+        return $ret;
+    }
+
+    private function update() {
+        $sql = SqlHelper::update($this->table, $this->getColumnValues(), $this->getPrimaryKeyValues());
+
+        return $this->connection->executeNonQuery($sql);
     }
 
     private function checkIntegrity() {
@@ -428,20 +444,7 @@ class DbEntity {
         return is_array($this->primaryKeyColumns) && count($this->primaryKeyColumns) > 0;
     }
 
-    private function insert() {
-        $sql = SqlHelper::insert($this->table, $this->getColumnValues());
-
-        $ret = $this->connection->executeNonQuery($sql, $this->autoIncrementPk);
-        if ($this->autoIncrementPk) {
-            $this->setFieldValue($this->primaryKeyColumn, $ret);
-        }
-    }
-
-    private function update() {
-        $sql = SqlHelper::update($this->table, $this->getColumnValues(), $this->getPrimaryKeyValues());
-
-        $this->connection->executeNonQuery($sql);
-    }
+    
 
 }
 

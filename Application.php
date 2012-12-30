@@ -82,6 +82,16 @@ class Application {
     }
 
     /**
+     * Returns a full URL based on base url defined in configuration file.
+     * 
+     * @param string $relativeUrl
+     * @return string
+     */
+    public function getCompleteUrl($relativeUrl) {
+        return rtrim($this->getBaseUrl(), '/') . '/' . ltrim($relativeUrl, '/');
+    }
+
+    /**
      * Get the number of items to display per page in pagination context.
      * 
      * @return int Number of items per page to display.
@@ -164,10 +174,10 @@ class Application {
      */
     private function dispatch() {
         $full_route_uri = 'http://' . $_SERVER['SERVER_NAME'] . '/' . ltrim($_SERVER['REQUEST_URI'], '/');
-        if (substr($full_route_uri, 0, strlen($this->config->global->base_url)) != $this->config->global->base_url)
-            throw new Exception\ConfigurationException('Invalid script base url : ' . $full_route_uri);
+        if (substr($full_route_uri, 0, strlen($this->getBaseUrl())) != $this->getBaseUrl())
+            throw new Exception\ConfigurationException('Invalid script base url for : ' . $full_route_uri);
 
-        $routePath = '/' . ltrim(substr($full_route_uri, strlen($this->config->global->base_url)), '/');
+        $routePath = '/' . ltrim(substr($full_route_uri, strlen($this->getBaseUrl())), '/');
 
         foreach ($this->routeHandlers as $route => $routeHandler) {
             $patterns = array('/(\?|\.)/', '/:([a-z]+)/i', '/\((.+)\)/');
@@ -190,8 +200,10 @@ class Application {
 
     private function loadEntityMaps() {
         $this->entityConfig = array();
-        foreach ($this->config->model->entities as $entityClass => $entityConfig) {
-            $this->entityConfigs[$entityClass] = $entityConfig;
+        if ($this->config->model->entities) {
+            foreach ($this->config->model->entities as $entityClass => $entityConfig) {
+                $this->entityConfigs[$entityClass] = $entityConfig;
+            }
         }
     }
 
@@ -236,20 +248,29 @@ class Application {
             if (is_string($routeHandler))
                 $controllerName = $routeHandler;
             else if (is_array($routeHandler) || $routeHandler instanceof \ArrayObject) {
+                // read controller
                 if (isset($routeHandler->controller))
                     $controllerName = $routeHandler->controller;
                 else if (isset($routeHandler[0]))
                     $controllerName = $routeHandler[0];
+
+                // read view
                 if (isset($routeHandler->view))
                     $viewName = $routeHandler->view;
                 else if (isset($routeHandler[1]))
                     $viewName = $routeHandler[1];
+
+                // read static parameters
+                // TODO
             }
 
             if (!$controllerName)
-                throw new Exception\ConfigurationException('Invalid route handler for route : ' . $route);
+                $controller = new Controller\DefaultController ();
+            else if ($controllerName[0] == '\\')
+                $controller = new $controllerName ();
+            else
+                $controller = $this->controllers[$controllerName];
 
-            $controller = $this->controllers[$controllerName];
             $view = $viewName ?
                     $this->views[$viewName] :
                     null;

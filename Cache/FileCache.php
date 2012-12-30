@@ -40,6 +40,7 @@ class FileCache extends Cache {
     }
 
     public function put($key, $data, $lifetime = null) {
+        
         if ($lifetime === null)
             $lifetime = $this->getDefaultLifetime();
 
@@ -51,6 +52,10 @@ class FileCache extends Cache {
         file_put_contents($cacheFilename, $raw);
 
         return $item;
+    }
+    
+    public function remove($key){
+        
     }
 
 }

@@ -155,6 +155,13 @@ class View {
         }
     }
 
+    public function addMetas(array $metas = null) {
+        if (!$metas)
+            return;
+        foreach ($metas as $meta)
+            $this->addMeta($meta);
+    }
+
     /**
      * Add a link element to head part of this view.
      * 
@@ -172,6 +179,14 @@ class View {
             if (!$this->_headLinks)
                 $this->_headLinks = array();
             $this->_headLinks[] = $link;
+        }
+    }
+
+    public function addHeadLinks(array $headLinks = null) {
+        if (!$headLinks)
+            return;
+        foreach ($headLinks as $headLink) {
+            $this->addHeadLink($headLink);
         }
     }
 
@@ -198,15 +213,24 @@ class View {
         }
     }
 
+    public function addHeadScripts(array $headScripts = null) {
+        if (!$headScripts)
+            return;
+        foreach ($headScripts as $headScript) {
+            $this->addHeadScript($headScript);
+        }
+    }
+
     /**
      * Get the HTML of meta tags in head part of this view.
      * 
      * @return string
      */
     public function getMetas() {
-        if ($this->_headMetas) {
-            return join('', $this->_headMetas);
-        }
+        if (!$this->_headMetas)
+            $this->_headMetas = array();
+
+        return join('', $this->_headMetas);
     }
 
     /**
@@ -215,9 +239,10 @@ class View {
      * @return string
      */
     public function getHeadLinks() {
-        if ($this->_headLinks) {
-            return join('', $this->_headLinks);
-        }
+        if (!$this->_headLinks)
+            $this->_headLinks = array();
+
+        return join('', $this->_headLinks);
     }
 
     /**
@@ -226,9 +251,10 @@ class View {
      * @return string
      */
     public function getHeadScripts() {
-        if ($this->_headScripts) {
-            return join('', $this->_headScripts);
-        }
+        if (!$this->_headScripts)
+            $this->_headScripts = array();
+
+        return join('', $this->_headScripts);
     }
 
     /**

@@ -22,7 +22,7 @@ class CacheManager {
     /**
      * Returns the singleton of CacheManager class.
      * 
-     * @return Accelerator\Cache\CacheManager
+     * @return \Accelerator\Cache\CacheManager
      */
     public static function instance() {
         if (self::$instance === null)

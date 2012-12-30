@@ -27,7 +27,7 @@ class TextBox extends FormElement {
         $this->isMultilines = $isMultilines;
     }
 
-    public function setValue($value) {
+    protected function onSetValue($value) {
         if ($this->isMultilines)
             $this->setInnerHtml($value);
         else if ($value)
@@ -45,6 +45,15 @@ class TextBox extends FormElement {
         return $this;
     }
 
+    /**
+     * Define a placeholder text for current TextBox.
+     * 
+     * @param string $placeholder
+     */
+    public function setPlaceholder($placeholder){
+        $this->attributes['placeholder'] = $placeholder;
+        return $this;
+    }
 }
 
 ?>

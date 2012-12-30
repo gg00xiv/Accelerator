@@ -29,6 +29,7 @@ abstract class FormElement extends \Accelerator\View\Html\HtmlElement {
 
     public function setValuePersistency($persistency) {
         $this->isValuePersistent = $persistency;
+        return $this;
     }
 
     /**
@@ -43,10 +44,8 @@ abstract class FormElement extends \Accelerator\View\Html\HtmlElement {
                 $this->label = $text;
             else if (is_string($text))
                 $this->label = new Label($text, $this);
-
-            return $this->label;
         }
-        return null;
+        return $this;
     }
 
     public function getLabel() {
@@ -59,6 +58,9 @@ abstract class FormElement extends \Accelerator\View\Html\HtmlElement {
      * @return string NULL if no data present in $_GET or $_POST super globals.
      */
     public function getValue() {
+        if (!$this->parent)
+            return null;
+
         switch ($this->parent->getMethod()) {
             case Form::METHOD_GET:
                 if (!isset($_GET[$this->getName()]))
@@ -71,19 +73,27 @@ abstract class FormElement extends \Accelerator\View\Html\HtmlElement {
                 return $_POST[$this->getName()];
         }
     }
+    
+    protected function onSetValue($value){
+        
+    }
 
     public function setValue($value) {
-        
+        $this->onSetValue($value);
+        return $this;
     }
 
     public function addValidator(\Accelerator\Stdlib\Validator\Validator $validator) {
         if (!$this->validators)
             $this->validators = array();
         $this->validators[] = $validator;
+
+        return $this;
     }
 
     public function setErrorMessage($msg) {
         $this->errorMessage = $msg;
+        return $this;
     }
 
     public function getErrorMessage() {
@@ -126,15 +136,14 @@ abstract class FormElement extends \Accelerator\View\Html\HtmlElement {
                 $this->setValue($postBackValue);
         }
         $output = parent::getHtml();
-        if (!$this->isValid()) {
-            if ($this->errorMessage) {
-                $output.=$this->getErrorHtml($this->errorMessage);
-            } else {
-                foreach ($this->validators as $validator) {
-                    if (!$validator->validate($this->getValue())) {
-                        $msg = $validator->getMessage();
-                        $output.=$this->getErrorHtml($msg);
-                    }
+
+        if ($this->errorMessage) {
+            $output.=$this->getErrorHtml($this->errorMessage);
+        } else if (!$this->isValid()) {
+            foreach ($this->validators as $validator) {
+                if (!$validator->validate($this->getValue())) {
+                    $msg = $validator->getMessage();
+                    $output.=$this->getErrorHtml($msg);
                 }
             }
         }
